@@ -1,1 +1,40 @@
 /* You can add global styles to this file, and also import other style files */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+//font-styles
+
+.content-desktop {
+  font-family: 'Forum', serif;
+  font-size: 28px;
+  font-stretch: 20%;
+}
+
+.subtitle-desktop {
+  font-family: 'Forum', serif;
+  font-size: 34px;
+  font-stretch: 25%;
+}
+
+.title-desktop {
+  font-family: 'Fredericka the Great', serif;
+  font-size: 32px;
+  font-stretch: 30%;
+}
+
+.subcontent {
+  font-family: 'Forum', serif;
+  font-size: 25px;
+  font-stretch: 20%;
+}
+
+.label {
+  font-family: 'Fredericka the Great', serif;
+  font-size: 22px;
+  letter-spacing: 16px;
+  font-weight: 599;
+
+}

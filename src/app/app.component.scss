@@ -1,0 +1,46 @@
+.box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inputForm{
+  font-size: 20px;
+}
+
+main {
+  height: 100vh;
+  justify-content: center;
+
+  #inicioSesion {
+    gap: 50px;
+    padding: 20px 50px 50px 50px;
+    border-radius: 30px;
+    background-color: rgba(255, 190, 141, 0.75);
+
+    #login{
+      gap: 30px;
+
+      #form{
+        gap: 20px;
+        align-items: stretch;
+        text-align: center;
+
+        input{
+          background-color: red;
+          padding: 10px 30px 10px 30px;
+          height: 30px;
+          border-radius: 30px;
+          border: none;
+        }
+
+        input[value="F"] {
+          background: tomato;
+        }
+        input[value="1"] {
+          background: red;
+        }
+      }
+    }
+  }
+}
