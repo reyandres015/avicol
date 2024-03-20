@@ -1,24 +1,15 @@
 $LOGO: #F4A86C;
-$COLOR-HEADER: #6D2F00;
+$COLOR-BRAND: #002D4E;
+$COLOR-BRAND2: #626F78;
+$FOCO: #3A3A3A;
 
 header {
-  background-color: $COLOR-HEADER;
+  background-color: $COLOR-BRAND;
   display: flex;
   align-items: center;
   flex-direction: column;
 
   img {
     width: 150px;
-  }
-
-  p {
-    color: $LOGO;
-    font-family: 'Fredericka the Great', serif;
-    font-size: 40px;
-    letter-spacing: 12px;
-    text-shadow: 6px 2px 3px black,
-      // 0px 2px 0px black,
-      // -2px 0px 0px black,
-      // 0px -2px 0px black;
   }
 }

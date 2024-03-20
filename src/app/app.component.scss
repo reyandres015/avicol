@@ -1,11 +1,24 @@
+$LOGO: #F4A86C;
+$COLOR-BRAND: #002D4E;
+$COLOR-BRAND2: #626F78;
+$FOCO: #3A3A3A;
+
 .box {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+  position: relative;
 
-.inputForm{
-  font-size: 20px;
+  .background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: blur(10px);
+  }
 }
 
 main {
@@ -16,29 +29,32 @@ main {
     gap: 50px;
     padding: 20px 50px 50px 50px;
     border-radius: 30px;
-    background-color: rgba(255, 190, 141, 0.75);
+    background-color: $COLOR-BRAND2;
 
-    #login{
+    #login {
       gap: 30px;
 
-      #form{
+      #form {
         gap: 20px;
         align-items: stretch;
         text-align: center;
 
-        input{
-          background-color: red;
-          padding: 10px 30px 10px 30px;
-          height: 30px;
-          border-radius: 30px;
-          border: none;
+        .labelForm{
+          color: rgba(255, 255, 255, 0.7);
         }
 
-        input[value="F"] {
-          background: tomato;
+        .inputForm {
+          font-size: 18px;
+          padding: 10px 25px;
+          // border: 2px solid $COLOR-BRAND;
+          border: none;
+          border-radius: 50px;
+          outline: none;
+          transition: all 0.4s ease;
         }
-        input[value="1"] {
-          background: red;
+
+        .inputForm:hover {
+          box-shadow: 0 0 30px $COLOR-BRAND;
         }
       }
     }
