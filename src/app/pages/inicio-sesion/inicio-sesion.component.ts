@@ -12,6 +12,7 @@ export class InicioSesionComponent {
   constructor(private userAuthService: UserAuthService, private router: Router) { }
 
   loginUser(cedula: string, fechaNacimiento: string) {
+    this.router.navigate(["/menu-granjas"])
   }
 
   resetMessage() {
