@@ -24,4 +24,8 @@ export class GeneralGranjasComponent {
     this.router.navigate(['/vista-general-granja'])
   }
 
+  arrowBack(){
+    window.history.back()
+  }
+
 }

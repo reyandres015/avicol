@@ -73,6 +73,8 @@ button {
   border: 1px solid #FFF;
   padding: 15px 30px;
 
+  cursor: pointer;
+
   &:disabled {
     opacity: 0.3;
     cursor: not-allowed;
