@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { MenuGranjasComponent } from './pages/menu-granjas/menu-granjas.component';
 import { InicioSesionComponent } from './pages/inicio-sesion/inicio-sesion.component';
+import { GeneralGranjasComponent } from './pages/general-granjas/general-granjas.component';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { InicioSesionComponent } from './pages/inicio-sesion/inicio-sesion.compo
     HeaderComponent,
     MenuGranjasComponent,
     InicioSesionComponent,
+    GeneralGranjasComponent,
   ],
   imports: [
     BrowserModule,
