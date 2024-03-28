@@ -21,7 +21,7 @@ export class GeneralGranjasComponent {
 
   option(indexSelection: number) {
     this.galponService.actualizarGalponSeleccionado(indexSelection);
-    this.router.navigate(['/vista-general-granja'])
+    this.router.navigate(['/menu-seleccion-galpon'])
   }
 
   arrowBack(){
