@@ -1,0 +1,94 @@
+$LOGO: #F4A86C;
+$COLOR-BRAND: #002D4E;
+$COLOR-BRAND2: #626F78;
+$FOCO: #3A3A3A;
+$ARROW-COLOR: #FFDBBF;
+
+main {
+  height: 100vh;
+  justify-content: center;
+
+  #mainBox {
+    // max-width: 380px;
+    gap: 20px;
+    background-color: $COLOR-BRAND2;
+    padding: 40px 40px 100px 40px;
+    border-radius: 30px;
+
+    #first-container {
+      width: 100%;
+      justify-content: space-between;
+      flex-direction: row;
+
+      #arrowBack {
+        cursor: pointer;
+      }
+    }
+
+    h1,
+    h2 {
+      color: $ARROW-COLOR;
+      letter-spacing: 10px;
+      text-wrap: wrap;
+      text-align: center;
+    }
+
+    #formGalpones {
+      padding: 10px 20px;
+      color: white;
+      border-radius: 30px;
+      background-color: $FOCO;
+      gap: 10px;
+
+
+      #ulGranjas {
+        gap: 15px;
+        padding: 30px;
+
+        p {
+          text-wrap: nowrap;
+        }
+      }
+    }
+  }
+}
+
+table {
+  width: 100%;
+  border-spacing: 10px;
+  border: 2px white solid;
+  font-size: 22px;
+  letter-spacing: 3px;
+
+  tbody {
+    .bold-row {
+      font-weight: bold;
+    }
+
+    .encabezado {
+      th {
+        text-align: center;
+      }
+    }
+
+    // .table-content {
+    //   // :first-child {
+    //   //   text-align: start;
+    //   //   border-bottom: 0;
+    //   //   max-width: 120px;
+    //   // }
+
+    // }
+
+    td {
+      min-width: 120px;
+      text-align: center;
+      padding: 3px 8px;
+    }
+
+    th,
+    td {
+      border: 2px white solid;
+    }
+  }
+}
