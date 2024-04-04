@@ -15,4 +15,8 @@ export class MenuSeleccionGalponComponent {
   option(indexSelection: string) {
     this.router.navigate(['/' + indexSelection])
   }
+
+  arrowBack() {
+    window.history.back()
+  }
 }
