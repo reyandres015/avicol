@@ -5,14 +5,18 @@
 
   <section id="inicioSesion" class="box">
     <div id="login" class="box">
-      <img src="../assets/ico/userIco.svg" alt="">
-      <div id="form" class="box">
+      <img  src="../assets/ico/userIco.svg" alt="">
+      <div [@fadeInOut] id="form" class="box">
         <label for="user" class="label labelForm">USUARIO</label>
-        <input name="user" autocomplete="username" type="text" class="inputForm" #inputUser>
-        <label for="constrasena" class="label labelForm">CONTRASEÑA</label>
-        <input name="constrasena" type="password" class="inputForm" #inputContrasena>
+        <input class="inputForm messageError" type="email" id="email" name="user" autocomplete="email" #inputUser>
+        <span *ngIf="messageError" [@fadeInOutFast] class="messageError" id="emailError">Por favor, ingresa una dirección de correo electrónico
+          válida.</span>
+
+          <label for="constrasena" class="label labelForm">CONTRASEÑA</label>
+          <input name="constrasena" type="password" class="inputForm" #inputContrasena>
+          <span *ngIf="messageErrorForm" [@fadeInOutFast] class="messageError" id="formError">Correo o contraseña incorrecctos</span>
       </div>
     </div>
-    <button class="subcontent" (click)="loginUser(inputUser.value,inputContrasena.value)">INICIAR SESIÓN</button>
+    <button class="subcontent" (click)="login(inputUser.value,inputContrasena.value)">INICIAR SESIÓN</button>
   </section>
 </main>

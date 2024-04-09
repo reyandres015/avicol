@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -26,7 +27,17 @@ import { GastosComponent } from './pages/gastos/gastos.component';
   ],
   imports: [
     BrowserModule,
+<<<<<<< Updated upstream
     AppRoutingModule
+=======
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
+
+    AngularFireModule.initializeApp(environment.firebase)
+>>>>>>> Stashed changes
   ],
   providers: [],
   bootstrap: [AppComponent]
