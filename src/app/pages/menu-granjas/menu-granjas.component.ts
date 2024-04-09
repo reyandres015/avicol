@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GranjaDataService } from 'src/app/services/granja-data.service';
+import { UserAuthService } from 'src/app/services/user-auth.service';
 
 @Component({
   selector: 'app-menu-granjas',
@@ -11,7 +12,7 @@ export class MenuGranjasComponent implements OnInit {
   granjas: string[] = [];
   granja: string = '';
 
-  constructor(private router: Router, private granjaService: GranjaDataService) { }
+  constructor(private router: Router, private granjaService: GranjaDataService, private userAuthService: UserAuthService) { }
 
   ngOnInit() {
     this.granjas = this.granjaService.getNombresGranjasUser();

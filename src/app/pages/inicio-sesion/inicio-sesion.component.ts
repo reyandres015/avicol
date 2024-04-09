@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 
 @Component({
@@ -8,14 +7,17 @@ import { UserAuthService } from 'src/app/services/user-auth.service';
   styleUrls: ['./inicio-sesion.component.scss']
 })
 export class InicioSesionComponent {
-  inicioSesionExitoso: boolean = true;
-  constructor(private userAuthService: UserAuthService, private router: Router) { }
-
-  loginUser(cedula: string, fechaNacimiento: string) {
-    this.router.navigate(["/menu-granjas"])
+    
+    constructor(private userAuthService: UserAuthService) { }
+  
+    login( email: string
+      ,password: string) {
+        const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+        if (!emailRegex.test(email)) {
+          alert('El formato del correo electrónico es incorrecto. Por favor, intenta de nuevo');
+          return;
+        }
+      this.userAuthService.login(email, password);
+    }
+  
   }
-
-  resetMessage() {
-    this.inicioSesionExitoso = true;
-  }
-}
