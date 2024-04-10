@@ -1,6 +1,7 @@
 # Avicol
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.5.
+This project use firebase 7.6.1
 
 ## Development server
 
