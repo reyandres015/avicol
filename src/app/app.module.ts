@@ -12,6 +12,12 @@ import { MenuSeleccionGalponComponent } from './pages/menu-seleccion-galpon/menu
 import { VisualizacionDatosComponent } from './pages/visualizacion-datos/visualizacion-datos.component';
 import { VentasComponent } from './pages/ventas/ventas.component';
 import { GastosComponent } from './pages/gastos/gastos.component';
+import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
+import { environment } from '../environments/environment';
+import { provideAuth,getAuth } from '@angular/fire/auth';
+import { provideFirestore,getFirestore } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFireModule } from '@angular/fire/compat';
 
 @NgModule({
   declarations: [
@@ -27,9 +33,6 @@ import { GastosComponent } from './pages/gastos/gastos.component';
   ],
   imports: [
     BrowserModule,
-<<<<<<< Updated upstream
-    AppRoutingModule
-=======
     BrowserAnimationsModule,
     AppRoutingModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
@@ -37,7 +40,6 @@ import { GastosComponent } from './pages/gastos/gastos.component';
     provideFirestore(() => getFirestore()),
 
     AngularFireModule.initializeApp(environment.firebase)
->>>>>>> Stashed changes
   ],
   providers: [],
   bootstrap: [AppComponent]
