@@ -7,6 +7,9 @@ import { MenuSeleccionGalponComponent } from './pages/menu-seleccion-galpon/menu
 import { VisualizacionDatosComponent } from './pages/visualizacion-datos/visualizacion-datos.component';
 import { VentasComponent } from './pages/ventas/ventas.component';
 import { GastosComponent } from './pages/gastos/gastos.component';
+import { guardsGuard } from './components/header/guards/guards.guard';
+
+
 
 const routes: Routes = [
   {
@@ -15,7 +18,7 @@ const routes: Routes = [
   },
   {
     path: 'menu-granjas',
-    component: MenuGranjasComponent
+    component: MenuGranjasComponent, canActivate:[guardsGuard]
   },
   {
     path: 'vista-general-granja',
