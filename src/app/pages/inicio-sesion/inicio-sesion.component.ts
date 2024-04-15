@@ -45,7 +45,7 @@ export class InicioSesionComponent {
       return;
     }
     this.userAuthService.login(email, password).then(() => {
-      this.messageErrorForm = !this.userAuthService.isLoggedIn;
+      this.messageErrorForm = this.userAuthService.isLoggedIn;
     })
   }
 
