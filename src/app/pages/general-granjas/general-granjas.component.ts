@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { GalponDataService } from 'src/app/services/galpon-data.service';
+import { GranjaDataService } from 'src/app/services/granja-data.service';
+import Galpon from 'src/app/interfaces/galpon.interface';
+import Granja from 'src/app/interfaces/granja.interface';
 
 @Component({
   selector: 'app-general-granjas',
@@ -8,24 +11,29 @@ import { GalponDataService } from 'src/app/services/galpon-data.service';
   styleUrls: ['./general-granjas.component.scss']
 })
 export class GeneralGranjasComponent {
-  galpones: string[] = [];
-  galpon: string = '';
+  granja: Granja = { name: '', path: '' };
 
-  nombreGranja: string = "no data";
-
-  constructor(private router: Router, private galponService: GalponDataService) { }
+  constructor(
+    private router: Router,
+    private galponService: GalponDataService,
+    private granjaService: GranjaDataService
+  ) { }
 
   ngOnInit() {
-    this.galpones = this.galponService.getNombresGalponUser();
+    const granja = this.granjaService.getGranjaSeleccionada();
+    if (granja.galpones) {
+      this.granja = granja;
+    } else {
+      alert('No hay galpones registrado en esta granja');
+    }
   }
 
   option(indexSelection: number) {
     this.galponService.actualizarGalponSeleccionado(indexSelection);
-    this.router.navigate(['/menu-seleccion-galpon'])
+    this.router.navigate(['/menu-seleccion-galpon']);
   }
 
-  arrowBack(){
-    window.history.back()
+  arrowBack() {
+    window.history.back();
   }
-
 }

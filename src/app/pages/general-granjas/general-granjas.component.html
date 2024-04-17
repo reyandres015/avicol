@@ -9,19 +9,18 @@
         <a (click)="arrowBack()" id="arrowBack">
           <img src="../../../assets/ico/arrow-left.png" alt="">
         </a>
-        <h1 class="label">{{nombreGranja}}</h1>
+        <h1 class="label">Granja {{granja.name}}</h1>
         <div style="width: 30px;"></div>
       </div>
       <img src="../../../assets/images/Granja.png" alt="Imagen Granja">
       <h2 class="label">RESUMEN POR GALPÓN</h2>
       <div id="formGalpones" class="box">
         <div id="ulGranjas" class="box">
-          <button *ngFor="let galpon of this.galpones; index as i" (click)="option(i)"
-            class="subcontent">{{galpon}}</button>
+          <button *ngFor="let galpon of this.granja.galpones; index as i" (click)="option(i)"
+            class="subcontent">{{galpon.name}}</button>
         </div>
       </div>
     </div>
     <!-- <button class="subcontent" (click)="option(inputUser.value,inputContrasena.value)">INICIAR SESIÓN</button> -->
   </section>
-
 </main>
