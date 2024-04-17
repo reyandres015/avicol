@@ -1,12 +1,10 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GranjaDataService } from 'src/app/services/granja-data.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 
 import { trigger, transition, style, animate } from '@angular/animations';
 import Granja from 'src/app/interfaces/granja.interface';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { user } from '@angular/fire/auth';
 @Component({
   selector: 'app-menu-granjas',
   templateUrl: './menu-granjas.component.html',
