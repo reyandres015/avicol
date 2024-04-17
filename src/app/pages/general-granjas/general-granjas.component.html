@@ -18,6 +18,7 @@
         <div id="ulGranjas" class="box">
           <button *ngFor="let galpon of this.granja.galpones; index as i" (click)="option(i)"
             class="subcontent">{{galpon.name}}</button>
+          <span *ngIf="this.granja.galpones?.length == 0">No hay galpones asignados a esta granja</span>
         </div>
       </div>
     </div>

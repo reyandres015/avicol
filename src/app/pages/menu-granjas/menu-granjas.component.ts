@@ -41,8 +41,8 @@ export class MenuGranjasComponent implements OnInit {
     private authService: UserAuthService
   ) { }
 
-  ngOnInit() {
-    this.authService.verifyUser().then((isLogged) => {
+  async ngOnInit() {
+    await this.authService.verifyUser().then((isLogged) => {
       if (!isLogged) {
         this.router.navigate(['/']);
       }

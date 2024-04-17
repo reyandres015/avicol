@@ -14,14 +14,12 @@ export class UserAuthService {
     granjas: [],
   }
   userCredentials: any;
-
   constructor(
     private firebaseAuthenticationService: AngularFireAuth,
     private ngZone: NgZone,
     private router: Router,
     private getDataFirebase: GetDataFirebaseService
-  ) {
-  }
+  ) { }
 
 
   //generar el inicio de sesion
@@ -55,9 +53,8 @@ export class UserAuthService {
 
   async verifyUser() {
     return await this.firebaseAuthenticationService.currentUser.then((user) => {
-      return user? true : false;
+      return user ? true : false;
     })
-
   }
 
   async getUserData(userCredentials: any) {
@@ -74,7 +71,6 @@ export class UserAuthService {
       }
     })
   }
-
 
   getUser() {
     return this.user;

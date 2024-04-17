@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { GalponDataService } from 'src/app/services/galpon-data.service';
 import { GranjaDataService } from 'src/app/services/granja-data.service';
 import Granja from 'src/app/interfaces/granja.interface';
+import { Auth, AuthSettings } from '@angular/fire/auth';
+import { UserAuthService } from 'src/app/services/user-auth.service';
 
 @Component({
   selector: 'app-general-granjas',
@@ -14,16 +16,20 @@ export class GeneralGranjasComponent {
 
   constructor(
     private router: Router,
+    private authService: UserAuthService,
     private galponService: GalponDataService,
     private granjaService: GranjaDataService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.authService.verifyUser().then((isLogged) => {
+      if (!isLogged) {
+        this.router.navigate(['/']);
+      }
+    })
     const granja = this.granjaService.getGranjaSeleccionada();
     if (granja.galpones) {
       this.granja = granja;
-    } else {
-      alert('No hay galpones registrado en esta granja');
     }
   }
 
