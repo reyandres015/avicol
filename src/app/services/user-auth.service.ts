@@ -21,15 +21,6 @@ export class UserAuthService {
     private router: Router,
     private getDataFirebase: GetDataFirebaseService
   ) {
-
-    this.firebaseAuthenticationService.authState.subscribe(user => {
-      if (user) {
-        this.userCredentials = user;
-        localStorage.setItem('user', JSON.stringify(this.userCredentials));
-      } else {
-        localStorage.setItem('user', 'null');
-      }
-    })
   }
 
 
@@ -45,6 +36,12 @@ export class UserAuthService {
       });
   }
 
+  async logout() {
+    return this.firebaseAuthenticationService.signOut().then(() => {
+      this.router.navigate(['']);
+    })
+  }
+
   observeUserState() {
     this.firebaseAuthenticationService.authState.subscribe((userState) => {
       userState && this.ngZone.run(() => this.router.navigate(['menu-granjas']));
@@ -56,6 +53,13 @@ export class UserAuthService {
     return user !== null;
   }
 
+  async verifyUser() {
+    return await this.firebaseAuthenticationService.currentUser.then((user) => {
+      return user? true : false;
+    })
+
+  }
+
   async getUserData(userCredentials: any) {
     const uid: string = userCredentials.uid
 
@@ -65,11 +69,12 @@ export class UserAuthService {
         this.user = {
           name: userData.name,
           uid: uid,
-          granjas: userData.granjas, 
+          granjas: userData.granjas,
         }
       }
     })
   }
+
 
   getUser() {
     return this.user;
