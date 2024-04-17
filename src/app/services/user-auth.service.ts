@@ -65,7 +65,7 @@ export class UserAuthService {
         this.user = {
           name: userData.name,
           uid: uid,
-          granjas: userData.granjas,
+          granjas: userData.granjas, 
         }
       }
     })

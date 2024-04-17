@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { GalponDataService } from 'src/app/services/galpon-data.service';
 
 @Component({
   selector: 'app-menu-seleccion-galpon',
@@ -10,7 +11,9 @@ export class MenuSeleccionGalponComponent {
   granjas: string[] = [];
   granja: string = '';
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, 
+    private galponDataService: GalponDataService,
+  ) { }
 
   option(indexSelection: string) {
     this.router.navigate(['/' + indexSelection])
