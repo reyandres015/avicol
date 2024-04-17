@@ -7,6 +7,8 @@ import Granja from '../interfaces/granja.interface';
 @Injectable({
   providedIn: 'root'
 })
+
+// Servicio que se encarga de manejar la información de las granjas
 export class GranjaDataService {
   private granjasUser: Granja[] = [];
   private granjaSeleccionada: Granja = { name: '', path: '' };
@@ -31,6 +33,7 @@ export class GranjaDataService {
     });
   }
 
+  // Función que devuelve las granjas del usuario
   getGranjasUser(): Granja[] {
     return this.granjasUser;
   }
@@ -38,6 +41,16 @@ export class GranjaDataService {
   // Menú de galpones disponibles por usuarios
   async setTotalInfoGranja(DocPathGranja: string) {
     await this.getDataFirebase.getCollectionDocs(`${DocPathGranja}/galpones`).then((galponesGranja) => {
+
+      // Se agrega la referencia del documento para cada galpon presente en la colección para poder acceder a la información de cada galpón.
+      for (let i = 0; i < galponesGranja.length; i++) {
+        galponesGranja[i] = {
+          ...galponesGranja[i].data(),
+          ref: galponesGranja[i].ref.path
+        };
+      }
+
+      // Se actualiza la granja seleccionada con la información de sus galpones
       this.granjaSeleccionada = {
         ...this.granjaSeleccionada,
         galpones: galponesGranja
@@ -45,10 +58,12 @@ export class GranjaDataService {
     });
   }
 
+  // Función que devuelve la granja seleccionada
   getGranjaSeleccionada(): Granja {
     return this.granjaSeleccionada;
   }
 
+  // Función que actualiza la granja seleccionada
   actualizarGranjaSeleccionada(granja: number) {
     this.granjaSeleccionada = this.granjasUser[granja];
   }

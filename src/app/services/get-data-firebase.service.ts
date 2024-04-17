@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DocumentReference, Firestore, collection, doc, getDoc, getDocs } from '@angular/fire/firestore';
+import { DocumentData, DocumentReference, Firestore, collection, doc, getDoc, getDocs } from '@angular/fire/firestore';
 import Galpon from '../interfaces/galpon.interface';
 
 @Injectable({
@@ -29,12 +29,12 @@ export class GetDataFirebaseService {
   }
 
   //Función que devuelve un array con los documentos de una coleccion
-  async getCollectionDocs(collectionPath: string): Promise<Galpon[]> {
+  async getCollectionDocs(collectionPath: string): Promise<any[]> {
     const collectionRef = collection(this.firestore, collectionPath);
     const querySnapshot = await getDocs(collectionRef);
     const docs: any[] = [];
     querySnapshot.forEach((doc) => {
-      docs.push(doc.data());
+      docs.push(doc);
     });
     return docs;
   }

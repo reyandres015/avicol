@@ -1,6 +1,10 @@
-export default interface Gastos{
-  fecha: string
+import { Timestamp } from "@angular/fire/firestore"
+
+export default interface Gastos {
+  fecha: Timestamp
   concepto: string
   categoria: string
-  valor: number
+  cantidad: number
+  valorUnitario: number
+  total: number
 }

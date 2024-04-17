@@ -1,28 +1,49 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { GetDataFirebaseService } from './get-data-firebase.service';
-import { UserAuthService } from './user-auth.service';
-import { DocumentReference, DocumentData } from '@angular/fire/firestore';
+import { GranjaDataService } from './granja-data.service';
+import Galpon from '../interfaces/galpon.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GalponDataService {
-  private nombresGalponUser: string[] = []
+  private galponSeleccionado: Galpon = { name: '', ref: '', ventas: [], gastos: [] };
 
-  private galponSeleccionadoSubject = new BehaviorSubject<number>(-1);
-  galponSeleccionada$ = this.galponSeleccionadoSubject.asObservable();
-
-  constructor(   
-    private userAuth: UserAuthService,
-    private getDataFirebase: GetDataFirebaseService ) {
+  constructor(
+    private granjaService: GranjaDataService,
+    private getDataFirebase: GetDataFirebaseService) {
   }
 
-  actualizarGalponSeleccionado(granja: number) {
-    this.galponSeleccionadoSubject.next(granja);
+  async actualizarGalponSeleccionado(granja: number) {
+    const galpones = this.granjaService.getGranjaSeleccionada().galpones
+    if (galpones) {
+
+      // Ventas de cada galpón
+      await this.getDataFirebase.getCollectionDocs(`${galpones[granja].ref}/ventas`).then(async (ventasGalpon: any[]) => {
+        let calculoTotalVentas: number = 0;
+        for (let i = 0; i < ventasGalpon.length; i++) {
+          await this.getDataFirebase.getDocByReference(ventasGalpon[i].ref).then((venta) => {
+            calculoTotalVentas += venta.data().total;
+            ventasGalpon[i] = {
+              ...venta.data()
+            }
+          })
+
+        }
+        galpones[granja] = {
+          ...galpones[granja],
+          ventas: ventasGalpon,
+          totalVentas: calculoTotalVentas
+        }
+
+      })
+      this.galponSeleccionado = galpones[granja];
+    } else {
+      alert('Ocurrío un error al obtener la información del galpón. Por favor, intenta de nuevo.')
+    }
   }
 
-  getNombresGalponUser(): string[] {
-    return this.nombresGalponUser;
+  getGalpon(): Galpon {
+    return this.galponSeleccionado;
   }
 }

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { GalponDataService } from 'src/app/services/galpon-data.service';
 import { GranjaDataService } from 'src/app/services/granja-data.service';
-import Galpon from 'src/app/interfaces/galpon.interface';
 import Granja from 'src/app/interfaces/granja.interface';
 
 @Component({
