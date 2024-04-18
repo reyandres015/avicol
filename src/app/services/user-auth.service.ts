@@ -37,7 +37,7 @@ export class UserAuthService {
 
 //generar el inicio de sesion
 async login(email: string, password: string) {
-  return this.firebaseAuthenticationService.setPersistence(firebase.auth.Auth.Persistence.SESSION)
+  return this.firebaseAuthenticationService.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
     .then(() => {
       return this.firebaseAuthenticationService.signInWithEmailAndPassword(email, password)
         .then(async (userCredentials) => {
