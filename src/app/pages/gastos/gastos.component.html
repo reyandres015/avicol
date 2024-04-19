@@ -11,21 +11,36 @@
         <div id="ulGranjas" class="box">
           <section>
             <label class="labelForm" for="fecha">Fecha</label>
-            <input class="inputForm" type="text" name="fecha" id="">
+            <input value="{{gasto.fecha.toDate() | date:'fullDate':'es'}}" class="inputForm" type="text" name="fecha"
+              id="" readonly>
           </section>
           <section>
             <label class="labelForm" for="hora">Hora</label>
-            <input class="inputForm" type="text" name="hora" id="">
-          </section>
-          <section>
-            <label class="labelForm" for="valor">Valor</label>
-            <input class="inputForm" type="text" name="valor" id="">
+            <input value="{{gasto.fecha.toDate() | date:'h:mm a'}}" class="inputForm" type="text" name="hora" id=""
+              readonly>
           </section>
           <section>
             <label class="labelForm" for="cliente">Concepto</label>
-            <input class="inputForm" type="text" name="cliente" id="">
+            <input [value]="this.gasto.concepto" (change)="setConcepto($event)" class="inputForm" type="text" name="cliente" id="">
           </section>
-          <button class="content-desktop">Registrar</button>
+          <section>
+            <label class="labelForm" for="cliente">Categoria</label>
+            <input [value]="this.gasto.categoria" (change)="setCategoria($event)" class="inputForm" type="text" name="cliente" id="">
+          </section>
+          <section>
+            <label class="labelForm" for="valor">Valor Unitario</label>
+            <input class="inputForm" type="text" value="$0"
+              (input)="formatCurrency($event); changeValorUnitario($event)">
+          </section>
+          <section>
+            <label class="labelForm" for="valor">Cantidad</label>
+            <input class="inputForm" type="number" min="0" value="0" (input)="changeCantidad($event)">
+          </section>
+          <section>
+            <label class="labelForm" for="valor">Total</label>
+            <input class="inputForm" type="text" value="{{gasto.total | currency:'symbol': '$':'1.0'}}" readonly>
+          </section>
+          <button (click)="crearGasto()" class="content-desktop">Registrar</button>
         </div>
       </div>
     </div>
