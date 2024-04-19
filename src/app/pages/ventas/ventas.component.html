@@ -11,15 +11,17 @@
         <div id="ulGranjas" class="box">
           <section>
             <label class="labelForm" for="fecha">Fecha</label>
-            <input class="inputForm" type="text" name="fecha" id="">
+            <input class="inputForm" type="text" name="fecha" id=""
+              value="{{venta.fecha.toDate() | date:'fullDate':'es'}}" readonly>
           </section>
           <section>
             <label class="labelForm" for="hora">Hora</label>
-            <input class="inputForm" type="text" name="hora" id="">
+            <input class="inputForm" type="text" name="hora" id="" value="{{venta.fecha.toDate() | date:'h:mm a'}}"
+              readonly>
           </section>
           <section>
             <label class="labelForm" for="cliente">Cliente</label>
-            <input class="inputForm" type="text" name="cliente" id="">
+            <input class="inputForm" type="text" name="cliente" id="" [value]="this.venta.cliente" (change)="setCliente($event)">
           </section>
           <div id="tipo">
             <table>
@@ -34,14 +36,14 @@
                 <td><input class="inputForm" type="number" min="0" value="0" (input)="changeCantidad(key,$event)"></td>
                 <td><input class="inputForm" type="text" value="$0"
                     (input)="formatCurrency($event); changeValorUnitario(key,$event)"></td>
-                <td><input class="inputForm" type="text" value="{{filas[key].total() | currency:'USD':'symbol':'1.0'}}"
+                <td><input class="inputForm" type="text" value="{{filas[key].total() | currency:'symbol': '$':'1.0'}}"
                     readonly></td>
               </tr>
             </table>
           </div>
-          <h2>Total Venta: {{totalVenta | currency:'USD':'symbol':'1.0'}}</h2>
+          <h2>Total Venta: {{venta.totalVenta | currency:'symbol': '$':'1.0'}}</h2>
         </div>
-        <button class="content-desktop">Registrar</button>
+        <button class="content-desktop" (click)="crearVenta()">Registrar</button>
       </div>
     </div>
   </section>

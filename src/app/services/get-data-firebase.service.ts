@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DocumentData, DocumentReference, Firestore, collection, doc, getDoc, getDocs } from '@angular/fire/firestore';
+import { DocumentData, DocumentReference, Firestore, collection, doc, getDoc, getDocs, setDoc, updateDoc } from '@angular/fire/firestore';
 import Galpon from '../interfaces/galpon.interface';
 
 @Injectable({
@@ -37,5 +37,38 @@ export class GetDataFirebaseService {
       docs.push(doc);
     });
     return docs;
+  }
+
+  //Create or update a document
+  async createUpdateDoc(ref: string, data: any) {
+    try {
+      const collectionRef = await collection(this.firestore, ref);
+      await setDoc(doc(collectionRef), data);
+      console.log('Documento creado');
+
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
+  async selectCreateDoc(ref: any, createIt: boolean) {
+    try {
+      const docSnapshot = await getDoc(ref);
+      if (docSnapshot.exists()) {
+        return true
+      } else {
+        if (createIt) {
+          await setDoc(ref, {});
+          return true;
+        } else {
+          return false;
+        }
+      }
+    } catch (error) {
+      console.error('Error al verificar/crear el documento:', error);
+      alert(`Error al subir el archivo: ${error}`)
+      return false;
+    }
   }
 }

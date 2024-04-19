@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -43,7 +43,9 @@ registerLocaleData(localeEs, 'es');
 
     AngularFireModule.initializeApp(environment.firebase)
   ],
-  providers: [],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'es' }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

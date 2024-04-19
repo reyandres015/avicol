@@ -1,6 +1,10 @@
 import { CommonModule, formatCurrency } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { Timestamp } from '@angular/fire/firestore';
+
+import Ventas from 'src/app/interfaces/ventas.interface';
+import { RealizarVentasService } from 'src/app/services/realizar-ventas.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 @Component({
   selector: 'app-ventas',
@@ -12,7 +16,8 @@ import { UserAuthService } from 'src/app/services/user-auth.service';
 export class VentasComponent implements OnInit {
   constructor(
     private authService: UserAuthService,
-    private router: Router
+    private router: Router,
+    private ventasService: RealizarVentasService
   ) { }
 
   async ngOnInit() {
@@ -23,7 +28,34 @@ export class VentasComponent implements OnInit {
     // })
   }
 
-  totalVenta: number = 0;
+  venta: Ventas = {
+    fecha: Timestamp.now(),
+    cliente: "",
+    detalle: [],
+    totalVenta: 0
+  }
+
+  crearVenta() {
+    console.log('Iniciando');
+
+    this.venta.detalle = []
+    for (const k of this.getKeysObject(this.filas)) {
+      if (this.filas[k].cantidad() != '0') {
+        this.venta.detalle.push({
+          tipo: k,
+          cantidad: this.filas[k].cantidad(),
+          valorUnitario: this.filas[k].valorUnitario(),
+          total: this.filas[k].total()
+        });
+      }
+    }
+
+    console.log(this.venta.cliente);
+
+
+    this.ventasService.registrarVenta(this.venta);
+    //this.ventasService.registrarVenta(this.filas, this.totalVenta)
+  }
 
   // filas de la tabla
   filas: {
@@ -71,6 +103,11 @@ export class VentasComponent implements OnInit {
     return Object.keys(obj);
   }
 
+  setCliente(event: Event) {
+    const htmlElement = (event.target as HTMLInputElement);
+    this.venta.cliente = htmlElement.value;
+  }
+
   //funcion para cambiar cantidad
   changeCantidad(key: string, event: Event) {
     const htmlElement = (event.target as HTMLInputElement);
@@ -96,9 +133,9 @@ export class VentasComponent implements OnInit {
     const total = this.filas[key].cantidad() * this.filas[key].valorUnitario();
     this.filas[key].total.set(total);
     // sumar el total de todas las filas
-    this.totalVenta = 0;
+    this.venta.totalVenta = 0;
     for (const k of this.getKeysObject(this.filas)) {
-      this.totalVenta += this.filas[k].total();
+      this.venta.totalVenta += this.filas[k].total();
     }
   }
 
