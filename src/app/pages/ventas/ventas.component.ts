@@ -36,17 +36,20 @@ export class VentasComponent implements OnInit {
   }
 
   async crearVenta() {
-    console.log('Iniciando');
-
     this.venta.detalle = []
     for (const k of this.getKeysObject(this.filas)) {
-      if (this.filas[k].cantidad() != '0') {
+
+      //verificar que todos los atributos de venta esten completos
+      if (this.filas[k].cantidad() != '0' && this.filas[k].valorUnitario() != '0' && this.venta.cliente != '') {
         this.venta.detalle.push({
           tipo: k,
           cantidad: this.filas[k].cantidad(),
           valorUnitario: this.filas[k].valorUnitario(),
           total: this.filas[k].total()
         });
+      } else {
+        alert(`Por favor complete todos los campos de la fila del producto tipo ${k} o ingrese un cliente`);
+        return;
       }
     }
 

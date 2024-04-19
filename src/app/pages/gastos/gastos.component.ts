@@ -19,11 +19,11 @@ export class GastosComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    //await this.authService.verifyUser().then((isLogged) => {
-    //  if (!isLogged) {
-    //    this.router.navigate(['/']);
-    //  }
-    //})
+    await this.authService.verifyUser().then((isLogged) => {
+      if (!isLogged) {
+        this.router.navigate(['/']);
+      }
+    })
   }
 
   gasto: Gastos = {
@@ -35,9 +35,9 @@ export class GastosComponent implements OnInit {
     total: 0
   }
 
-  async crearGasto(){
+  async crearGasto() {
     //verificar que todos los atributos de gasto esten completos
-    if(this.gasto.cantidad == 0 || this.gasto.valorUnitario == 0 || this.gasto.concepto == '' || this.gasto.categoria == ''){
+    if (this.gasto.cantidad == 0 || this.gasto.valorUnitario == 0 || this.gasto.concepto == '' || this.gasto.categoria == '') {
       alert('Por favor complete todos los campos');
       return;
     }
