@@ -10,12 +10,11 @@ import { InicioSesionComponent } from './pages/inicio-sesion/inicio-sesion.compo
 import { GeneralGranjasComponent } from './pages/general-granjas/general-granjas.component';
 import { MenuSeleccionGalponComponent } from './pages/menu-seleccion-galpon/menu-seleccion-galpon.component';
 import { VisualizacionDatosComponent } from './pages/visualizacion-datos/visualizacion-datos.component';
-import { VentasComponent } from './pages/ventas/ventas.component';
 import { GastosComponent } from './pages/gastos/gastos.component';
-import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
-import { provideAuth,getAuth } from '@angular/fire/auth';
-import { provideFirestore,getFirestore } from '@angular/fire/firestore';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire/compat';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
@@ -32,7 +31,6 @@ registerLocaleData(localeEs, 'es');
     GeneralGranjasComponent,
     MenuSeleccionGalponComponent,
     VisualizacionDatosComponent,
-    VentasComponent,
     GastosComponent,
   ],
   imports: [

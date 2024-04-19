@@ -1,5 +1,5 @@
 export default interface DetalleVenta {
-  tipo: 'c' | 'b' | 'a' | 'aa' | 'ex' | 'jum' | 'otro'
+  tipo: 'C' | 'B' | 'A' | 'AA' | 'EX' | 'JUM' | 'OTRO'
   cantidad: number
   valorUnitario: number
   total: number

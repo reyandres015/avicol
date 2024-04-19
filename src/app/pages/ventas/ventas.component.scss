@@ -43,6 +43,51 @@ main {
           }
         }
 
+        #tipo {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+
+            th {
+              background-color: $COLOR-BRAND;
+              color: white;
+              padding: 20px;
+              text-align: center;
+            }
+
+            td {
+              background-color: $COLOR-BRAND2;
+              color: white;
+              padding: 10px;
+              text-align: center;
+
+              &:last-child {
+                input {
+                  background-color: rgb(188, 224, 255);
+                }
+              }
+            }
+          }
+
+          input {
+            text-align: center;
+            padding: 0;
+            width: 58px;
+            height: 46px;
+            border-radius: 10px;
+
+            &::-webkit-inner-spin-button,
+            &::-webkit-outer-spin-button {
+              height: 50px;
+              width: 100px;
+            }
+          }
+        }
+
         button {
           letter-spacing: 8px;
           border: none;
