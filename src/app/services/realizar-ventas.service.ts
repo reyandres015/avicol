@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import Ventas from '../interfaces/ventas.interface';
 import { GalponDataService } from './galpon-data.service';
-import { GranjaDataService } from './granja-data.service';
 import { GetDataFirebaseService } from './get-data-firebase.service';
-import { ThisReceiver } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +16,7 @@ export class RealizarVentasService {
   ventas: Ventas[] = [];
 
   // Método para registrar una venta
-  registrarVenta(venta: Ventas) {
+  async registrarVenta(venta: Ventas) {
     this.ventas.push(venta);
     let ventas = this.galponDataService.getGalpon().ventas;
     if (ventas) {
@@ -26,16 +24,14 @@ export class RealizarVentasService {
     } else {
       this.galponDataService.getGalpon().ventas = [venta];
     }
-
-    this.updateVenta();
+    await this.updateVenta();
   }
 
-  updateVenta() {
-    console.log('actulizando venta');
-
+  // Realiza la ejecucion de los update para todos los documentos de ventas pendientes por subir. (No internet conection)
+  async updateVenta() {
     const refColeccionGalpon = this.galponDataService.getGalpon().ref + '/ventas';
     for (let i = 0; i < this.ventas.length; i++) {
-      this.getDataFirebase.createUpdateDoc(refColeccionGalpon, this.ventas[i]);
+      await this.getDataFirebase.createUpdateDoc(refColeccionGalpon, this.ventas[i]);
     }
   }
 }

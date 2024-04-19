@@ -21,11 +21,11 @@ export class VentasComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    // await this.authService.verifyUser().then((isLogged) => {
-    //   if (!isLogged) {
-    //     this.router.navigate(['/']);
-    //   }
-    // })
+    await this.authService.verifyUser().then((isLogged) => {
+      if (!isLogged) {
+        this.router.navigate(['/']);
+      }
+    })
   }
 
   venta: Ventas = {
@@ -35,7 +35,7 @@ export class VentasComponent implements OnInit {
     totalVenta: 0
   }
 
-  crearVenta() {
+  async crearVenta() {
     console.log('Iniciando');
 
     this.venta.detalle = []
@@ -50,11 +50,8 @@ export class VentasComponent implements OnInit {
       }
     }
 
-    console.log(this.venta.cliente);
-
-
-    this.ventasService.registrarVenta(this.venta);
-    //this.ventasService.registrarVenta(this.filas, this.totalVenta)
+    await this.ventasService.registrarVenta(this.venta);
+    alert('Venta registrada con éxito');
   }
 
   // filas de la tabla
