@@ -22,25 +22,24 @@
             <input class="inputForm" type="text" name="cliente" id="">
           </section>
           <div id="tipo">
-            <form>
-              <table>
-                <tr>
-                  <th>Tipo</th>
-                  <th>Cantidad</th>
-                  <th>Valor Unitario</th>
-                  <th>Total</th>
-                </tr>
-                <tr *ngFor="let key of getKeysObject(this.filas)">
-                  <td>{{ key }}</td>
-                  <td><input class="inputForm" type="number" min="0" value="0" (input)="changeCantidad(key,$event)"></td>
-                  <td><input class="inputForm" type="text" value="$0"
-                      (input)="formatCurrency($event); changeValorUnitario(key,$event)"></td>
-                  <td><input class="inputForm" type="text" value="${{filas[key].total() | number}}"
-                      (change)="formatCurrency($event)" readonly></td>
-                </tr>
-              </table>
-            </form>
+            <table>
+              <tr>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Valor Unitario</th>
+                <th>Total</th>
+              </tr>
+              <tr *ngFor="let key of getKeysObject(this.filas)">
+                <td>{{ key }}</td>
+                <td><input class="inputForm" type="number" min="0" value="0" (input)="changeCantidad(key,$event)"></td>
+                <td><input class="inputForm" type="text" value="$0"
+                    (input)="formatCurrency($event); changeValorUnitario(key,$event)"></td>
+                <td><input class="inputForm" type="text" value="{{filas[key].total() | currency:'USD':'symbol':'1.0'}}"
+                    readonly></td>
+              </tr>
+            </table>
           </div>
+          <h2>Total Venta: {{totalVenta | currency:'USD':'symbol':'1.0'}}</h2>
         </div>
         <button class="content-desktop">Registrar</button>
       </div>

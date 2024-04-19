@@ -23,6 +23,8 @@ export class VentasComponent implements OnInit {
     // })
   }
 
+  totalVenta: number = 0;
+
   // filas de la tabla
   filas: {
     [key: string]: { cantidad: any, valorUnitario: any, total: any }
@@ -62,7 +64,6 @@ export class VentasComponent implements OnInit {
         valorUnitario: signal(0),
         total: signal(0)
       }
-
     };
 
   //funcion para obtener las llaves de cualquier objeto
@@ -72,19 +73,33 @@ export class VentasComponent implements OnInit {
 
   //funcion para cambiar cantidad
   changeCantidad(key: string, event: Event) {
-    this.filas[key].cantidad.set((event.target as HTMLInputElement).value);
+    const htmlElement = (event.target as HTMLInputElement);
+    let value = htmlElement.value.replaceAll('$', '');
+    value = value.replaceAll(',', '');
+
+    this.filas[key].cantidad.set(value);
     this.calcularTotal(key);
   }
 
   //funcion para cambiar valor unitario
   changeValorUnitario(key: string, event: Event) {
-    this.filas[key].valorUnitario.set((event.target as HTMLInputElement).value.replace('$', ''));
+    const htmlElement = (event.target as HTMLInputElement);
+    let value = htmlElement.value.replaceAll('$', '');
+    value = value.replaceAll(',', '');
+
+    this.filas[key].valorUnitario.set(value);
     this.calcularTotal(key);
   }
 
   //funcion para calcular el total
   calcularTotal(key: string) {
-    this.filas[key].total.set(this.filas[key].cantidad() * this.filas[key].valorUnitario());
+    const total = this.filas[key].cantidad() * this.filas[key].valorUnitario();
+    this.filas[key].total.set(total);
+    // sumar el total de todas las filas
+    this.totalVenta = 0;
+    for (const k of this.getKeysObject(this.filas)) {
+      this.totalVenta += this.filas[k].total();
+    }
   }
 
   //funcion para dar formato a la moneda
