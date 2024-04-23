@@ -9,10 +9,10 @@
         <a (click)="arrowBack()" id="arrowBack">
           <img src="../../../assets/ico/arrow-left.png" alt="">
         </a>
-        <h1 class="label">{{nombreGranja}}</h1>
+        <h1 class="label">{{granjaSeleccionada.name}}</h1>
         <div style="width: 30px;"></div>
       </div>
-      <h2 class="label">{{nombreGalpon}}</h2>
+      <h2 class="label">{{galpon.name}}</h2>
       <div id="formGalpones" class="box">
         <div id="ulGranjas" class="box">
           <h3 class="label">Ventas</h3>
@@ -21,18 +21,20 @@
             <tbody>
               <tr class="encabezado">
                 <th>Fecha</th>
+                <th>Hora</th>
                 <th>Valor</th>
                 <th>Cliente</th>
               </tr>
-              <tr class="table-content">
-                <td>1/abr/2024</td>
-                <td>{{moneyFormat("12222")}}</td>
-                <td>Jose Acosta</td>
+              <tr *ngFor="let venta of this.galpon.ventas" class="table-content">
+                <td>{{venta.fecha.toDate() | date:'dd/MMMM/yyyy':'es'}}</td>
+                <td>{{venta.fecha.toDate() | date:'hh:mm a':'es'}}</td>
+                <td>{{moneyFormat(venta.totalVenta)}}</td>
+                <td>{{venta.cliente}}</td>
               </tr>
             </tbody>
           </table>
 
-          <p class="label"><strong>Total: {{moneyFormat(ventasTotales)}}</strong></p>
+          <p class="label"><strong>Total: {{moneyFormat(galpon.totalVentas ?? 0)}}</strong></p>
 
         </div>
       </div>
@@ -44,18 +46,20 @@
             <tbody>
               <tr class="encabezado">
                 <th>Fecha</th>
+                <th>Hora</th>
                 <th>Valor</th>
-                <th>Cliente</th>
+                <th>Concepto</th>
               </tr>
-              <tr class="table-content">
-                <td>1/abr/2024</td>
-                <td>{{moneyFormat("12222")}}</td>
-                <td>Jose Acosta</td>
+              <tr *ngFor="let gasto of this.galpon.gastos" class="table-content">
+                <td>{{gasto.fecha.toDate() | date:'dd/MMMM/yyyy':'es'}}</td>
+                <td>{{gasto.fecha.toDate() | date:'hh:mm a':'es'}}</td>
+                <td>{{moneyFormat(gasto.total)}}</td>
+                <td>{{gasto.concepto}}</td>
               </tr>
             </tbody>
           </table>
 
-          <p class="label"><strong>Total: {{moneyFormat(ventasTotales)}}</strong></p>
+          <p class="label"><strong>Total: {{moneyFormat(galpon.totalGastos ?? 0)}}</strong></p>
 
         </div>
       </div>

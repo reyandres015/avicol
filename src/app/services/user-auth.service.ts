@@ -1,16 +1,27 @@
-  import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
+import User from '../interfaces/user.interface';
+import { GetDataFirebaseService } from './get-data-firebase.service';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserAuthService {
+  private user: User = {
+    name: "",
+    uid: "",
+    granjas: [],
+  }
   userCredentials: any;
-
-  constructor(private firebaseAuthenticationService: AngularFireAuth,
+  constructor(
+    private firebaseAuthenticationService: AngularFireAuth,
     private ngZone: NgZone,
-    private router: Router
+    private router: Router,
+    private getDataFirebase: GetDataFirebaseService
   ) {
 
     this.firebaseAuthenticationService.authState.subscribe(user => {
@@ -24,16 +35,22 @@ export class UserAuthService {
   }
 
 
-  //generar el inicio de sesion
-  async login(email: string, password: string) {
-    return this.firebaseAuthenticationService.signInWithEmailAndPassword(email, password)
-      .then((userCredentials) => {
-        this.userCredentials = userCredentials.user;
-        this.observeUserState();
-      }).catch((error) => {
-        console.error(error.message + ' Por favor, intenta de nuevo');
-      });
-  }
+//generar el inicio de sesion
+async login(email: string, password: string) {
+  return this.firebaseAuthenticationService.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(() => {
+      return this.firebaseAuthenticationService.signInWithEmailAndPassword(email, password)
+        .then(async (userCredentials) => {
+          this.userCredentials = userCredentials.user;
+          await this.getUserData(this.userCredentials);
+          this.observeUserState();
+        }).catch((error) => {
+          console.error(error.message + ' Por favor, intenta de nuevo');
+        });
+    }).catch((error) => {
+      console.error('Error al establecer la persistencia de la sesión: ', error);
+    });
+}
 
   observeUserState() {
     this.firebaseAuthenticationService.authState.subscribe((userState) => {
@@ -45,4 +62,32 @@ export class UserAuthService {
     const user = JSON.parse(localStorage.getItem('user')!);
     return user !== null;
   }
+
+  async getUserData(userCredentials: any) {
+    const uid: string = userCredentials.uid
+
+    await this.getDataFirebase.getDocByPath(`usuarios/${uid}`).then((userDataDoc) => {
+      if (userDataDoc) {
+        const userData: any = userDataDoc.data()
+        this.user = {
+          name: userData.name,
+          uid: uid,
+          granjas: userData.granjas, 
+        }
+      }
+    })
+  }
+
+  getUser() {
+    return this.user;
+  }
+
+
+  async verifyUser() {
+    return await this.firebaseAuthenticationService.currentUser.then((user) => {
+      return user ? true : false;
+    })
+  }
+
+
 }

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -10,14 +10,17 @@ import { InicioSesionComponent } from './pages/inicio-sesion/inicio-sesion.compo
 import { GeneralGranjasComponent } from './pages/general-granjas/general-granjas.component';
 import { MenuSeleccionGalponComponent } from './pages/menu-seleccion-galpon/menu-seleccion-galpon.component';
 import { VisualizacionDatosComponent } from './pages/visualizacion-datos/visualizacion-datos.component';
-import { VentasComponent } from './pages/ventas/ventas.component';
 import { GastosComponent } from './pages/gastos/gastos.component';
-import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
-import { provideAuth,getAuth } from '@angular/fire/auth';
-import { provideFirestore,getFirestore } from '@angular/fire/firestore';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire/compat';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+
+registerLocaleData(localeEs, 'es');
+
 
 @NgModule({
   declarations: [
@@ -28,7 +31,6 @@ import { AngularFireModule } from '@angular/fire/compat';
     GeneralGranjasComponent,
     MenuSeleccionGalponComponent,
     VisualizacionDatosComponent,
-    VentasComponent,
     GastosComponent,
   ],
   imports: [
@@ -41,7 +43,9 @@ import { AngularFireModule } from '@angular/fire/compat';
 
     AngularFireModule.initializeApp(environment.firebase)
   ],
-  providers: [],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'es' }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

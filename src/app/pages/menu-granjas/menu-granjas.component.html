@@ -8,13 +8,11 @@
       <img src="../../../assets/ico/Galpon.png" alt="">
       <div id="formGranjas" class="box">
         <h1 class="label">SELECCIONE UNA GRANJA</h1>
-        <div id="ulGranjas" class="box">
-          <button *ngFor="let granja of this.granjas; index as i" (click)="option(i)"
-            class="subcontent">{{granja}}</button>
+        <div [@fadeInOut] id="ulGranjas" class="box">
+          <button [@fadeInOutFast] *ngFor="let granja of this.granjas; index as i" (click)="option(i)"
+            class="subcontent">{{granja.name}}</button>
         </div>
       </div>
     </div>
-    <!-- <button class="subcontent" (click)="option(inputUser.value,inputContrasena.value)">INICIAR SESIÓN</button> -->
   </section>
-
 </main>

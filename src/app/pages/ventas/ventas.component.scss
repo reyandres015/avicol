@@ -2,13 +2,14 @@ $LOGO: #F4A86C;
 $COLOR-BRAND: #002D4E;
 $COLOR-BRAND2: #626F78;
 $FOCO: #3A3A3A;
+$INPUT-BLOCK: #f5cfb2;
 
 main {
-  height: 100vh;
   justify-content: center;
+  padding: 50px;
 
   #mainBox {
-    max-width: 380px;
+    //max-width: 380px;
     gap: 20px;
     background-color: $COLOR-BRAND2;
     padding: 20px 20px 50px 20px;
@@ -33,6 +34,17 @@ main {
         padding: 30px;
 
         section {
+
+          //PINTAR LOS DOS PRIMEROS INPUTS DE SECTION
+          &:nth-child(1) input,
+          &:nth-child(2) input {
+            background-color: $INPUT-BLOCK;
+          }
+        }
+
+        section {
+          display: flex;
+          flex-direction: column;
           gap: 5px;
 
           label {
@@ -40,6 +52,57 @@ main {
             color: white;
             letter-spacing: 7px;
             -webkit-text-stroke: 0;
+          }
+
+          input {
+            width: 300px;
+            text-align: center;
+
+          }
+        }
+
+
+        #tipo {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+
+            th {
+              background-color: $LOGO;
+              color: white;
+              padding: 20px;
+              text-align: center;
+            }
+
+            td {
+              //background-color: $COLOR-BRAND2;
+              color: white;
+              padding: 10px;
+              text-align: center;
+
+              &:last-child {
+                input {
+                  background-color: $INPUT-BLOCK;
+                }
+              }
+            }
+          }
+
+          input {
+            text-align: center;
+            padding: 0;
+            height: 46px;
+            border-radius: 10px;
+
+            &::-webkit-inner-spin-button,
+            &::-webkit-outer-spin-button {
+              height: 50px;
+              width: 100px;
+            }
           }
         }
 
