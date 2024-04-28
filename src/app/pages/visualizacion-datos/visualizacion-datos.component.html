@@ -23,21 +23,37 @@
                 <th>Fecha</th>
                 <th>Hora</th>
                 <th>Valor</th>
+                <th>Tipo</th>
+                <th>cantidad</th>
                 <th>Cliente</th>
               </tr>
-              <tr *ngFor="let venta of this.galpon.ventas" class="table-content">
-                <td>{{venta.fecha.toDate() | date:'dd/MMMM/yyyy':'es'}}</td>
-                <td>{{venta.fecha.toDate() | date:'hh:mm a':'es'}}</td>
-                <td>{{moneyFormat(venta.totalVenta)}}</td>
-                <td>{{venta.cliente}}</td>
-              </tr>
+              <!-- Itera sobre las ventas -->
+              <ng-container *ngFor="let venta of this.galpon.ventas">
+                <!-- Itera sobre los detalles de cada venta -->
+                <tr *ngFor="let detalle of venta.detalle; let i = index" class="table-content">
+                  <!-- Muestra la fecha, hora y cliente solo en la primera línea de detalles -->
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'dd/MMMM/yyyy':'es' }}</td>
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'hh:mm a':'es' }}</td>
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.cliente }}</td>
+                  <!-- Muestra el tipo y la cantidad -->
+                  <td>{{ detalle.tipo }}</td>
+                  <td>{{ detalle.cantidad }}</td>
+                  <!-- Muestra el valor solo en la primera línea de detalles -->
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ moneyFormat(venta.totalVenta) }}</td>
+                </tr>
+              </ng-container>
             </tbody>
           </table>
 
           <p class="label"><strong>Total: {{moneyFormat(galpon.totalVentas ?? 0)}}</strong></p>
-
+          <div id="toggle-chart-bar" (click)="toggleChartVisibility()">
+            <span id="toggle-chart-arrow" [class]="isChartVisible ? 'arrow-up' : 'arrow-down'"></span>
+          </div>
+          <div id="chart-container" *ngIf="isChartVisible" style="width: 100%; height: 400px;">
+            <canvas id="ventasChart" ></canvas>
+          </div>
         </div>
-      </div>
+      </div>     
       <div id="formGalpones" class="box">
         <div id="ulGranjas" class="box">
           <h3 class="label">Gastos</h3>
