@@ -18,6 +18,8 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire/compat';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { FormsModule } from '@angular/forms';
 
 registerLocaleData(localeEs, 'es');
 
@@ -40,7 +42,9 @@ registerLocaleData(localeEs, 'es');
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-
+    NgxChartsModule,
+    FormsModule,
+    
     AngularFireModule.initializeApp(environment.firebase)
   ],
   providers: [

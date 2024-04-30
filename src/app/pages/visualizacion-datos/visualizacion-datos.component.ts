@@ -17,6 +17,8 @@ export class VisualizacionDatosComponent implements OnInit {
   granjaSeleccionada: any = { name: '', path: '' };
   galpon: Galpon = { name: '', ref: '', totalVentas: 0, totalGastos: 0, ventas: [], gastos: [] };
   isChartVisible: boolean = false;
+  intervaloSeleccionado: string = 'por_cliente';
+  currentChart: Chart | null = null;
 
   constructor(
     private authService: UserAuthService,
@@ -26,14 +28,16 @@ export class VisualizacionDatosComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    await this.authService.verifyUser().then((isLogged) => {
+    this.authService.verifyUser().then((isLogged) => {
       if (!isLogged) {
         this.router.navigate(['/']);
+      } else {
+        this.granjaSeleccionada = this.granjaService.getGranjaSeleccionada();
+        this.galpon = this.galponService.getGalpon();
+        // Llama inicialmente a cargar y renderizar el gráfico
+        this.loadDataAndRenderChart();
       }
     })
-    this.granjaSeleccionada = this.granjaService.getGranjaSeleccionada();
-    this.galpon = this.galponService.getGalpon();
-    //this.loadDataAndRenderChart();
   }
 
   arrowBack() {
@@ -49,62 +53,144 @@ export class VisualizacionDatosComponent implements OnInit {
     });
   }
 
+  cambiarIntervalo(event: Event) {
+    const target = event.target as HTMLSelectElement;  // Aserción de tipo
+    const valor = target.value;
+    if (valor) {
+      this.intervaloSeleccionado = valor;
+      this.loadDataAndRenderChart();
+    } else {
+      console.error('Intervalo de tiempo no seleccionado.');
+    }
+  }
+
   loadDataAndRenderChart() {
     if (!this.galpon || !this.galpon.ventas) return;
     
-    const labels = this.galpon.ventas.map(venta => new Date(venta.fecha.toDate()).toLocaleDateString('es'));
-    const data = this.galpon.ventas.map(venta => venta.totalVenta);
-
+    if (this.currentChart) {
+      this.currentChart.destroy();
+    }
+  
+    let agrupado = this.agruparDatos(this.galpon.ventas, this.intervaloSeleccionado);
+    const labels = this.intervaloSeleccionado === 'por_cliente' ? agrupado.map(group => group.cliente) : agrupado.map(group => group.fecha);
+    const data = agrupado.map(group => group.totalVenta);
+  
     const chartData = {
       labels: labels,
       datasets: [{
-        label: 'Ventas por Fecha',
+        label: this.intervaloSeleccionado === 'por_cliente' ? 'Ventas por Cliente' : 'Ventas por Fecha',
         data: data,
         backgroundColor: '#002D4E',
         borderColor: '#002D4E',
         borderWidth: 1
       }]
     };
-
+  
     const config: ChartConfiguration = {
       type: 'bar',
       data: chartData,
       options: {
         scales: {
           y: {
-            beginAtZero: true,
-            grid: {
-              color: 'rgba(255, 255, 255, 0.5)',
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(255, 255, 255, 0.5)',
+              },
+              ticks: {
+                color:'#ffffff',
+              }
             },
-            ticks: {
-              color:'#ffffff',
+            x: {
+              grid: {
+                color: 'rgba(255, 255, 255, 0.5)', 
+              },
+              ticks: {
+                color: '#ffffff', 
+              }
             }
           },
-          x: {
-            grid: {
-              color: 'rgba(255, 255, 255, 0.5)', 
-            },
-            ticks: {
-              color: '#ffffff', 
-            }
-          }
-        },
-        plugins: {
-          legend: {
-            labels: {
-              color: '#ffffff', 
+          plugins: {
+            legend: {
+              labels: {
+                color: '#ffffff', 
+              }
             }
           }
         }
-      }
-    };
-
+      };
+  
     const canvas = <HTMLCanvasElement>document.getElementById('ventasChart');
-    if (canvas && this.isChartVisible) {  // Asegúrate de que el canvas existe y debe mostrarse
+    if (canvas && this.isChartVisible) {
       const context = canvas.getContext('2d');
       if (context) {
-        const myChart = new Chart(context, config);
+        this.currentChart = new Chart(context, config);
       }
+    }
+  }
+
+  agruparDatos(ventas: any[], intervalo: string): any[] {
+    if (intervalo === 'por_cliente') {
+      // Agrupa y suma las ventas por cliente
+      const ventasPorCliente = ventas.reduce((acum, venta) => {
+        const cliente = venta.cliente;
+        if (acum[cliente]) {
+          acum[cliente].totalVenta += venta.totalVenta;
+        } else {
+          acum[cliente] = {
+            cliente: cliente,
+            totalVenta: venta.totalVenta
+          };
+        }
+        return acum;
+      }, {});
+  
+      // Convertir el objeto acumulador en un array para el gráfico
+      return Object.values(ventasPorCliente);
+    } else {
+      switch (intervalo) {
+        case 'diario':
+          return ventas.reduce(this.agruparPor('fecha'), []);
+        case 'semanal':
+          return ventas.reduce(this.agruparPor('semana'), []);
+        case 'mensual':
+          return ventas.reduce(this.agruparPor('mes'), []);
+        case 'anual':
+          return ventas.reduce(this.agruparPor('año'), []);
+        default:
+          return [];
+      }
+    }
+  }
+
+  agruparPor(key: string) {
+    return (acumulador: any[], valorActual: any) => {
+      let fecha = new Date(valorActual.fecha.toDate());
+      let grupo = this.determinarGrupo(fecha, key);
+      let grupoExistente = acumulador.find(g => g.fecha === grupo);
+      if (grupoExistente) {
+        grupoExistente.totalVenta += valorActual.totalVenta;
+      } else {
+        acumulador.push({ fecha: grupo, totalVenta: valorActual.totalVenta });
+      }
+      return acumulador;
+    }
+  }
+
+  determinarGrupo(fecha: Date, key: string): string {
+    switch (key) {
+      case 'fecha':
+        return fecha.toLocaleDateString('es');
+      case 'semana':
+        let primerDia = new Date(fecha.setDate(fecha.getDate() - fecha.getDay()));
+        let ultimoDia = new Date(primerDia);
+        ultimoDia.setDate(primerDia.getDate() + 6);
+        return `${primerDia.toLocaleDateString('es')} - ${ultimoDia.toLocaleDateString('es')}`;
+      case 'mes':
+        return `${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
+      case 'año':
+        return `${fecha.getFullYear()}`;
+      default:
+          return "No especificado";
     }
   }
 

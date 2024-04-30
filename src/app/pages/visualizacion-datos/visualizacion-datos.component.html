@@ -46,6 +46,13 @@
           </table>
 
           <p class="label"><strong>Total: {{moneyFormat(galpon.totalVentas ?? 0)}}</strong></p>
+          <select id="intervalo" (change)="cambiarIntervalo($event)">
+            <option value="por_cliente">Por Cliente</option>
+            <option value="diario">Día</option>
+            <option value="semanal">Semana</option>
+            <option value="mensual">Mes</option>
+            <option value="anual">Año</option>
+          </select>
           <div id="toggle-chart-bar" (click)="toggleChartVisibility()">
             <span id="toggle-chart-arrow" [class]="isChartVisible ? 'arrow-up' : 'arrow-down'"></span>
           </div>
