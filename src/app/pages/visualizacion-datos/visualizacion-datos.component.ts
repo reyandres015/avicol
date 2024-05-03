@@ -5,6 +5,7 @@ import Galpon from 'src/app/interfaces/galpon.interface';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 import { Router } from '@angular/router';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
+import Gastos from 'src/app/interfaces/gastos.interface';
 Chart.register(...registerables);
 
 @Component({
@@ -17,6 +18,8 @@ export class VisualizacionDatosComponent implements OnInit {
   granjaSeleccionada: any = { name: '', path: '' };
   galpon: Galpon = { name: '', ref: '', totalVentas: 0, totalGastos: 0, ventas: [], gastos: [] };
   isChartVisible: boolean = false;
+  isChartsVisible2: boolean = false;
+  isGastosChartVisible: boolean = false;
   intervaloSeleccionado: string = 'por_cliente';
   currentChart: Chart | null = null;
 
@@ -36,6 +39,8 @@ export class VisualizacionDatosComponent implements OnInit {
         this.galpon = this.galponService.getGalpon();
         // Llama inicialmente a cargar y renderizar el gráfico
         this.loadDataAndRenderChart();
+        this.loadGastoDataAndRenderChart();
+        //this.loadLineChartDataAndRenderChart();
       }
     })
   }
@@ -54,7 +59,7 @@ export class VisualizacionDatosComponent implements OnInit {
   }
 
   cambiarIntervalo(event: Event) {
-    const target = event.target as HTMLSelectElement;  // Aserción de tipo
+    const target = event.target as HTMLSelectElement;  
     const valor = target.value;
     if (valor) {
       this.intervaloSeleccionado = valor;
@@ -128,9 +133,194 @@ export class VisualizacionDatosComponent implements OnInit {
     }
   }
 
+  loadGastoDataAndRenderChart() {
+    if (!this.galpon || !this.galpon.gastos) return;
+  
+    // Lógica para generar el gráfico de torta para gastos
+    const gastosAgrupados = this.agruparGastosPorConcepto();
+    const totalGastos = gastosAgrupados.reduce((sum, current) => sum + current.total, 0);
+    const labels = gastosAgrupados.map(g => `${g.concepto} (${((g.total / totalGastos) * 100).toFixed(0)}%)`);
+    const data = gastosAgrupados.map(g => g.total);
+  
+    const chartData = {
+      labels: labels,
+      datasets: [{
+        label: 'Gastos por Concepto',
+        data: data,
+        backgroundColor: [
+          '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#FF9F40'
+        ],
+        hoverBackgroundColor: [
+          '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#FF9F40'
+        ]
+      }]
+    };
+  
+    const config: ChartConfiguration<'pie', number[], string> = {
+      type: 'pie',
+      data: chartData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              color: '#F8F8FF'
+            }
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false
+          },
+        }
+      }
+    };
+  
+    const canvas = document.getElementById('gastosChart') as HTMLCanvasElement | null;  // Especifica que puede ser null
+    if (canvas) {
+      const context = canvas.getContext('2d');
+      if (context) {
+        new Chart(context, config);
+      }
+    }
+  }
+
+  loadLineChartDataAndRenderChart() {
+    if (!this.galpon || !this.galpon.ventas || !this.galpon.gastos) {
+        console.error("Datos de ventas o gastos no disponibles.");
+        return;
+    }
+
+    console.log("Gastos originales:", this.galpon.gastos);
+
+    // Usamos la nueva función para agrupar los gastos por día
+    const gastosAgrupados = this.agruparGastosPorDia(this.galpon.gastos);
+    const gastosData = gastosAgrupados.map(group => group.total);
+    const labels = gastosAgrupados.map(group => group.fecha);
+    const ventasData = this.agruparDatos(this.galpon.ventas, 'diario').map(group => group.totalVenta);
+
+    console.log("Datos de Gastos:", gastosData);
+    console.log("Datos de Ventas:", ventasData);
+    console.log("Etiquetas:", labels);
+
+    const chartData = {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Gastos',
+                data: gastosData,
+                borderColor: 'rgb(255, 99, 132)',
+                tension: 0.1
+            },
+            {
+                label: 'Ventas',
+                data: ventasData,
+                borderColor: 'rgb(54, 162, 235)',
+                tension: 0.1
+            }
+        ]
+    };
+
+    const config: ChartConfiguration<'line'> = {
+        type: 'line',
+        data: chartData,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.5)',
+                    },
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.8)',
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.5)',
+                    },
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.8)',
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'rgba(255, 255, 255, 0.8)',
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        labelColor: function(context) {
+                            return {
+                                borderColor: 'rgba(0, 0, 0, 0)',
+                                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                                borderWidth: 2,
+                                borderDash: [2, 2],
+                                borderRadius: 2,
+                            };
+                        },
+                        labelTextColor: function() {
+                            return 'rgba(255, 255, 255, 0.8)';
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    const canvas = document.getElementById('lineChart') as HTMLCanvasElement;
+    if (canvas && this.isChartsVisible2) {
+        const context = canvas.getContext('2d');
+        if (context) {
+            if (this.currentChart) {
+                this.currentChart.destroy();
+            }
+            this.currentChart = new Chart(context, config);
+        } else {
+            console.error("No se pudo obtener el contexto del canvas para el gráfico de líneas.");
+        }
+    } else {
+        console.error("Elemento canvas para el gráfico de líneas no encontrado.");
+    }
+  }
+
+  agruparGastosPorDia(gastos: any[]): any[] {
+    const gastosAgrupados = gastos.reduce((acumulador, gasto) => {
+      const fecha = new Date(gasto.fecha.toDate());
+      const fechaClave = fecha.getFullYear() + '-' + ('0' + (fecha.getMonth() + 1)).slice(-2) + '-' + ('0' + fecha.getDate()).slice(-2);
+  
+      if (acumulador[fechaClave]) {
+        acumulador[fechaClave].total += gasto.total;
+      } else {
+        acumulador[fechaClave] = {
+          fecha: fechaClave,
+          total: gasto.total
+        };
+      }
+      return acumulador;
+    }, {});
+  
+    return Object.values(gastosAgrupados);
+  }
+
+  agruparGastosPorConcepto() {
+    if (!this.galpon.gastos) return [];
+  
+    return this.galpon.gastos.reduce((acum, gasto) => {
+      const existente = acum.find(item => item.concepto === gasto.concepto);
+      if (existente) {
+        existente.total += gasto.total;
+      } else {
+        acum.push({ ...gasto });
+      }
+      return acum;
+    }, [] as Gastos[]);  
+  }
+
   agruparDatos(ventas: any[], intervalo: string): any[] {
     if (intervalo === 'por_cliente') {
-      // Agrupa y suma las ventas por cliente
       const ventasPorCliente = ventas.reduce((acum, venta) => {
         const cliente = venta.cliente;
         if (acum[cliente]) {
@@ -144,7 +334,6 @@ export class VisualizacionDatosComponent implements OnInit {
         return acum;
       }, {});
   
-      // Convertir el objeto acumulador en un array para el gráfico
       return Object.values(ventasPorCliente);
     } else {
       switch (intervalo) {
@@ -198,7 +387,16 @@ export class VisualizacionDatosComponent implements OnInit {
     this.isChartVisible = !this.isChartVisible;
     if (this.isChartVisible) {
       setTimeout(() => this.loadDataAndRenderChart(), 0);
-      // Se utiliza setTimeout para esperar a que Angular actualice la vista.
+    }
+  }
+  
+  toggleChartsVisibility2() {
+    this.isChartsVisible2 = !this.isChartsVisible2;
+    if (this.isChartsVisible2) {
+        setTimeout(() => {
+            this.loadGastoDataAndRenderChart();
+            this.loadLineChartDataAndRenderChart();
+        }, 0); 
     }
   }
 }
