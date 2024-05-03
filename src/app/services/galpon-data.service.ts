@@ -7,7 +7,7 @@ import Galpon from '../interfaces/galpon.interface';
   providedIn: 'root'
 })
 export class GalponDataService {
-  private galponSeleccionado: Galpon = { name: '', ref: '', ventas: [], gastos: [] };
+  private galponSeleccionado: Galpon = { name: '', ref: '', ventas: [], gastos: [], inventario: [] };
 
   constructor(
     private granjaService: GranjaDataService,
