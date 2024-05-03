@@ -25,11 +25,16 @@
                 <tr>
                   <th>Tipo</th>
                   <th>Cantidad</th>
-                  <th>Valor Unitario</th>
                   <th>Total</th>
                 </tr>
+                <tr *ngFor="let key of getKeysObject(this.filas)">
+                  <td>{{ key }}</td>
+                  <td><input class="inputForm" type="number" min="0" value="0" (input)="changeCantidad(key,$event)"
+                      (input)="changeValorUnitario(key,$event)"></td>
+                  <td><input class="inputForm" type="text" value="{{filas[key].total()}}" readonly></td>
               </table>
             </div>
+            <h2>Total Inventario: {{inventario.TotalInventario}}</h2>
           </div>
           <button class="content-desktop" (click)="crearInventario()">Registrar</button>
         </div>

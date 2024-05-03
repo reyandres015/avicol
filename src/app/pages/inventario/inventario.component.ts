@@ -42,13 +42,13 @@ async ngOnInit() {
 async crearInventario() {
   this.inventario.detalle = []
   for (const k of this.getKeysObject(this.filas)) {
-    if (this.filas[k].cantidad() != '0' && this.filas[k].total() != '0') {
-    //  this.inventario.detalle.push({
-      //  tipo: k,
-      //  cantidad: this.filas[k].cantidad(),
-      //  total: this.filas[k].total()
-    //  });
-    } else {
+    if (this.filas[k].cantidad() !== undefined && this.filas[k].total() !== undefined) {
+      this.inventario.detalle.push({
+        tipo: k,
+        cantidad: this.filas[k].cantidad(),
+        TotalInventario: this.filas[k].total()
+     });
+    } else if (this.filas[k].cantidad() === '' || this.filas[k].total() === '') {
       alert(`Por favor complete todos los campos de la fila del producto tipo ${k}`);
       return;
     }
@@ -56,7 +56,6 @@ async crearInventario() {
 
   await this.inventarioService.registrarInventario(this.inventario);
   alert('Inventario registrado con éxito');
-
 }
 
 filas: {
@@ -105,25 +104,35 @@ filas: {
   }
 
   //funcion para cambiar cantidad
-  changeCantidad(key: string, event: Event) {
-    const htmlElement = (event.target as HTMLInputElement);
-    let value = htmlElement.value.replaceAll('$', '');
-    value = value.replaceAll(',', '');
+changeCantidad(key: string, event: Event) {
+  const htmlElement = (event.target as HTMLInputElement);
+  let value = htmlElement.value;
 
-    this.filas[key].cantidad.set(value);
+  this.filas[key].cantidad.set(value);
+  this.calcularTotal(key);
+}
+
+calcularTotal(key: string) {
+  const total = Number(this.filas[key].cantidad());
+  this.filas[key].total.set(total);
+
+  // sumar el total de todas las filas
+  this.inventario.TotalInventario = 0;
+  for (const k of this.getKeysObject(this.filas)) {
+    const filaTotal = Number(this.filas[k].total());
+    if (!isNaN(filaTotal)) {
+      this.inventario.TotalInventario += filaTotal;
+    }
+  }
+}
+  
+  //funcion para cambiar valor unitario
+  changeValorUnitario(key: string, event: Event) {
+    const htmlElement = (event.target as HTMLInputElement);
+    let value = htmlElement.value;
+
+    this.filas[key].valorUnitario.set(value);
     this.calcularTotal(key);
   }
-
-    //funcion para calcular el total
-    calcularTotal(key: string) {
-      const total = this.filas[key].cantidad() * this.filas[key].valorUnitario();
-      this.filas[key].total.set(total);
-      // sumar el total de todas las filas
-      this.inventario.TotalInventario = 0;
-      for (const k of this.getKeysObject(this.filas)) {
-        this.inventario.TotalInventario += this.filas[k].total();
-      }
-    }
-
 
 }

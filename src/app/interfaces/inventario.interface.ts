@@ -1,7 +1,8 @@
 import { Timestamp } from "@angular/fire/firestore";
+import DetalleInventario from "./detalleInventario.interface";
 
 export default interface inventario {
     fecha: Timestamp
-    detalle: []
+    detalle: DetalleInventario[]
     TotalInventario: number
 }
