@@ -23,21 +23,44 @@
                 <th>Fecha</th>
                 <th>Hora</th>
                 <th>Valor</th>
+                <th>Tipo</th>
+                <th>cantidad</th>
                 <th>Cliente</th>
               </tr>
-              <tr *ngFor="let venta of this.galpon.ventas" class="table-content">
-                <td>{{venta.fecha.toDate() | date:'dd/MMMM/yyyy':'es'}}</td>
-                <td>{{venta.fecha.toDate() | date:'hh:mm a':'es'}}</td>
-                <td>{{moneyFormat(venta.totalVenta)}}</td>
-                <td>{{venta.cliente}}</td>
-              </tr>
+              <!-- Itera sobre las ventas -->
+              <ng-container *ngFor="let venta of this.galpon.ventas">
+                <!-- Itera sobre los detalles de cada venta -->
+                <tr *ngFor="let detalle of venta.detalle; let i = index" class="table-content">
+                  <!-- Muestra la fecha, hora y cliente solo en la primera línea de detalles -->
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'dd/MMMM/yyyy':'es' }}</td>
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'hh:mm a':'es' }}</td>
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.cliente }}</td>
+                  <!-- Muestra el tipo y la cantidad -->
+                  <td>{{ detalle.tipo }}</td>
+                  <td>{{ detalle.cantidad }}</td>
+                  <!-- Muestra el valor solo en la primera línea de detalles -->
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ moneyFormat(venta.totalVenta) }}</td>
+                </tr>
+              </ng-container>
             </tbody>
           </table>
 
           <p class="label"><strong>Total: {{moneyFormat(galpon.totalVentas ?? 0)}}</strong></p>
-
+          <select id="intervalo" (change)="cambiarIntervalo($event)">
+            <option value="por_cliente">Por Cliente</option>
+            <option value="diario">Día</option>
+            <option value="semanal">Semana</option>
+            <option value="mensual">Mes</option>
+            <option value="anual">Año</option>
+          </select>
+          <div id="toggle-chart-bar" (click)="toggleChartVisibility()">
+            <span id="toggle-chart-arrow" [class]="isChartVisible ? 'arrow-up' : 'arrow-down'"></span>
+          </div>
+          <div id="chart-container" *ngIf="isChartVisible" style="width: 100%; height: 400px;">
+            <canvas id="ventasChart" ></canvas>
+          </div>
         </div>
-      </div>
+      </div>     
       <div id="formGalpones" class="box">
         <div id="ulGranjas" class="box">
           <h3 class="label">Gastos</h3>
@@ -60,7 +83,20 @@
           </table>
 
           <p class="label"><strong>Total: {{moneyFormat(galpon.totalGastos ?? 0)}}</strong></p>
-
+          <div id="toggle-gastos-chart-bar" (click)="toggleChartsVisibility2()">
+            <span id="toggle-chart-arrow" [class.arrow-up]="isChartVisible" [class.arrow-down]="!isChartVisible"></span>
+          </div>
+          <!-- Contenedor para los gráficos de Gastos y Líneas -->
+          <div id="charts-container" *ngIf="isChartsVisible2" style="width: 100%;">
+            <!-- Contenedor del gráfico de Torta para Gastos -->
+            <div style="width: 100%; height: 400px; display: flex; justify-content: center; align-items: center;">
+                <canvas id="gastosChart"></canvas>
+            </div>
+            <div style="width: 100%; height: 2px; background-color: white; margin-top: 20px; margin-bottom: 20px;"></div>            <!-- Contenedor del gráfico de Líneas para Gastos y Ventas -->
+            <div style="width: 100%; height: 400px;">
+                <canvas id="lineChart"></canvas>
+            </div>
+          </div>
         </div>
       </div>
     </div>
