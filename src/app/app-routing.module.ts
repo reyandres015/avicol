@@ -8,6 +8,7 @@ import { VisualizacionDatosComponent } from './pages/visualizacion-datos/visuali
 import { VentasComponent } from './pages/ventas/ventas.component';
 import { GastosComponent } from './pages/gastos/gastos.component';
 import { guardsGuard } from './components/header/guards/guards.guard';
+import { InventarioComponent } from './pages/inventario/inventario.component';
 
 
 
@@ -40,6 +41,10 @@ const routes: Routes = [
     path: 'gastos',
     component: GastosComponent
   },
+  {
+    path: 'inventario',
+    component: InventarioComponent
+  }
 ];
 
 @NgModule({
