@@ -40,8 +40,9 @@ inventario: inventario = {
 
 
 async crearInventario() {
-  // Restablecer los detalles del inventario
+  // Restablecer el inventario
   this.inventario.detalle = [];
+  this.inventario.TotalInventario = 0;
 
   for (const k of this.getKeysObject(this.filas)) {
     if (this.filas[k].cantidad() !== undefined && this.filas[k].total() !== undefined) {
@@ -56,8 +57,11 @@ async crearInventario() {
     }
   }
 
-  await this.inventarioService.registrarInventario(this.inventario);
-  alert('Inventario registrado con éxito');
+  // Introduce un retraso de 2 segundos (2000 milisegundos) antes de registrar el inventario
+  setTimeout(async () => {
+    await this.inventarioService.registrarInventario(this.inventario);
+    alert('Inventario registrado con éxito');
+  }, 2000);
 }
 
 filas: {
@@ -136,5 +140,6 @@ calcularTotal(key: string) {
     this.filas[key].valorUnitario.set(value);
     this.calcularTotal(key);
   }
+
 
 }
