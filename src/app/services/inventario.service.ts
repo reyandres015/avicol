@@ -32,11 +32,7 @@ export class InventarioService {
   async updateInventario() {
     const refColeccionGalpon = this.galponDataService.getGalpon().ref + '/inventario';
     for (let i = 0; i < this.inventario1.length; i++) {
-      await this.getDataFirebase.createUpdateDoc(refColeccionGalpon, this.inventario1[i]);
+      await this.getDataFirebase.createDoc(refColeccionGalpon, this.inventario1[i]);
     }
   }
-
-
-
-
 }

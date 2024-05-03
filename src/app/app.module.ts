@@ -12,7 +12,6 @@ import { MenuSeleccionGalponComponent } from './pages/menu-seleccion-galpon/menu
 import { VisualizacionDatosComponent } from './pages/visualizacion-datos/visualizacion-datos.component';
 import { GastosComponent } from './pages/gastos/gastos.component';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { environment } from '../environments/environment';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire/compat';
@@ -20,6 +19,8 @@ import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../environments/environment';
+
 
 registerLocaleData(localeEs, 'es');
 
@@ -44,7 +45,6 @@ registerLocaleData(localeEs, 'es');
     provideFirestore(() => getFirestore()),
     NgxChartsModule,
     FormsModule,
-    
     AngularFireModule.initializeApp(environment.firebase)
   ],
   providers: [

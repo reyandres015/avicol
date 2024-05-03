@@ -67,4 +67,54 @@ export class GranjaDataService {
   actualizarGranjaSeleccionada(granja: number) {
     this.granjaSeleccionada = this.granjasUser[granja];
   }
+
+  // Función que crea una granja
+  async crearGranja(nombre: string) {
+    // transformar nombre para asignarle un id
+    const id = nombre.toLowerCase().replace(/ /g, '-');
+    return await this.getDataFirebase.createDoc('granjas/', { name: nombre }, id).then((docRef: any) => {
+      this.userAuth.addGranjaToUser(docRef); // Agrega la granja al usuario
+      this.setBasicGranjas(); // Vuelve a descargar la información de las granjas
+      return true;
+    });
+  }
+
+  // Funcion que elimina una granja
+  async eliminarGranja(index: number) {
+    const granja = this.granjasUser[index];
+    await this.getDataFirebase.deleteDoc(granja.path).then((docRef: any) => {
+      if (docRef) {
+        if (this.userAuth.deleteGranja(docRef)) {
+          this.setBasicGranjas();
+        }
+      } else {
+        alert('Error al eliminar la granja');
+      }
+    });
+  }
+
+  // Función que crea un galpón
+  async crearGalpon(nombre: string) {
+    const id = nombre.toLowerCase().replace(/ /g, '-');
+    const granjaPath = this.granjaSeleccionada.path;
+    return await this.getDataFirebase.createDoc(`${granjaPath}/galpones`, { name: nombre }, id).then(async () => {
+      await this.setTotalInfoGranja(granjaPath);
+      return true;
+    });
+  }
+
+  //Función que elimina un galpón
+  async eliminarGalpon(index: number) {
+    const granjaPath = this.granjaSeleccionada.path;
+    if (this.granjaSeleccionada.galpones) {
+      const galponPath = this.granjaSeleccionada.galpones[index].ref;
+      return await this.getDataFirebase.deleteDoc(galponPath).then(async () => {
+        await this.setTotalInfoGranja(granjaPath);
+        return true;
+      });
+    } else {
+      alert('No existen galpones disponibles');
+      return false;
+    }
+  }
 }

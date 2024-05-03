@@ -30,7 +30,7 @@ export class RealizarGastoService {
   async updateVenta() {
     const refColeccionGalpon = this.galponDataService.getGalpon().ref + '/gastos';
     for (let i = 0; i < this.gastos.length; i++) {
-      await this.getDataFirebase.createUpdateDoc(refColeccionGalpon, this.gastos[i]);
+      await this.getDataFirebase.createDoc(refColeccionGalpon, this.gastos[i]);
     }
   }
 }

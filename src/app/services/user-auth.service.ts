@@ -1,10 +1,11 @@
 import { Injectable, NgZone } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
-import User from '../interfaces/user.interface';
 import { GetDataFirebaseService } from './get-data-firebase.service';
-import firebase from 'firebase/compat/app';
+import { DocumentReference } from '@angular/fire/firestore';
 import 'firebase/compat/auth';
+import firebase from 'firebase/compat/app';
+import User from '../interfaces/user.interface';
 
 
 @Injectable({
@@ -34,23 +35,22 @@ export class UserAuthService {
     })
   }
 
-
-//generar el inicio de sesion
-async login(email: string, password: string) {
-  return this.firebaseAuthenticationService.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .then(() => {
-      return this.firebaseAuthenticationService.signInWithEmailAndPassword(email, password)
-        .then(async (userCredentials) => {
-          this.userCredentials = userCredentials.user;
-          await this.getUserData(this.userCredentials);
-          this.observeUserState();
-        }).catch((error) => {
-          console.error(error.message + ' Por favor, intenta de nuevo');
-        });
-    }).catch((error) => {
-      console.error('Error al establecer la persistencia de la sesión: ', error);
-    });
-}
+  //generar el inicio de sesion
+  async login(email: string, password: string) {
+    return this.firebaseAuthenticationService.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(() => {
+        return this.firebaseAuthenticationService.signInWithEmailAndPassword(email, password)
+          .then(async (userCredentials) => {
+            this.userCredentials = userCredentials.user;
+            await this.getUserData(this.userCredentials);
+            this.observeUserState();
+          }).catch((error) => {
+            console.error(error.message + ' Por favor, intenta de nuevo');
+          });
+      }).catch((error) => {
+        console.error('Error al establecer la persistencia de la sesión: ', error);
+      });
+  }
 
   observeUserState() {
     this.firebaseAuthenticationService.authState.subscribe((userState) => {
@@ -72,16 +72,11 @@ async login(email: string, password: string) {
         this.user = {
           name: userData.name,
           uid: uid,
-          granjas: userData.granjas, 
+          granjas: userData.granjas,
         }
       }
     })
   }
-
-  getUser() {
-    return this.user;
-  }
-
 
   async verifyUser() {
     return await this.firebaseAuthenticationService.currentUser.then((user) => {
@@ -89,5 +84,18 @@ async login(email: string, password: string) {
     })
   }
 
+  getUser() {
+    return this.user;
+  }
 
+  addGranjaToUser(granjaRef: DocumentReference) {
+    this.user.granjas.push(granjaRef);
+    this.getDataFirebase.updateDoc(`usuarios/${this.user.uid}`, { granjas: this.user.granjas });
+  }
+
+  deleteGranja(granjaRef: DocumentReference) {
+    this.user.granjas.splice(this.user.granjas.indexOf(granjaRef), 1);
+    this.getDataFirebase.updateDoc(`usuarios/${this.user.uid}`, { granjas: this.user.granjas });
+    return true;
+  }
 }

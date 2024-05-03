@@ -31,7 +31,7 @@ export class RealizarVentasService {
   async updateVenta() {
     const refColeccionGalpon = this.galponDataService.getGalpon().ref + '/ventas';
     for (let i = 0; i < this.ventas.length; i++) {
-      await this.getDataFirebase.createUpdateDoc(refColeccionGalpon, this.ventas[i]);
+      await this.getDataFirebase.createDoc(refColeccionGalpon, this.ventas[i]);
     }
   }
 }

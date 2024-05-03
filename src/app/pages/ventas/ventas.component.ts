@@ -47,10 +47,11 @@ export class VentasComponent implements OnInit {
           valorUnitario: this.filas[k].valorUnitario(),
           total: this.filas[k].total()
         });
-      } else {
-        alert(`Por favor complete todos los campos de la fila del producto tipo ${k} o ingrese un cliente`);
-        return;
       }
+    }
+    if (this.venta.detalle.length == 0 || this.venta.cliente == '') {
+      alert(`Por favor complete todos los campos de la fila a registrar o ingrese un cliente valido`);
+      return;
     }
 
     await this.ventasService.registrarVenta(this.venta);

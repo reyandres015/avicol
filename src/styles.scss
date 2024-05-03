@@ -113,3 +113,9 @@ button {
 .inputForm:hover {
   box-shadow: 0 0 30px $COLOR-BRAND;
 }
+
+.messageError {
+  color: rgb(137, 0, 0);
+  text-wrap: wrap;
+  font-size: 22px;
+}
