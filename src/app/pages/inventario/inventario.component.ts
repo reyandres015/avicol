@@ -22,13 +22,6 @@ export class InventarioComponent implements OnInit {
     private inventarioService: InventarioService
   ){} 
 
-  inventario: inventario = {
-    fecha: Timestamp.now(),
-    detalle: [],
-    TotalInventario: 0
-  }
-
-
 
 async ngOnInit() {
   await this.authService.verifyUser().then((isLogged) => {
@@ -38,16 +31,25 @@ async ngOnInit() {
   })
 }
 
+inventario: inventario = {
+  fecha: Timestamp.now(),
+  detalle: [],
+  TotalInventario: 0
+}
+
+
 
 async crearInventario() {
-  this.inventario.detalle = []
+  // Restablecer los detalles del inventario
+  this.inventario.detalle = [];
+
   for (const k of this.getKeysObject(this.filas)) {
     if (this.filas[k].cantidad() !== undefined && this.filas[k].total() !== undefined) {
       this.inventario.detalle.push({
         tipo: k,
         cantidad: this.filas[k].cantidad(),
         TotalInventario: this.filas[k].total()
-     });
+      });
     } else if (this.filas[k].cantidad() === '' || this.filas[k].total() === '') {
       alert(`Por favor complete todos los campos de la fila del producto tipo ${k}`);
       return;
