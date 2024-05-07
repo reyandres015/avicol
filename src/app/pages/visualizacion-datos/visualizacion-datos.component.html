@@ -22,10 +22,10 @@
               <tr class="encabezado">
                 <th>Fecha</th>
                 <th>Hora</th>
-                <th>Valor</th>
-                <th>Tipo</th>
-                <th>cantidad</th>
                 <th>Cliente</th>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Valor</th>
               </tr>
               <!-- Itera sobre las ventas -->
               <ng-container *ngFor="let venta of this.galpon.ventas">
@@ -60,7 +60,7 @@
             <canvas id="ventasChart" ></canvas>
           </div>
         </div>
-      </div>     
+      </div>
       <div id="formGalpones" class="box">
         <div id="ulGranjas" class="box">
           <h3 class="label">Gastos</h3>

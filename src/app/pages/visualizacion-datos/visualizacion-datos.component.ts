@@ -59,7 +59,7 @@ export class VisualizacionDatosComponent implements OnInit {
   }
 
   cambiarIntervalo(event: Event) {
-    const target = event.target as HTMLSelectElement;  
+    const target = event.target as HTMLSelectElement;
     const valor = target.value;
     if (valor) {
       this.intervaloSeleccionado = valor;
@@ -71,15 +71,15 @@ export class VisualizacionDatosComponent implements OnInit {
 
   loadDataAndRenderChart() {
     if (!this.galpon || !this.galpon.ventas) return;
-    
+
     if (this.currentChart) {
       this.currentChart.destroy();
     }
-  
+
     let agrupado = this.agruparDatos(this.galpon.ventas, this.intervaloSeleccionado);
     const labels = this.intervaloSeleccionado === 'por_cliente' ? agrupado.map(group => group.cliente) : agrupado.map(group => group.fecha);
     const data = agrupado.map(group => group.totalVenta);
-  
+
     const chartData = {
       labels: labels,
       datasets: [{
@@ -90,7 +90,7 @@ export class VisualizacionDatosComponent implements OnInit {
         borderWidth: 1
       }]
     };
-  
+
     const config: ChartConfiguration = {
       type: 'bar',
       data: chartData,
@@ -107,23 +107,23 @@ export class VisualizacionDatosComponent implements OnInit {
             },
             x: {
               grid: {
-                color: 'rgba(255, 255, 255, 0.5)', 
+                color: 'rgba(255, 255, 255, 0.5)',
               },
               ticks: {
-                color: '#ffffff', 
+                color: '#ffffff',
               }
             }
           },
           plugins: {
             legend: {
               labels: {
-                color: '#ffffff', 
+                color: '#ffffff',
               }
             }
           }
         }
       };
-  
+
     const canvas = <HTMLCanvasElement>document.getElementById('ventasChart');
     if (canvas && this.isChartVisible) {
       const context = canvas.getContext('2d');
@@ -135,13 +135,13 @@ export class VisualizacionDatosComponent implements OnInit {
 
   loadGastoDataAndRenderChart() {
     if (!this.galpon || !this.galpon.gastos) return;
-  
+
     // Lógica para generar el gráfico de torta para gastos
     const gastosAgrupados = this.agruparGastosPorConcepto();
     const totalGastos = gastosAgrupados.reduce((sum, current) => sum + current.total, 0);
     const labels = gastosAgrupados.map(g => `${g.concepto} (${((g.total / totalGastos) * 100).toFixed(0)}%)`);
     const data = gastosAgrupados.map(g => g.total);
-  
+
     const chartData = {
       labels: labels,
       datasets: [{
@@ -155,7 +155,7 @@ export class VisualizacionDatosComponent implements OnInit {
         ]
       }]
     };
-  
+
     const config: ChartConfiguration<'pie', number[], string> = {
       type: 'pie',
       data: chartData,
@@ -175,7 +175,7 @@ export class VisualizacionDatosComponent implements OnInit {
         }
       }
     };
-  
+
     const canvas = document.getElementById('gastosChart') as HTMLCanvasElement | null;  // Especifica que puede ser null
     if (canvas) {
       const context = canvas.getContext('2d');
@@ -290,7 +290,7 @@ export class VisualizacionDatosComponent implements OnInit {
     const gastosAgrupados = gastos.reduce((acumulador, gasto) => {
       const fecha = new Date(gasto.fecha.toDate());
       const fechaClave = fecha.getFullYear() + '-' + ('0' + (fecha.getMonth() + 1)).slice(-2) + '-' + ('0' + fecha.getDate()).slice(-2);
-  
+
       if (acumulador[fechaClave]) {
         acumulador[fechaClave].total += gasto.total;
       } else {
@@ -301,13 +301,13 @@ export class VisualizacionDatosComponent implements OnInit {
       }
       return acumulador;
     }, {});
-  
+
     return Object.values(gastosAgrupados);
   }
 
   agruparGastosPorConcepto() {
     if (!this.galpon.gastos) return [];
-  
+
     return this.galpon.gastos.reduce((acum, gasto) => {
       const existente = acum.find(item => item.concepto === gasto.concepto);
       if (existente) {
@@ -316,7 +316,7 @@ export class VisualizacionDatosComponent implements OnInit {
         acum.push({ ...gasto });
       }
       return acum;
-    }, [] as Gastos[]);  
+    }, [] as Gastos[]);
   }
 
   agruparDatos(ventas: any[], intervalo: string): any[] {
@@ -333,7 +333,7 @@ export class VisualizacionDatosComponent implements OnInit {
         }
         return acum;
       }, {});
-  
+
       return Object.values(ventasPorCliente);
     } else {
       switch (intervalo) {
@@ -389,14 +389,14 @@ export class VisualizacionDatosComponent implements OnInit {
       setTimeout(() => this.loadDataAndRenderChart(), 0);
     }
   }
-  
+
   toggleChartsVisibility2() {
     this.isChartsVisible2 = !this.isChartsVisible2;
     if (this.isChartsVisible2) {
         setTimeout(() => {
             this.loadGastoDataAndRenderChart();
             this.loadLineChartDataAndRenderChart();
-        }, 0); 
+        }, 0);
     }
   }
 }

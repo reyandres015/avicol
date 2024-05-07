@@ -28,6 +28,9 @@ export class VentasComponent implements OnInit {
     })
   }
 
+  fecha: Date = new Date();
+  hora: Date = new Date();
+
   venta: Ventas = {
     fecha: Timestamp.now(),
     cliente: "",
@@ -56,6 +59,29 @@ export class VentasComponent implements OnInit {
 
     await this.ventasService.registrarVenta(this.venta);
     alert('Venta registrada con éxito');
+  }
+
+  reiniciarVenta() {
+    this.venta = {
+      fecha: Timestamp.now(),
+      cliente: "",
+      detalle: [],
+      totalVenta: 0
+    }
+    for (const k of this.getKeysObject(this.filas)) {
+      this.filas[k].cantidad.set(0);
+      this.filas[k].valorUnitario.set(0);
+      this.filas[k].total.set(0);
+    }
+  } 
+
+  setFecha(event: Event) {
+    const htmlElement = (event.target as HTMLInputElement);
+    let fechaParts = htmlElement.value.split('-');
+    let fecha = new Date(Number(fechaParts[0]), Number(fechaParts[1]) - 1, Number(fechaParts[2]));
+    this.venta.fecha = Timestamp.fromDate(fecha);
+    // obtener hora actual
+    this.hora = new Date();
   }
 
   // filas de la tabla

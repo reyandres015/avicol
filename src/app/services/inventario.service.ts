@@ -13,26 +13,20 @@ export class InventarioService {
     private galponDataService: GalponDataService
   ) { }
 
-  inventario1: inventario[] = [];
-
-
   // Método para registrar un inventario
   async registrarInventario(inventario: inventario) {
-    this.inventario1.push(inventario);
     let inventario1 = this.galponDataService.getGalpon().inventario;
     if (inventario1) {
       inventario1.push(inventario);
     } else {
       this.galponDataService.getGalpon().inventario = [inventario];
     }
-    await this.updateInventario();
+    await this.updateInventario(inventario);
   }
 
   // Realiza la ejecucion de los update para todos los documentos de inventario pendientes por subir. (No internet conection)
-  async updateInventario() {
+  async updateInventario(inventario: inventario) {
     const refColeccionGalpon = this.galponDataService.getGalpon().ref + '/inventario';
-    for (let i = 0; i < this.inventario1.length; i++) {
-      await this.getDataFirebase.createDoc(refColeccionGalpon, this.inventario1[i]);
-    }
+    await this.getDataFirebase.createDoc(refColeccionGalpon, inventario);
   }
 }

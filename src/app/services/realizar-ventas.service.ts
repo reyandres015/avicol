@@ -13,25 +13,32 @@ export class RealizarVentasService {
     private getDataFirebase: GetDataFirebaseService
   ) { }
 
-  ventas: Ventas[] = [];
+  // ventas: Ventas[] = [];
 
   // Método para registrar una venta
   async registrarVenta(venta: Ventas) {
-    this.ventas.push(venta);
+    // this.ventas.push(venta);
     let ventas = this.galponDataService.getGalpon().ventas;
     if (ventas) {
       ventas.push(venta);
     } else {
       this.galponDataService.getGalpon().ventas = [venta];
     }
-    await this.updateVenta();
+    await this.updateVenta(venta);
   }
 
-  // Realiza la ejecucion de los update para todos los documentos de ventas pendientes por subir. (No internet conection)
-  async updateVenta() {
+  // Realiza la ejecucion de los update para todos los documentos de ventas pendientes por subir. (No internet conection) - POR DESARROLLAR
+  async updateVenta(venta: Ventas) {
     const refColeccionGalpon = this.galponDataService.getGalpon().ref + '/ventas';
-    for (let i = 0; i < this.ventas.length; i++) {
-      await this.getDataFirebase.createDoc(refColeccionGalpon, this.ventas[i]);
+    // for (let i = 0; i < this.ventas.length; i++) {
+    await this.getDataFirebase.createDoc(refColeccionGalpon, venta);
+    const galpon = this.galponDataService.getGalpon();
+    if (galpon.totalVentas) {
+      galpon.totalVentas += venta.totalVenta;
+    } else {
+      galpon.totalVentas = venta.totalVenta;
     }
+    await this.getDataFirebase.updateDoc(this.galponDataService.getGalpon().ref, { ventasTotales: galpon.totalVentas });
+    // }
   }
 }

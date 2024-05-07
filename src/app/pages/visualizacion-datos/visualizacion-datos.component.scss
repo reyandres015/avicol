@@ -5,7 +5,6 @@ $FOCO: #3A3A3A;
 $ARROW-COLOR: #FFDBBF;
 
 main {
-  height: 100vh;
   justify-content: center;
 
   #mainBox {
@@ -105,8 +104,8 @@ table {
 }
 
 #toggle-chart-arrow {
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
   border-top: 5px solid #ffffff; /* Cambia esto al color deseado para la flecha */
