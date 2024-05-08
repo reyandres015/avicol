@@ -70,8 +70,8 @@ export class GeneralGranjasComponent {
     }
   }
 
-  option(indexSelection: number) {
-    this.galponService.actualizarGalponSeleccionado(indexSelection);
+  async option(indexSelection: number) {
+    this.galponService.setIndexGalpon(indexSelection);
     this.router.navigate(['/menu-seleccion-galpon']);
   }
 

@@ -8,56 +8,53 @@ import Galpon from '../interfaces/galpon.interface';
 })
 export class GalponDataService {
   private galponSeleccionado: Galpon = { name: '', ref: '', ventas: [], gastos: [], inventario: [] };
+  private indexGalpon: number = 0;
 
   constructor(
     private granjaService: GranjaDataService,
     private getDataFirebase: GetDataFirebaseService) {
   }
 
-  async actualizarGalponSeleccionado(granja: number) {
+  setIndexGalpon(index: number) {
+    this.indexGalpon = index;
+  }
+
+  async datosGalponSeleccionado() {
     const galpones = this.granjaService.getGranjaSeleccionada().galpones
     if (galpones) {
 
       // Ventas de cada galpón
-      await this.getDataFirebase.getCollectionDocs(`${galpones[granja].ref}/ventas`).then(async (ventasGalpon: any[]) => {
-        let calculoTotalVentas: number = 0;
+      await this.getDataFirebase.getCollectionDocs(`${galpones[this.indexGalpon].ref}/ventas`).then(async (ventasGalpon: any[]) => {
         for (let i = 0; i < ventasGalpon.length; i++) {
           await this.getDataFirebase.getDocByReference(ventasGalpon[i].ref).then((venta) => {
-            calculoTotalVentas += venta.data().totalVenta;
             ventasGalpon[i] = {
               ...venta.data()
             }
           })
 
         }
-        galpones[granja] = {
-          ...galpones[granja],
+        galpones[this.indexGalpon] = {
+          ...galpones[this.indexGalpon],
           ventas: ventasGalpon,
-          totalVentas: calculoTotalVentas
         }
-
       })
-      this.galponSeleccionado = galpones[granja];
+      this.galponSeleccionado = galpones[this.indexGalpon];
 
       // Gastos de cada galpón
-      await this.getDataFirebase.getCollectionDocs(`${galpones[granja].ref}/gastos`).then(async (gastosGalpon: any[]) => {
-        let calculoTotalGastos: number = 0;
+      await this.getDataFirebase.getCollectionDocs(`${galpones[this.indexGalpon].ref}/gastos`).then(async (gastosGalpon: any[]) => {
         for (let i = 0; i < gastosGalpon.length; i++) {
           await this.getDataFirebase.getDocByReference(gastosGalpon[i].ref).then((gasto) => {
-            calculoTotalGastos += gasto.data().total;
             gastosGalpon[i] = {
               ...gasto.data()
             }
           })
         }
-        galpones[granja] = {
-          ...galpones[granja],
+        galpones[this.indexGalpon] = {
+          ...galpones[this.indexGalpon],
           gastos: gastosGalpon,
-          totalGastos: calculoTotalGastos
         }
-
       })
-      this.galponSeleccionado = galpones[granja];
+      this.galponSeleccionado = galpones[this.indexGalpon];
     } else {
       alert('Ocurrío un error al obtener la información del galpón. Por favor, intenta de nuevo.')
     }

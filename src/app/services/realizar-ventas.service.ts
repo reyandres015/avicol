@@ -33,12 +33,12 @@ export class RealizarVentasService {
     // for (let i = 0; i < this.ventas.length; i++) {
     await this.getDataFirebase.createDoc(refColeccionGalpon, venta);
     const galpon = this.galponDataService.getGalpon();
-    if (galpon.totalVentas) {
-      galpon.totalVentas += venta.totalVenta;
+    if (galpon.ventasTotales) {
+      galpon.ventasTotales += venta.totalVenta;
     } else {
-      galpon.totalVentas = venta.totalVenta;
+      galpon.ventasTotales = venta.totalVenta;
     }
-    await this.getDataFirebase.updateDoc(this.galponDataService.getGalpon().ref, { ventasTotales: galpon.totalVentas });
+    await this.getDataFirebase.updateDoc(this.galponDataService.getGalpon().ref, { ventasTotales: galpon.ventasTotales });
     // }
   }
 }

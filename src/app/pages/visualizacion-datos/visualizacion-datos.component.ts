@@ -6,6 +6,7 @@ import { UserAuthService } from 'src/app/services/user-auth.service';
 import { Router } from '@angular/router';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import Gastos from 'src/app/interfaces/gastos.interface';
+import Ventas from 'src/app/interfaces/ventas.interface';
 Chart.register(...registerables);
 
 @Component({
@@ -16,7 +17,10 @@ Chart.register(...registerables);
 })
 export class VisualizacionDatosComponent implements OnInit {
   granjaSeleccionada: any = { name: '', path: '' };
-  galpon: Galpon = { name: '', ref: '', totalVentas: 0, totalGastos: 0, ventas: [], gastos: [] };
+  galpon: Galpon = { name: '', ref: '', ventasTotales: 0, gastosTotales: 0, ventas: [], gastos: [] };
+  ventasGalpon: Ventas[] = [];
+  gastosGalpon: Gastos[] = [];
+
   isChartVisible: boolean = false;
   isChartsVisible2: boolean = false;
   isGastosChartVisible: boolean = false;
@@ -31,12 +35,25 @@ export class VisualizacionDatosComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.authService.verifyUser().then((isLogged) => {
+    await this.authService.verifyUser().then(async (isLogged) => {
       if (!isLogged) {
         this.router.navigate(['/']);
       } else {
         this.granjaSeleccionada = this.granjaService.getGranjaSeleccionada();
+        // Descargar los datos del galpón seleccionado
+        await this.galponService.datosGalponSeleccionado();
         this.galpon = this.galponService.getGalpon();
+
+        // Ventas
+        this.ventasGalpon = this.galpon?.ventas || [];
+        // organizar ventasGalpon por fecha
+        this.ventasGalpon.sort((a, b) => a.fecha.toDate().getTime() - b.fecha.toDate().getTime());
+
+        // Gastos
+        this.gastosGalpon = this.galpon?.gastos || [];
+        // organizar gastosGalpon por fecha
+        this.gastosGalpon.sort((a, b) => a.fecha.toDate().getTime() - b.fecha.toDate().getTime());
+
         // Llama inicialmente a cargar y renderizar el gráfico
         this.loadDataAndRenderChart();
         this.loadGastoDataAndRenderChart();
@@ -97,32 +114,32 @@ export class VisualizacionDatosComponent implements OnInit {
       options: {
         scales: {
           y: {
-              beginAtZero: true,
-              grid: {
-                color: 'rgba(255, 255, 255, 0.5)',
-              },
-              ticks: {
-                color:'#ffffff',
-              }
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(255, 255, 255, 0.5)',
             },
-            x: {
-              grid: {
-                color: 'rgba(255, 255, 255, 0.5)',
-              },
-              ticks: {
-                color: '#ffffff',
-              }
+            ticks: {
+              color: '#ffffff',
             }
           },
-          plugins: {
-            legend: {
-              labels: {
-                color: '#ffffff',
-              }
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.5)',
+            },
+            ticks: {
+              color: '#ffffff',
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: '#ffffff',
             }
           }
         }
-      };
+      }
+    };
 
     const canvas = <HTMLCanvasElement>document.getElementById('ventasChart');
     if (canvas && this.isChartVisible) {
@@ -187,8 +204,8 @@ export class VisualizacionDatosComponent implements OnInit {
 
   loadLineChartDataAndRenderChart() {
     if (!this.galpon || !this.galpon.ventas || !this.galpon.gastos) {
-        console.error("Datos de ventas o gastos no disponibles.");
-        return;
+      console.error("Datos de ventas o gastos no disponibles.");
+      return;
     }
 
     console.log("Gastos originales:", this.galpon.gastos);
@@ -204,85 +221,85 @@ export class VisualizacionDatosComponent implements OnInit {
     console.log("Etiquetas:", labels);
 
     const chartData = {
-        labels: labels,
-        datasets: [
-            {
-                label: 'Gastos',
-                data: gastosData,
-                borderColor: 'rgb(255, 99, 132)',
-                tension: 0.1
-            },
-            {
-                label: 'Ventas',
-                data: ventasData,
-                borderColor: 'rgb(54, 162, 235)',
-                tension: 0.1
-            }
-        ]
+      labels: labels,
+      datasets: [
+        {
+          label: 'Gastos',
+          data: gastosData,
+          borderColor: 'rgb(255, 99, 132)',
+          tension: 0.1
+        },
+        {
+          label: 'Ventas',
+          data: ventasData,
+          borderColor: 'rgb(54, 162, 235)',
+          tension: 0.1
+        }
+      ]
     };
 
     const config: ChartConfiguration<'line'> = {
-        type: 'line',
-        data: chartData,
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.5)',
-                    },
-                    ticks: {
-                        color: 'rgba(255, 255, 255, 0.8)',
-                    }
-                },
-                x: {
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.5)',
-                    },
-                    ticks: {
-                        color: 'rgba(255, 255, 255, 0.8)',
-                    }
-                }
+      type: 'line',
+      data: chartData,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(255, 255, 255, 0.5)',
             },
-            plugins: {
-                legend: {
-                    labels: {
-                        color: 'rgba(255, 255, 255, 0.8)',
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        labelColor: function(context) {
-                            return {
-                                borderColor: 'rgba(0, 0, 0, 0)',
-                                backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                                borderWidth: 2,
-                                borderDash: [2, 2],
-                                borderRadius: 2,
-                            };
-                        },
-                        labelTextColor: function() {
-                            return 'rgba(255, 255, 255, 0.8)';
-                        }
-                    }
-                }
+            ticks: {
+              color: 'rgba(255, 255, 255, 0.8)',
             }
+          },
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.5)',
+            },
+            ticks: {
+              color: 'rgba(255, 255, 255, 0.8)',
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: 'rgba(255, 255, 255, 0.8)',
+            }
+          },
+          tooltip: {
+            callbacks: {
+              labelColor: function (context) {
+                return {
+                  borderColor: 'rgba(0, 0, 0, 0)',
+                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                  borderWidth: 2,
+                  borderDash: [2, 2],
+                  borderRadius: 2,
+                };
+              },
+              labelTextColor: function () {
+                return 'rgba(255, 255, 255, 0.8)';
+              }
+            }
+          }
         }
+      }
     };
 
     const canvas = document.getElementById('lineChart') as HTMLCanvasElement;
     if (canvas && this.isChartsVisible2) {
-        const context = canvas.getContext('2d');
-        if (context) {
-            if (this.currentChart) {
-                this.currentChart.destroy();
-            }
-            this.currentChart = new Chart(context, config);
-        } else {
-            console.error("No se pudo obtener el contexto del canvas para el gráfico de líneas.");
+      const context = canvas.getContext('2d');
+      if (context) {
+        if (this.currentChart) {
+          this.currentChart.destroy();
         }
+        this.currentChart = new Chart(context, config);
+      } else {
+        console.error("No se pudo obtener el contexto del canvas para el gráfico de líneas.");
+      }
     } else {
-        console.error("Elemento canvas para el gráfico de líneas no encontrado.");
+      console.error("Elemento canvas para el gráfico de líneas no encontrado.");
     }
   }
 
@@ -379,7 +396,7 @@ export class VisualizacionDatosComponent implements OnInit {
       case 'año':
         return `${fecha.getFullYear()}`;
       default:
-          return "No especificado";
+        return "No especificado";
     }
   }
 
@@ -393,10 +410,10 @@ export class VisualizacionDatosComponent implements OnInit {
   toggleChartsVisibility2() {
     this.isChartsVisible2 = !this.isChartsVisible2;
     if (this.isChartsVisible2) {
-        setTimeout(() => {
-            this.loadGastoDataAndRenderChart();
-            this.loadLineChartDataAndRenderChart();
-        }, 0);
+      setTimeout(() => {
+        this.loadGastoDataAndRenderChart();
+        this.loadLineChartDataAndRenderChart();
+      }, 0);
     }
   }
 }
