@@ -2,6 +2,7 @@ import { CommonModule, formatCurrency } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Timestamp } from '@angular/fire/firestore';
+import { FormsModule } from '@angular/forms'; 
 
 import Ventas from 'src/app/interfaces/ventas.interface';
 import { RealizarVentasService } from 'src/app/services/realizar-ventas.service';
@@ -9,11 +10,12 @@ import { UserAuthService } from 'src/app/services/user-auth.service';
 @Component({
   selector: 'app-ventas',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './ventas.component.html',
   styleUrls: ['./ventas.component.scss']
 })
 export class VentasComponent implements OnInit {
+  items: any[] = [];
   constructor(
     private authService: UserAuthService,
     private router: Router,
@@ -117,11 +119,6 @@ export class VentasComponent implements OnInit {
         cantidad: signal(0),
         valorUnitario: signal(0),
         total: signal(0)
-      },
-      'OTRO': {
-        cantidad: signal(0),
-        valorUnitario: signal(0),
-        total: signal(0)
       }
     };
 
@@ -178,5 +175,15 @@ export class VentasComponent implements OnInit {
 
   arrowBack() {
     window.history.back()
+  }
+
+  addInitialRow() {
+    const newItem = { tipo: '', cantidad: 0, valorUnitario: 0, total: 0 };
+    this.items.push(newItem); // Añade una nueva fila inicialmente editable
+  }
+
+  selectTipo(index: number) {
+    this.items[index].tipoSelected = !this.items[index].tipoSelected; 
+    this.items[index].tipo = 'Tipo Seleccionado'; // Cambia el tipo a uno seleccionado
   }
 }

@@ -45,7 +45,23 @@
                 <td><input class="inputForm" type="text" value="$0"
                     (input)="formatCurrency($event); changeValorUnitario(key,$event)"></td>
                 <td><input class="inputForm" type="text" value="{{filas[key].total() | currency:'symbol': '$':'1.0'}}"
-                    readonly></td>
+                    readonly>
+                </td>
+              </tr>
+              <tr *ngFor="let item of items; let i = index">
+                <td>
+                  <input type="text" class="inputForm" [(ngModel)]="item.tipo" placeholder="Ingrese el tipo">
+                </td>
+                <td><input type="number" [(ngModel)]="item.cantidad"></td>
+                <td><input type="text" [(ngModel)]="item.valorUnitario"></td>
+                <td><input type="text" [(ngModel)]="item.total" readonly></td>
+              </tr>
+              <tr>
+                <td colspan="4">
+                  <button (click)="addInitialRow()" class="round-button">
+                    <img src="../../../assets/ico/plus-icon.png" alt="Add">
+                  </button>
+                </td>
               </tr>
             </table>
           </div>

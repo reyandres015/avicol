@@ -135,4 +135,14 @@ main {
       }
     }
   }
+
+  .round-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+  
+  .round-button img {
+    width: 20px; // Ajusta según necesites
+  }
 }
