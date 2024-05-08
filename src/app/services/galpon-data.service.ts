@@ -16,7 +16,8 @@ export class GalponDataService {
   }
 
   setIndexGalpon(index: number) {
-    this.indexGalpon = index;
+    const galpones = this.granjaService.getGranjaSeleccionada().galpones
+    this.galponSeleccionado = galpones ? galpones[index] : { name: '', ref: '', ventas: [], gastos: [], inventario: [] };
   }
 
   async datosGalponSeleccionado() {

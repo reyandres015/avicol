@@ -13,24 +13,19 @@ export class RealizarGastoService {
     private getDataFirebase: GetDataFirebaseService
   ) { }
 
-  gastos: Gastos[] = [];
-
   async registrarGasto(gasto: Gastos) {
-    this.gastos.push(gasto);
     let gastosGalpon = this.galponDataService.getGalpon().gastos;
     if (gastosGalpon) {
       gastosGalpon.push(gasto);
     } else {
       this.galponDataService.getGalpon().gastos = [gasto];
     }
-    await this.updateVenta();
+    await this.updateVenta(gasto);
   }
 
   // Realiza la ejecucion de los update para todos los documentos de ventas pendientes por subir. (No internet conection)
-  async updateVenta() {
+  async updateVenta(gasto: Gastos) {
     const refColeccionGalpon = this.galponDataService.getGalpon().ref + '/gastos';
-    for (let i = 0; i < this.gastos.length; i++) {
-      await this.getDataFirebase.createDoc(refColeccionGalpon, this.gastos[i]);
-    }
+    await this.getDataFirebase.createDoc(refColeccionGalpon, gasto);
   }
 }
