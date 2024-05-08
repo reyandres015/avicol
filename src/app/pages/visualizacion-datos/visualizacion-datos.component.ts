@@ -34,6 +34,20 @@ export class VisualizacionDatosComponent implements OnInit {
     private router: Router
   ) { }
 
+  ventasGalponGrupo: any[] = []
+  currentPage: number = 0;
+
+  changePage(cambio: number) {
+    this.currentPage += cambio
+    if (this.currentPage < 0) {
+      this.currentPage = this.ventasGalponGrupo.length - 1;
+    }
+
+    if (this.currentPage >= this.ventasGalponGrupo.length) {
+      this.currentPage = 0;
+    }
+  }
+
   async ngOnInit() {
     await this.authService.verifyUser().then(async (isLogged) => {
       if (!isLogged) {
@@ -49,8 +63,13 @@ export class VisualizacionDatosComponent implements OnInit {
         // organizar ventasGalpon por fecha
         this.ventasGalpon.sort((a, b) => a.fecha.toDate().getTime() - b.fecha.toDate().getTime());
 
-        // Gastos
-        this.gastosGalpon = this.galpon?.gastos || [];
+        // Dividir en grupos de 5
+
+        for (let i = 0; i < this.ventasGalpon.length; i += 5) {
+          let grupo = this.ventasGalpon.slice(i, i + 5);
+          this.ventasGalponGrupo.push(grupo);
+        }
+
         // organizar gastosGalpon por fecha
         this.gastosGalpon.sort((a, b) => a.fecha.toDate().getTime() - b.fecha.toDate().getTime());
 
@@ -90,71 +109,71 @@ export class VisualizacionDatosComponent implements OnInit {
     if (!this.galpon || !this.galpon.ventas) return;
 
     if (this.currentChart) {
-        this.currentChart.destroy();
+      this.currentChart.destroy();
     }
 
     let agrupado = this.agruparDatos(this.galpon.ventas, this.intervaloSeleccionado);
     let labels = this.intervaloSeleccionado === 'por_cliente' ? agrupado.map(group => group.cliente) :
-                 this.intervaloSeleccionado === 'por_tipo' ? agrupado.map(group => group.tipo) :
-                 agrupado.map(group => group.fecha);
+      this.intervaloSeleccionado === 'por_tipo' ? agrupado.map(group => group.tipo) :
+        agrupado.map(group => group.fecha);
     let data = this.intervaloSeleccionado === 'por_tipo' ? agrupado.map(group => group.cantidad) :
-               agrupado.map(group => group.totalVenta);
+      agrupado.map(group => group.totalVenta);
     let labelDescriptor = this.intervaloSeleccionado === 'por_cliente' ? 'Ventas por Cliente' :
-                          this.intervaloSeleccionado === 'por_tipo' ? 'Cantidad de Ventas por Tipo de Huevo' :
-                          'Ventas por Fecha';
+      this.intervaloSeleccionado === 'por_tipo' ? 'Cantidad de Ventas por Tipo de Huevo' :
+        'Ventas por Fecha';
 
     const chartData = {
-        labels: labels,
-        datasets: [{
-            label: labelDescriptor,
-            data: data,
-            backgroundColor: '#002D4E',
-            borderColor: '#002D4E',
-            borderWidth: 1
-        }]
+      labels: labels,
+      datasets: [{
+        label: labelDescriptor,
+        data: data,
+        backgroundColor: '#002D4E',
+        borderColor: '#002D4E',
+        borderWidth: 1
+      }]
     };
 
     const config: ChartConfiguration = {
-        type: 'bar',
-        data: chartData,
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.5)',
-                    },
-                    ticks: {
-                        color: '#ffffff',
-                    }
-                },
-                x: {
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.5)',
-                    },
-                    ticks: {
-                        color: '#ffffff',
-                    }
-                }
+      type: 'bar',
+      data: chartData,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(255, 255, 255, 0.5)',
             },
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#ffffff',
-                    }
-                }
+            ticks: {
+              color: '#ffffff',
             }
+          },
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.5)',
+            },
+            ticks: {
+              color: '#ffffff',
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: '#ffffff',
+            }
+          }
         }
+      }
     };
 
     const canvas = <HTMLCanvasElement>document.getElementById('ventasChart');
     if (canvas && this.isChartVisible) {
-        const context = canvas.getContext('2d');
-        if (context) {
-            this.currentChart = new Chart(context, config);
-        }
+      const context = canvas.getContext('2d');
+      if (context) {
+        this.currentChart = new Chart(context, config);
+      }
     }
-}
+  }
 
 
   loadGastoDataAndRenderChart() {
@@ -230,13 +249,13 @@ export class VisualizacionDatosComponent implements OnInit {
     // Preparar los datos de ventas y gastos para la gráfica en base a las fechas unificadas
     const ventasData = todasLasFechas.map(date => {
       const total = ventas.filter(v => v.fecha.toDate().getTime() === date)
-                        .reduce((sum, curr) => sum + curr.totalVenta, 0);
+        .reduce((sum, curr) => sum + curr.totalVenta, 0);
       return total;
     });
 
     const gastosData = todasLasFechas.map(date => {
       const total = gastos.filter(g => g.fecha.toDate().getTime() === date)
-                        .reduce((sum, curr) => sum + curr.total, 0);
+        .reduce((sum, curr) => sum + curr.total, 0);
       return total;
     });
 
@@ -322,7 +341,7 @@ export class VisualizacionDatosComponent implements OnInit {
       console.error("Elemento canvas para el gráfico de líneas no encontrado.");
     }
   }
-  
+
   agruparGastosPorConcepto() {
     if (!this.galpon.gastos) return [];
 
@@ -351,7 +370,7 @@ export class VisualizacionDatosComponent implements OnInit {
         }
         return acum;
       }, {});
-  
+
       return Object.values(ventasPorCliente);
     } else if (intervalo === 'por_tipo') {
       return this.agruparVentasPorTipo(ventas);
@@ -370,28 +389,28 @@ export class VisualizacionDatosComponent implements OnInit {
       }
     }
   }
-  
+
   agruparVentasPorTipo(ventas: any[]): any[] {
     console.log("Ventas originales:", ventas);  // Debugging: Ver las ventas originales
     const agrupados = ventas.reduce((acum, venta) => {
-        venta.detalle.forEach((item: any) => {
-            const tipoNormalizado = item.tipo.trim().toLowerCase(); // Normaliza el tipo para evitar duplicados por errores de formato
-            if (!acum[tipoNormalizado]) {
-                acum[tipoNormalizado] = { tipo: item.tipo, cantidad: 0 };
-            }
-            // Asegúrate de que la cantidad es un número y suma correctamente
-            const cantidad = Number(item.cantidad);
-            if (!isNaN(cantidad)) {
-                acum[tipoNormalizado].cantidad += cantidad;
-            } else {
-                console.error("Cantidad no es un número:", item);
-            }
-        });
-        return acum;
+      venta.detalle.forEach((item: any) => {
+        const tipoNormalizado = item.tipo.trim().toLowerCase(); // Normaliza el tipo para evitar duplicados por errores de formato
+        if (!acum[tipoNormalizado]) {
+          acum[tipoNormalizado] = { tipo: item.tipo, cantidad: 0 };
+        }
+        // Asegúrate de que la cantidad es un número y suma correctamente
+        const cantidad = Number(item.cantidad);
+        if (!isNaN(cantidad)) {
+          acum[tipoNormalizado].cantidad += cantidad;
+        } else {
+          console.error("Cantidad no es un número:", item);
+        }
+      });
+      return acum;
     }, {});
     console.log("Ventas agrupadas por tipo:", agrupados);  // Debugging: Ver las ventas agrupadas
     return Object.values(agrupados);
-}
+  }
 
   agruparPor(key: string) {
     return (acumulador: any[], valorActual: any) => {

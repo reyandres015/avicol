@@ -45,6 +45,11 @@ main {
         gap: 15px;
         padding: 30px;
 
+        #arrows{
+          flex-direction: row;
+          gap:20px;
+        }
+
         p {
           text-wrap: nowrap;
         }
