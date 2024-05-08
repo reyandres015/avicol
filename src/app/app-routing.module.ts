@@ -9,6 +9,7 @@ import { VentasComponent } from './pages/ventas/ventas.component';
 import { GastosComponent } from './pages/gastos/gastos.component';
 import { guardsGuard } from './components/header/guards/guards.guard';
 import { InventarioComponent } from './pages/inventario/inventario.component';
+import { UploadDataComponent } from './pages/upload-data/upload-data.component';
 
 
 
@@ -19,7 +20,7 @@ const routes: Routes = [
   },
   {
     path: 'menu-granjas',
-    component: MenuGranjasComponent, canActivate:[guardsGuard]
+    component: MenuGranjasComponent, canActivate: [guardsGuard]
   },
   {
     path: 'vista-general-granja',
@@ -44,6 +45,10 @@ const routes: Routes = [
   {
     path: 'inventario',
     component: InventarioComponent
+  },
+  {
+    path: 'upload-data',
+    component: UploadDataComponent
   }
 ];
 

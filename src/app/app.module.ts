@@ -20,6 +20,7 @@ import localeEs from '@angular/common/locales/es';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../environments/environment';
+import { UploadDataComponent } from './pages/upload-data/upload-data.component';
 
 
 registerLocaleData(localeEs, 'es');
@@ -35,6 +36,7 @@ registerLocaleData(localeEs, 'es');
     MenuSeleccionGalponComponent,
     VisualizacionDatosComponent,
     GastosComponent,
+    UploadDataComponent
   ],
   imports: [
     BrowserModule,
