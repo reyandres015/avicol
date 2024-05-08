@@ -54,11 +54,12 @@
             <option value="semanal">Semana</option>
             <option value="mensual">Mes</option>
             <option value="anual">Año</option>
+            <option value="por_tipo">Por Tipo Huevo</option>
           </select>
           <div id="toggle-chart-bar" (click)="toggleChartVisibility()">
             <span id="toggle-chart-arrow" [class]="isChartVisible ? 'arrow-up' : 'arrow-down'"></span>
           </div>
-          <div id="chart-container" *ngIf="isChartVisible" style="width: 100%; height: 400px;">
+          <div id="chart-container" *ngIf="isChartVisible" style="width: 100%; height: 400px; display: flex; justify-content: center; align-items: center;">
             <canvas id="ventasChart"></canvas>
           </div>
         </div>

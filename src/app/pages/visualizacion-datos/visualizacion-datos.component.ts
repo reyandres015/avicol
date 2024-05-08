@@ -90,65 +90,72 @@ export class VisualizacionDatosComponent implements OnInit {
     if (!this.galpon || !this.galpon.ventas) return;
 
     if (this.currentChart) {
-      this.currentChart.destroy();
+        this.currentChart.destroy();
     }
 
     let agrupado = this.agruparDatos(this.galpon.ventas, this.intervaloSeleccionado);
-    const labels = this.intervaloSeleccionado === 'por_cliente' ? agrupado.map(group => group.cliente) : agrupado.map(group => group.fecha);
-    const data = agrupado.map(group => group.totalVenta);
+    let labels = this.intervaloSeleccionado === 'por_cliente' ? agrupado.map(group => group.cliente) :
+                 this.intervaloSeleccionado === 'por_tipo' ? agrupado.map(group => group.tipo) :
+                 agrupado.map(group => group.fecha);
+    let data = this.intervaloSeleccionado === 'por_tipo' ? agrupado.map(group => group.cantidad) :
+               agrupado.map(group => group.totalVenta);
+    let labelDescriptor = this.intervaloSeleccionado === 'por_cliente' ? 'Ventas por Cliente' :
+                          this.intervaloSeleccionado === 'por_tipo' ? 'Cantidad de Ventas por Tipo de Huevo' :
+                          'Ventas por Fecha';
 
     const chartData = {
-      labels: labels,
-      datasets: [{
-        label: this.intervaloSeleccionado === 'por_cliente' ? 'Ventas por Cliente' : 'Ventas por Fecha',
-        data: data,
-        backgroundColor: '#002D4E',
-        borderColor: '#002D4E',
-        borderWidth: 1
-      }]
+        labels: labels,
+        datasets: [{
+            label: labelDescriptor,
+            data: data,
+            backgroundColor: '#002D4E',
+            borderColor: '#002D4E',
+            borderWidth: 1
+        }]
     };
 
     const config: ChartConfiguration = {
-      type: 'bar',
-      data: chartData,
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-            grid: {
-              color: 'rgba(255, 255, 255, 0.5)',
+        type: 'bar',
+        data: chartData,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.5)',
+                    },
+                    ticks: {
+                        color: '#ffffff',
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.5)',
+                    },
+                    ticks: {
+                        color: '#ffffff',
+                    }
+                }
             },
-            ticks: {
-              color: '#ffffff',
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#ffffff',
+                    }
+                }
             }
-          },
-          x: {
-            grid: {
-              color: 'rgba(255, 255, 255, 0.5)',
-            },
-            ticks: {
-              color: '#ffffff',
-            }
-          }
-        },
-        plugins: {
-          legend: {
-            labels: {
-              color: '#ffffff',
-            }
-          }
         }
-      }
     };
 
     const canvas = <HTMLCanvasElement>document.getElementById('ventasChart');
     if (canvas && this.isChartVisible) {
-      const context = canvas.getContext('2d');
-      if (context) {
-        this.currentChart = new Chart(context, config);
-      }
+        const context = canvas.getContext('2d');
+        if (context) {
+            this.currentChart = new Chart(context, config);
+        }
     }
-  }
+}
+
 
   loadGastoDataAndRenderChart() {
     if (!this.galpon || !this.galpon.gastos) return;
@@ -208,20 +215,33 @@ export class VisualizacionDatosComponent implements OnInit {
       return;
     }
 
-    console.log("Gastos originales:", this.galpon.gastos);
+    // Asegúrate de que las ventas y los gastos están definidos antes de proceder
+    const ventas = this.galpon.ventas ?? [];
+    const gastos = this.galpon.gastos ?? [];
 
-    // Usamos la nueva función para agrupar los gastos por día
-    const gastosAgrupados = this.agruparGastosPorDia(this.galpon.gastos);
-    const gastosData = gastosAgrupados.map(group => group.total);
-    const labels = gastosAgrupados.map(group => group.fecha);
-    const ventasData = this.agruparDatos(this.galpon.ventas, 'diario').map(group => group.totalVenta);
+    // Fusionar y ordenar todas las fechas de ventas y gastos en un solo array de fechas únicas
+    const fechasVentas = ventas.map(v => v.fecha.toDate().getTime());
+    const fechasGastos = gastos.map(g => g.fecha.toDate().getTime());
+    const todasLasFechas = [...new Set([...fechasVentas, ...fechasGastos])].sort((a, b) => a - b);
 
-    console.log("Datos de Gastos:", gastosData);
-    console.log("Datos de Ventas:", ventasData);
-    console.log("Etiquetas:", labels);
+    // Convertir las fechas de milisegundos a formato legible
+    const fechasFormato = todasLasFechas.map(ms => new Date(ms).toLocaleDateString('es'));
+
+    // Preparar los datos de ventas y gastos para la gráfica en base a las fechas unificadas
+    const ventasData = todasLasFechas.map(date => {
+      const total = ventas.filter(v => v.fecha.toDate().getTime() === date)
+                        .reduce((sum, curr) => sum + curr.totalVenta, 0);
+      return total;
+    });
+
+    const gastosData = todasLasFechas.map(date => {
+      const total = gastos.filter(g => g.fecha.toDate().getTime() === date)
+                        .reduce((sum, curr) => sum + curr.total, 0);
+      return total;
+    });
 
     const chartData = {
-      labels: labels,
+      labels: fechasFormato,
       datasets: [
         {
           label: 'Gastos',
@@ -302,26 +322,7 @@ export class VisualizacionDatosComponent implements OnInit {
       console.error("Elemento canvas para el gráfico de líneas no encontrado.");
     }
   }
-
-  agruparGastosPorDia(gastos: any[]): any[] {
-    const gastosAgrupados = gastos.reduce((acumulador, gasto) => {
-      const fecha = new Date(gasto.fecha.toDate());
-      const fechaClave = fecha.getFullYear() + '-' + ('0' + (fecha.getMonth() + 1)).slice(-2) + '-' + ('0' + fecha.getDate()).slice(-2);
-
-      if (acumulador[fechaClave]) {
-        acumulador[fechaClave].total += gasto.total;
-      } else {
-        acumulador[fechaClave] = {
-          fecha: fechaClave,
-          total: gasto.total
-        };
-      }
-      return acumulador;
-    }, {});
-
-    return Object.values(gastosAgrupados);
-  }
-
+  
   agruparGastosPorConcepto() {
     if (!this.galpon.gastos) return [];
 
@@ -350,8 +351,10 @@ export class VisualizacionDatosComponent implements OnInit {
         }
         return acum;
       }, {});
-
+  
       return Object.values(ventasPorCliente);
+    } else if (intervalo === 'por_tipo') {
+      return this.agruparVentasPorTipo(ventas);
     } else {
       switch (intervalo) {
         case 'diario':
@@ -367,6 +370,28 @@ export class VisualizacionDatosComponent implements OnInit {
       }
     }
   }
+  
+  agruparVentasPorTipo(ventas: any[]): any[] {
+    console.log("Ventas originales:", ventas);  // Debugging: Ver las ventas originales
+    const agrupados = ventas.reduce((acum, venta) => {
+        venta.detalle.forEach((item: any) => {
+            const tipoNormalizado = item.tipo.trim().toLowerCase(); // Normaliza el tipo para evitar duplicados por errores de formato
+            if (!acum[tipoNormalizado]) {
+                acum[tipoNormalizado] = { tipo: item.tipo, cantidad: 0 };
+            }
+            // Asegúrate de que la cantidad es un número y suma correctamente
+            const cantidad = Number(item.cantidad);
+            if (!isNaN(cantidad)) {
+                acum[tipoNormalizado].cantidad += cantidad;
+            } else {
+                console.error("Cantidad no es un número:", item);
+            }
+        });
+        return acum;
+    }, {});
+    console.log("Ventas agrupadas por tipo:", agrupados);  // Debugging: Ver las ventas agrupadas
+    return Object.values(agrupados);
+}
 
   agruparPor(key: string) {
     return (acumulador: any[], valorActual: any) => {
