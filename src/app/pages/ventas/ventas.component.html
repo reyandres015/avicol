@@ -19,7 +19,8 @@
         <div id="ulGranjas" class="box">
           <section>
             <label class="labelForm" for="fecha">Fecha</label>
-            <input (change)="setFecha($event)" class="inputForm" type="date" name="fecha" id="">
+            <input class="inputForm" type="text" name="fecha" id=""
+              value="{{venta.fecha.toDate() | date:'fullDate':'es'}}" readonly>
           </section>
           <section>
             <label class="labelForm" for="hora">Hora</label>
@@ -50,17 +51,17 @@
               </tr>
               <tr *ngFor="let item of items; let i = index">
                 <td>
-                  <input type="text" class="inputForm" [(ngModel)]="item.tipo" placeholder="Ingrese el tipo">
+                  <input type="text" class="inputForm" placeholder="Ingrese el tipo" #key (change)="this.selectTipo($event)">
                 </td>
-                <td><input type="number" [(ngModel)]="item.cantidad"></td>
-                <td><input type="text" [(ngModel)]="item.valorUnitario"></td>
-                <td><input type="text" [(ngModel)]="item.total" readonly></td>
+                <td><input class="inputForm" type="number" min="0" (input)="changeCantidad(key.value,$event)"></td>
+                <td><input class="inputForm" type="text"
+                    (input)="formatCurrency($event); changeValorUnitario(key.value,$event)"></td>
+                <td><input class="inputForm" type="text"
+                    value="{{filas[key.value].total() | currency:'symbol': '$':'1.0'}}" readonly></td>
               </tr>
               <tr>
                 <td colspan="4">
-                  <button (click)="addInitialRow()" class="round-button">
-                    <img src="../../../assets/ico/plus-icon.png" alt="Add">
-                  </button>
+                  <i id="addButtom" (click)="addInitialRow()" class="fa-solid fa-circle-plus"></i>
                 </td>
               </tr>
             </table>

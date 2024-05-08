@@ -2,7 +2,7 @@ import { CommonModule, formatCurrency } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Timestamp } from '@angular/fire/firestore';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 
 import Ventas from 'src/app/interfaces/ventas.interface';
 import { RealizarVentasService } from 'src/app/services/realizar-ventas.service';
@@ -23,15 +23,12 @@ export class VentasComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    await this.authService.verifyUser().then((isLogged) => {
-      if (!isLogged) {
-        this.router.navigate(['/']);
-      }
-    })
+    // await this.authService.verifyUser().then((isLogged) => {
+    // //   if (!isLogged) {
+    // //     this.router.navigate(['/']);
+    // //   }
+    // // })
   }
-
-  fecha: Date = new Date();
-  hora: Date = new Date();
 
   venta: Ventas = {
     fecha: Timestamp.now(),
@@ -75,15 +72,6 @@ export class VentasComponent implements OnInit {
       this.filas[k].valorUnitario.set(0);
       this.filas[k].total.set(0);
     }
-  }
-
-  setFecha(event: Event) {
-    const htmlElement = (event.target as HTMLInputElement);
-    let fechaParts = htmlElement.value.split('-');
-    let fecha = new Date(Number(fechaParts[0]), Number(fechaParts[1]) - 1, Number(fechaParts[2]));
-    this.venta.fecha = Timestamp.fromDate(fecha);
-    // obtener hora actual
-    this.hora = new Date();
   }
 
   // filas de la tabla
@@ -177,13 +165,16 @@ export class VentasComponent implements OnInit {
     window.history.back()
   }
 
+  // Añade una nueva fila inicialmente editable
+
   addInitialRow() {
     const newItem = { tipo: '', cantidad: 0, valorUnitario: 0, total: 0 };
     this.items.push(newItem); // Añade una nueva fila inicialmente editable
   }
 
-  selectTipo(index: number) {
-    this.items[index].tipoSelected = !this.items[index].tipoSelected; 
-    this.items[index].tipo = 'Tipo Seleccionado'; // Cambia el tipo a uno seleccionado
+  selectTipo(event: Event) {
+    const htmlElement = (event.target as HTMLInputElement);
+    this.filas[htmlElement.value] = { cantidad: signal(0), valorUnitario: signal(0), total: signal(0) }// Añade una nueva fila inicialmente editable
+    this.items.pop();
   }
 }
