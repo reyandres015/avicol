@@ -73,7 +73,7 @@ export class VentasComponent implements OnInit {
       this.filas[k].valorUnitario.set(0);
       this.filas[k].total.set(0);
     }
-  } 
+  }
 
   setFecha(event: Event) {
     const htmlElement = (event.target as HTMLInputElement);
@@ -174,5 +174,9 @@ export class VentasComponent implements OnInit {
     } else {
       event.target.value = '$';
     }
+  }
+
+  arrowBack() {
+    window.history.back()
   }
 }

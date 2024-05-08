@@ -53,13 +53,15 @@ export class MenuGranjasComponent implements OnInit {
     private authService: UserAuthService
   ) { }
 
+  nameUser: string = ""
+
   async ngOnInit() {
     await this.authService.verifyUser().then((isLogged) => {
       if (!isLogged) {
         this.router.navigate(['/']);
       }
     })
-
+    this.nameUser = this.authService.getUser().name
     this.granjaService.setBasicGranjas();
     this.granjas = this.granjaService.getGranjasUser();
   }
@@ -87,5 +89,9 @@ export class MenuGranjasComponent implements OnInit {
       this.granjas = this.granjaService.getGranjasUser();
       this.editMode = false;
     });
+  }
+
+  arrowBack() {
+    window.history.back()
   }
 }

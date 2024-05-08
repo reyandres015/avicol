@@ -5,7 +5,16 @@
   <!-- Inicio contenido -->
   <section>
     <div id="mainBox" class="box">
-      <img src="../../../assets/ico/Galpon.png" alt="">
+      <div id="first-container">
+        <a (click)="arrowBack()" id="arrowBack">
+          <img src="../../../assets/ico/arrow-left.png" alt="">
+        </a>
+        <div>
+          <h1 class="label">Bienvenido,<br>{{this.nameUser}}</h1>
+          <img src="../../../assets/ico/Galpon.png" alt="">
+        </div>
+        <div style="width: 40px;"></div>
+      </div>
       <div [@fadeInOut] id="formGranjas" class="box">
         <h1 class="label">SELECCIONE UNA GRANJA</h1>
         <div [@fadeInOutFastWidth] id="ulGranjas" class="box">

@@ -5,8 +5,16 @@
   <!-- Inicio contenido -->
   <section>
     <div id="mainBox" class="box">
-      <img src="../../../assets/ico/Galpon.png" alt="">
-      <h1 class="label">Registros de Gastos</h1>
+      <div id="first-container">
+        <a (click)="arrowBack()" id="arrowBack">
+          <img src="../../../assets/ico/arrow-left.png" alt="">
+        </a>
+        <div>
+          <img src="../../../assets/ico/Galpon.png" alt="">
+          <h1 class="label">Registros de Gastos</h1>
+        </div>
+        <div style="width: 30px;"></div>
+      </div>
       <div id="formGranjas" class="box">
         <div id="ulGranjas" class="box">
           <section>
@@ -21,11 +29,13 @@
           </section>
           <section>
             <label class="labelForm" for="cliente">Concepto</label>
-            <input [value]="this.gasto.concepto" (change)="setConcepto($event)" class="inputForm" type="text" name="cliente" id="">
+            <input [value]="this.gasto.concepto" (change)="setConcepto($event)" class="inputForm" type="text"
+              name="cliente" id="">
           </section>
           <section>
             <label class="labelForm" for="cliente">Categoria</label>
-            <input [value]="this.gasto.categoria" (change)="setCategoria($event)" class="inputForm" type="text" name="cliente" id="">
+            <input [value]="this.gasto.categoria" (change)="setCategoria($event)" class="inputForm" type="text"
+              name="cliente" id="">
           </section>
           <section>
             <label class="labelForm" for="valor">Valor Unitario</label>

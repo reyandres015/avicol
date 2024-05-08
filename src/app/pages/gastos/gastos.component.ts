@@ -93,4 +93,8 @@ export class GastosComponent implements OnInit {
       event.target.value = '$';
     }
   }
+
+  arrowBack() {
+    window.history.back()
+  }
 }
