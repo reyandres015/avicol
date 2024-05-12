@@ -117,4 +117,10 @@ export class GranjaDataService {
       return false;
     }
   }
+
+  // Función para obtener las granjas
+  getGranjas() {
+    return this.getDataFirebase.getCollectionDocs('granjas');
+  }
+  
 }

@@ -6,6 +6,7 @@ import { DocumentReference } from '@angular/fire/firestore';
 import 'firebase/compat/auth';
 import firebase from 'firebase/compat/app';
 import User from '../interfaces/user.interface';
+import { GranjaDataService } from './granja-data.service';
 
 
 @Injectable({
@@ -16,8 +17,10 @@ export class UserAuthService {
     name: "",
     uid: "",
     granjas: [],
+    role: ""
   }
   userCredentials: any;
+  granjaDataService: any;
   constructor(
     private firebaseAuthenticationService: AngularFireAuth,
     private ngZone: NgZone,
@@ -54,7 +57,7 @@ export class UserAuthService {
 
   observeUserState() {
     this.firebaseAuthenticationService.authState.subscribe((userState) => {
-      userState && this.ngZone.run(() => this.router.navigate(['menu-granjas']));
+     userState && this.ngZone.run(() => this.router.navigate(['menu-granjas']));
     })
   }
 
@@ -73,6 +76,7 @@ export class UserAuthService {
           name: userData.name,
           uid: uid,
           granjas: userData.granjas,
+          role: userData.role
         }
       }
     })
@@ -97,5 +101,16 @@ export class UserAuthService {
     this.user.granjas.splice(this.user.granjas.indexOf(granjaRef), 1);
     this.getDataFirebase.updateDoc(`usuarios/${this.user.uid}`, { granjas: this.user.granjas });
     return true;
+  }
+
+async register(email: string, password: string,nameUser:string, granjasUser: DocumentReference[] = []) {
+    return this.firebaseAuthenticationService.createUserWithEmailAndPassword(email, password)
+      .then((userCredentials) => {
+        this.userCredentials = userCredentials.user;
+        this.observeUserState();
+        this.getDataFirebase.createDoc('usuarios/', { name: nameUser, granjas: [], role: 'user' }, this.userCredentials.uid);
+      }).catch((error) => {
+        console.error(error.message + ' Por favor, intenta de nuevo');
+      });
   }
 }

@@ -106,4 +106,9 @@ export class GetDataFirebaseService {
       return null;
     }
   }
+
+  // Función para obtener la referencia de un documento
+  getDocRef(path: string): DocumentReference {
+    return doc(this.firestore, path);
+  }
 }
