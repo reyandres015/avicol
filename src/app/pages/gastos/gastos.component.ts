@@ -18,6 +18,9 @@ export class GastosComponent implements OnInit {
     private gastoService: RealizarGastoService,
   ) { }
 
+  fecha: Date = new Date();
+  hora: Date = new Date();
+
   async ngOnInit() {
     await this.authService.verifyUser().then((isLogged) => {
       if (!isLogged) {
@@ -82,6 +85,15 @@ export class GastosComponent implements OnInit {
   calcularTotal() {
     const total = this.gasto.cantidad * this.gasto.valorUnitario;
     this.gasto.total = total;
+  }
+
+  setFecha(event: Event) {
+    const htmlElement = (event.target as HTMLInputElement);
+    let fechaParts = htmlElement.value.split('-');
+    let fecha = new Date(Number(fechaParts[0]), Number(fechaParts[1]) - 1, Number(fechaParts[2]));
+    this.gasto.fecha = Timestamp.fromDate(fecha);
+    // obtener hora actual
+    this.hora = new Date();
   }
 
   //funcion para dar formato a la moneda

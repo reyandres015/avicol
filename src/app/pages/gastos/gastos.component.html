@@ -19,8 +19,7 @@
         <div id="ulGranjas" class="box">
           <section>
             <label class="labelForm" for="fecha">Fecha</label>
-            <input value="{{gasto.fecha.toDate() | date:'fullDate':'es'}}" class="inputForm" type="text" name="fecha"
-              id="" readonly>
+            <input (change)="setFecha($event)" class="inputForm" type="date" name="fecha" id="">
           </section>
           <section>
             <label class="labelForm" for="hora">Hora</label>
