@@ -6,6 +6,8 @@ import inventario from "./inventario.interface"
 export default interface Galpon {
   name: string
   ref: string
+  consecutivoVentas: number
+  consecutivoGastos: number
   ventasTotales?: number
   gastosTotales?: number
   ventas?: Ventas[]

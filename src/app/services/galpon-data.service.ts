@@ -7,7 +7,7 @@ import Galpon from '../interfaces/galpon.interface';
   providedIn: 'root'
 })
 export class GalponDataService {
-  private galponSeleccionado: Galpon = { name: '', ref: '', ventas: [], gastos: [], inventario: [] };
+  private galponSeleccionado: Galpon = { name: '', ref: '', consecutivoVentas: 0, consecutivoGastos: 0, ventas: [], gastos: [], inventario: [] };
   private indexGalpon: number = 0;
 
   constructor(
@@ -16,14 +16,13 @@ export class GalponDataService {
   }
 
   setIndexGalpon(index: number) {
-    const galpones = this.granjaService.getGranjaSeleccionada().galpones
-    this.galponSeleccionado = galpones ? galpones[index] : { name: '', ref: '', ventas: [], gastos: [], inventario: [] };
+    const galpones = this.granjaService.getGranjaSeleccionada().galpones //galpones de la granja seleccionada
+    this.galponSeleccionado = galpones ? galpones[index] : { name: '', ref: '', consecutivoVentas: 0, consecutivoGastos: 0, ventas: [], gastos: [], inventario: [] };
   }
 
   async datosGalponSeleccionado() {
     const galpones = this.granjaService.getGranjaSeleccionada().galpones
     if (galpones) {
-
       // Ventas de cada galpón
       await this.getDataFirebase.getCollectionDocs(`${galpones[this.indexGalpon].ref}/ventas`).then(async (ventasGalpon: any[]) => {
         for (let i = 0; i < ventasGalpon.length; i++) {
@@ -32,7 +31,6 @@ export class GalponDataService {
               ...venta.data()
             }
           })
-
         }
         galpones[this.indexGalpon] = {
           ...galpones[this.indexGalpon],

@@ -16,13 +16,16 @@
       <div id="ulGranjas" class="box">
         <h3 class="label">Ventas</h3>
         <div class="box" id="arrows">
-          <i (click)="changePage(-1)" class="fa-solid fa-arrow-left"></i>
-          <i (click)="changePage(1)" class="fa-solid fa-arrow-right"></i>
+          <i (click)="this.currentPageVentas = this.changePage(this.currentPageVentas,-1,this.ventasGalponGrupo.length)"
+            class="fa-solid fa-arrow-left"></i>
+          <i (click)="this.currentPageVentas = changePage(this.currentPageVentas,1,this.ventasGalponGrupo.length)"
+            class="fa-solid fa-arrow-right"></i>
         </div>
         <div id="table">
           <table>
             <tbody>
               <tr class="encabezado">
+                <th>id</th>
                 <th>Fecha</th>
                 <th>Hora</th>
                 <th>Cliente</th>
@@ -31,18 +34,20 @@
                 <th>Valor</th>
               </tr>
               <!-- Itera sobre las ventas -->
-              <ng-container *ngFor="let venta of this.ventasGalponGrupo[this.currentPage]">
+              <ng-container *ngFor="let venta of this.ventasGalponGrupo[this.currentPageVentas]">
                 <!-- Itera sobre los detalles de cada venta -->
                 <tr *ngFor="let detalle of venta.detalle; let i = index" class="table-content">
+                  <!-- id -->
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.id }}</td>
                   <!-- Muestra la fecha, hora y cliente solo en la primera línea de detalles -->
-                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() |
-                    date:'dd/MMMM/yyyy':'es' }}</td>
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate()
+                    |date:'dd/MMMM/yyyy':'es' }}</td>
                   <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'hh:mma':'es'
                     }}</td>
                   <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.cliente }}</td>
                   <!-- Muestra el tipo y la cantidad -->
                   <td>{{ detalle.tipo }}</td>
-                  <td>{{ detalle.cantidad }}</td>
+                  <td>{{ detalle.cantidad | number }}</td>
                   <!-- Muestra el valor solo en la primera línea de detalles -->
                   <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ moneyFormat(venta.totalVenta) }}</td>
                 </tr>
@@ -71,25 +76,34 @@
     </div>
     <div id="formGalpones" class="box">
       <div id="ulGranjas" class="box">
+        <div class="box" id="arrows">
+          <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,-1,this.gastosGalponGrupo.length)"
+            class="fa-solid fa-arrow-left"></i>
+          <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,1,this.gastosGalponGrupo.length)"
+            class="fa-solid fa-arrow-right"></i>
+        </div>
         <h3 class="label">Gastos</h3>
         <p class="label">1/abr - 7/abr</p>
-        <table>
-          <tbody>
-            <tr class="encabezado">
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Valor</th>
-              <th>Concepto</th>
-            </tr>
-            <tr *ngFor="let gasto of this.galpon.gastos" class="table-content">
-              <td>{{gasto.fecha.toDate() | date:'dd/MMMM/yyyy':'es'}}</td>
-              <td>{{gasto.fecha.toDate() | date:'hh:mm a':'es'}}</td>
-              <td>{{moneyFormat(gasto.total)}}</td>
-              <td>{{gasto.concepto}}</td>
-            </tr>
-          </tbody>
-        </table>
-
+        <div id="table">
+          <table>
+            <tbody>
+              <tr class="encabezado">
+                <th>id</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Valor</th>
+                <th>Concepto</th>
+              </tr>
+              <tr *ngFor="let gasto of this.gastosGalponGrupo[this.currentPageGastos]" class="table-content">
+                <td>{{ gasto.id }}</td>
+                <td>{{gasto.fecha.toDate() | date:'dd/MMMM/yyyy':'es'}}</td>
+                <td>{{gasto.fecha.toDate() | date:'hh:mm a':'es'}}</td>
+                <td>{{moneyFormat(gasto.total)}}</td>
+                <td>{{gasto.concepto}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <p class="label"><strong>Total: {{moneyFormat(galpon.gastosTotales ?? 0)}}</strong></p>
         <div id="toggle-gastos-chart-bar" (click)="toggleChartsVisibility2()">
           <span id="toggle-chart-arrow" [class.arrow-up]="isChartVisible" [class.arrow-down]="!isChartVisible"></span>

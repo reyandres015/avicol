@@ -94,4 +94,8 @@ export class MenuGranjasComponent implements OnInit {
   arrowBack() {
     window.history.back()
   }
+
+  navigateUpload(){
+    this.router.navigate(['/upload-data'])
+  }
 }

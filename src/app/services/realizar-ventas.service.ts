@@ -13,11 +13,8 @@ export class RealizarVentasService {
     private getDataFirebase: GetDataFirebaseService
   ) { }
 
-  // ventas: Ventas[] = [];
-
   // Método para registrar una venta
   async registrarVenta(venta: Ventas) {
-    // this.ventas.push(venta);
     let ventas = this.galponDataService.getGalpon().ventas;
     if (ventas) {
       ventas.push(venta);
@@ -30,6 +27,7 @@ export class RealizarVentasService {
   // Realiza la ejecucion de los update para todos los documentos de ventas pendientes por subir. (No internet conection) - POR DESARROLLAR
   async updateVenta(venta: Ventas) {
     const galpon = this.galponDataService.getGalpon();
+    galpon.consecutivoVentas++;
     const refColeccionGalpon = galpon.ref + '/ventas';
     await this.getDataFirebase.createDoc(refColeccionGalpon, venta);
     if (galpon.ventasTotales) {
@@ -37,6 +35,6 @@ export class RealizarVentasService {
     } else {
       galpon.ventasTotales = venta.totalVenta;
     }
-    await this.getDataFirebase.updateDoc(galpon.ref, { ventasTotales: galpon.ventasTotales });
+    await this.getDataFirebase.updateDoc(galpon.ref, { ventasTotales: galpon.ventasTotales, consecutivoVentas: galpon.consecutivoVentas });
   }
 }

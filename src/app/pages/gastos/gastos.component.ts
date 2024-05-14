@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import Gastos from 'src/app/interfaces/gastos.interface';
+import { GalponDataService } from 'src/app/services/galpon-data.service';
 import { RealizarGastoService } from 'src/app/services/realizar-gasto.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 
@@ -16,10 +17,10 @@ export class GastosComponent implements OnInit {
     private authService: UserAuthService,
     private router: Router,
     private gastoService: RealizarGastoService,
+    private galponService: GalponDataService,
   ) { }
 
-  fecha: Date = new Date();
-  hora: Date = new Date();
+  consecutivoGastos: number = 0;
 
   async ngOnInit() {
     await this.authService.verifyUser().then((isLogged) => {
@@ -27,9 +28,12 @@ export class GastosComponent implements OnInit {
         this.router.navigate(['/']);
       }
     })
+
+    this.consecutivoGastos = this.galponService.getGalpon().consecutivoGastos;
   }
 
   gasto: Gastos = {
+    id: 0,
     fecha: Timestamp.now(),
     concepto: '',
     categoria: '',
@@ -45,6 +49,7 @@ export class GastosComponent implements OnInit {
       return;
     }
 
+    this.gasto.id = this.consecutivoGastos;
     await this.gastoService.registrarGasto(this.gasto);
     alert('Gasto registrada con éxito');
 
@@ -85,15 +90,6 @@ export class GastosComponent implements OnInit {
   calcularTotal() {
     const total = this.gasto.cantidad * this.gasto.valorUnitario;
     this.gasto.total = total;
-  }
-
-  setFecha(event: Event) {
-    const htmlElement = (event.target as HTMLInputElement);
-    let fechaParts = htmlElement.value.split('-');
-    let fecha = new Date(Number(fechaParts[0]), Number(fechaParts[1]) - 1, Number(fechaParts[2]));
-    this.gasto.fecha = Timestamp.fromDate(fecha);
-    // obtener hora actual
-    this.hora = new Date();
   }
 
   //funcion para dar formato a la moneda

@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import Ventas from 'src/app/interfaces/ventas.interface';
 import { RealizarVentasService } from 'src/app/services/realizar-ventas.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
+import { GalponDataService } from 'src/app/services/galpon-data.service';
 @Component({
   selector: 'app-ventas',
   standalone: true,
@@ -16,21 +17,29 @@ import { UserAuthService } from 'src/app/services/user-auth.service';
 })
 export class VentasComponent implements OnInit {
   items: any[] = [];
+  consecutivoVentas: number = 0;
+
   constructor(
     private authService: UserAuthService,
     private router: Router,
-    private ventasService: RealizarVentasService
+    private ventasService: RealizarVentasService,
+    private galponService: GalponDataService
   ) { }
 
   async ngOnInit() {
-    // await this.authService.verifyUser().then((isLogged) => {
-    // //   if (!isLogged) {
-    // //     this.router.navigate(['/']);
-    // //   }
-    // // })
+    await this.authService.verifyUser().then((isLogged) => {
+      if (!isLogged) {
+        this.router.navigate(['/']);
+      }
+    })
+
+    this.consecutivoVentas = this.galponService.getGalpon().consecutivoVentas;
+    console.log(this.consecutivoVentas);
+
   }
 
   venta: Ventas = {
+    id: 0,
     fecha: Timestamp.now(),
     cliente: "",
     detalle: [],
@@ -38,6 +47,7 @@ export class VentasComponent implements OnInit {
   }
 
   async crearVenta() {
+    this.venta.id = this.consecutivoVentas;
     this.venta.detalle = []
     for (const k of this.getKeysObject(this.filas)) {
 
@@ -62,6 +72,7 @@ export class VentasComponent implements OnInit {
 
   reiniciarVenta() {
     this.venta = {
+      id: 0,
       fecha: Timestamp.now(),
       cliente: "",
       detalle: [],

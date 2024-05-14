@@ -17,7 +17,7 @@ Chart.register(...registerables);
 })
 export class VisualizacionDatosComponent implements OnInit {
   granjaSeleccionada: any = { name: '', path: '' };
-  galpon: Galpon = { name: '', ref: '', ventasTotales: 0, gastosTotales: 0, ventas: [], gastos: [] };
+  galpon: Galpon = { name: '', ref: '', consecutivoVentas: 0, consecutivoGastos: 0, ventasTotales: 0, gastosTotales: 0, ventas: [], gastos: [] };
   ventasGalpon: Ventas[] = [];
   gastosGalpon: Gastos[] = [];
 
@@ -34,18 +34,21 @@ export class VisualizacionDatosComponent implements OnInit {
     private router: Router
   ) { }
 
-  ventasGalponGrupo: any[] = []
-  currentPage: number = 0;
+  ventasGalponGrupo: any[] = [];
+  currentPageVentas: number = 0;
+  gastosGalponGrupo: any[] = [];
+  currentPageGastos: number = 0;
 
-  changePage(cambio: number) {
-    this.currentPage += cambio
-    if (this.currentPage < 0) {
-      this.currentPage = this.ventasGalponGrupo.length - 1;
+  changePage(currentPage: number, cambio: number, length: number) {
+    currentPage += cambio
+    if (currentPage < 0) {
+      currentPage = length - 1;
     }
 
-    if (this.currentPage >= this.ventasGalponGrupo.length) {
-      this.currentPage = 0;
+    if (currentPage >= length) {
+      currentPage = 0;
     }
+    return currentPage;
   }
 
   async ngOnInit() {
@@ -61,7 +64,14 @@ export class VisualizacionDatosComponent implements OnInit {
         // Ventas
         this.ventasGalpon = this.galpon?.ventas || [];
         // organizar ventasGalpon por fecha
-        this.ventasGalpon.sort((a, b) => a.fecha.toDate().getTime() - b.fecha.toDate().getTime());
+        this.ventasGalpon.sort((a, b) => {
+          const fechaA = a.fecha.toDate();
+          const fechaB = b.fecha.toDate();
+          if (fechaA.getTime() === fechaB.getTime()) {
+            return fechaA.getHours() - fechaB.getHours();
+          }
+          return fechaA.getTime() - fechaB.getTime();
+        });
 
         // Dividir en grupos de 5
 
@@ -70,8 +80,22 @@ export class VisualizacionDatosComponent implements OnInit {
           this.ventasGalponGrupo.push(grupo);
         }
 
+        this.gastosGalpon = this.galpon?.gastos || [];
         // organizar gastosGalpon por fecha
-        this.gastosGalpon.sort((a, b) => a.fecha.toDate().getTime() - b.fecha.toDate().getTime());
+        this.gastosGalpon.sort((a, b) => {
+          const fechaA = a.fecha.toDate();
+          const fechaB = b.fecha.toDate();
+          if (fechaA.getTime() === fechaB.getTime()) {
+            return fechaA.getHours() - fechaB.getHours();
+          }
+          return fechaA.getTime() - fechaB.getTime();
+        });
+
+        //dividir en grupos de 5
+        for (let i = 0; i < this.gastosGalpon.length; i += 5) {
+          let grupo = this.gastosGalpon.slice(i, i + 5);
+          this.gastosGalponGrupo.push(grupo);
+        }
 
         // Llama inicialmente a cargar y renderizar el gráfico
         this.loadDataAndRenderChart();

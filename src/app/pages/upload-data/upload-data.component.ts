@@ -16,7 +16,7 @@ export class UploadDataComponent implements OnInit {
   granjaSeleccionada: Granja = { name: '', path: '' }
 
   galpones: Galpon[] = [];
-  galponSeleccionado: Galpon = { name: '', ref: '' }
+  galponSeleccionado: Galpon = { name: '', consecutivoVentas: 0, consecutivoGastos: 0, ref: '' }
 
   constructor(
     private uploadService: UploadService,
@@ -123,6 +123,7 @@ export class UploadDataComponent implements OnInit {
     let fechaVenta = new Date(Number(fechaParts[2]), Number(fechaParts[1]) - 1, Number(fechaParts[0]));
 
     let venta: Ventas = {
+      id: 0,
       fecha: Timestamp.fromDate(fechaVenta),
       cliente: 'None',
       detalle: detalle,
@@ -147,7 +148,7 @@ export class UploadDataComponent implements OnInit {
         'ventas'//key
       );
     }
-    await this.uploadService.updateVenta(this.galponSeleccionado.ref, this.totalVentas);
+    await this.uploadService.updateVenta(this.galponSeleccionado.ref, this.galponSeleccionado.consecutivoVentas, this.totalVentas);
     alert('Ventas subidas correctamente');
   }
 

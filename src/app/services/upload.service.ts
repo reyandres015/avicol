@@ -23,6 +23,8 @@ export class UploadService {
       response.forEach((galpon) => {
         const newGalpon: Galpon = {
           name: galpon.data().name,
+          consecutivoVentas: 0,
+          consecutivoGastos: 0,
           ref: galpon.ref.path
         }
         galponesS.push(newGalpon);
@@ -52,7 +54,7 @@ export class UploadService {
     return response;
   }
 
-  async updateVenta(ref: string, totalVentas: number) {
-    await this.getDataFirebase.updateDoc(ref, { ventasTotales: totalVentas });
+  async updateVenta(refGalpon: string, consecutivoVentas: number, totalVentas: number) {
+    await this.getDataFirebase.updateDoc(refGalpon, { ventasTotales: totalVentas, consecutivoVentas: consecutivoVentas });
   }
 }

@@ -20,12 +20,20 @@ export class RealizarGastoService {
     } else {
       this.galponDataService.getGalpon().gastos = [gasto];
     }
-    await this.updateVenta(gasto);
+    await this.updateGasto(gasto);
   }
 
-  // Realiza la ejecucion de los update para todos los documentos de ventas pendientes por subir. (No internet conection)
-  async updateVenta(gasto: Gastos) {
-    const refColeccionGalpon = this.galponDataService.getGalpon().ref + '/gastos';
+  // Realiza la ejecución de los update para todos los documentos de ventas pendientes por subir. (No internet conection)
+  async updateGasto(gasto: Gastos) {
+    const galpon = this.galponDataService.getGalpon();
+    galpon.consecutivoGastos++;
+    const refColeccionGalpon = galpon.ref + '/gastos';
     await this.getDataFirebase.createDoc(refColeccionGalpon, gasto);
+    if (galpon.gastosTotales) {
+      galpon.gastosTotales += gasto.total;
+    } else {
+      galpon.gastosTotales = gasto.total;
+    }
+    await this.getDataFirebase.updateDoc(galpon.ref, { gastosTotales: galpon.gastosTotales, consecutivoGastos: galpon.consecutivoGastos });
   }
 }
