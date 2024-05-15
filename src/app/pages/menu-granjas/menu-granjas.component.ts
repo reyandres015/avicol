@@ -44,7 +44,8 @@ export class MenuGranjasComponent implements OnInit {
 
   // diseño
   formGranja: boolean = false; // Formulario para crear una granja
-  messageAlert: boolean = false; // Alerta de que ya existe una granja con ese nombre
+  messageAlertNombre: boolean = false; // Alerta de que ya existe una granja con ese nombre
+  messageAlertVacio: boolean = false; // Alerta de que el input esta vacio.
   editMode: boolean = false; // Modo de edición de las granjas
 
   constructor(
@@ -75,12 +76,21 @@ export class MenuGranjasComponent implements OnInit {
   async crearGranja(nombre: string) {
     // Validar si ya existe el nombre de la granja
     if (this.granjas.find(granja => granja.name.toLowerCase() === nombre.toLowerCase())) {
-      this.messageAlert = true;
+      this.messageAlertNombre = true;
       return;
     }
+
+    // Validar si el input esta vacio
+    if (nombre === '') {
+      this.messageAlertVacio = true;
+      return;
+    }
+
+    // Crear la granja
     await this.granjaService.crearGranja(nombre).then(() => {
       alert('Granja creada con éxito');
       this.granjas = this.granjaService.getGranjasUser();
+      this.formGranja = false;
     });
   }
 
@@ -95,7 +105,7 @@ export class MenuGranjasComponent implements OnInit {
     window.history.back()
   }
 
-  navigateUpload(){
+  navigateUpload() {
     this.router.navigate(['/upload-data'])
   }
 }

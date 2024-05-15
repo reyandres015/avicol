@@ -52,7 +52,7 @@ export class GastosComponent implements OnInit {
     this.gasto.id = this.consecutivoGastos;
     await this.gastoService.registrarGasto(this.gasto);
     alert('Gasto registrada con éxito');
-
+    this.arrowBack();
   }
 
   //generar funciones para setear el concepto y la categoria
@@ -100,6 +100,15 @@ export class GastosComponent implements OnInit {
     } else {
       event.target.value = '$';
     }
+  }
+
+  moneyFormat(money: number) {
+    return money.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
   }
 
   arrowBack() {

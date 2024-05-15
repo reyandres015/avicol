@@ -48,7 +48,7 @@
           </section>
           <section>
             <label class="labelForm" for="valor">Total</label>
-            <input class="inputForm" type="text" value="{{gasto.total | currency:'symbol': '$':'1.0'}}" readonly>
+            <input class="inputForm" type="text" value="{{moneyFormat(gasto.total)}}" readonly>
           </section>
         </div>
         <button (click)="crearGasto()" class="content-desktop">Registrar</button>

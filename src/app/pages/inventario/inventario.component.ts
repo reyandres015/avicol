@@ -61,6 +61,7 @@ export class InventarioComponent implements OnInit {
     setTimeout(async () => {
       await this.inventarioService.registrarInventario(this.inventario);
       alert('Inventario registrado con éxito');
+      this.arrowBack();
     }, 2000);
   }
 

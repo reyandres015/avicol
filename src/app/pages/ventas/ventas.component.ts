@@ -34,8 +34,6 @@ export class VentasComponent implements OnInit {
     })
 
     this.consecutivoVentas = this.galponService.getGalpon().consecutivoVentas;
-    console.log(this.consecutivoVentas);
-
   }
 
   venta: Ventas = {
@@ -68,6 +66,7 @@ export class VentasComponent implements OnInit {
 
     await this.ventasService.registrarVenta(this.venta);
     alert('Venta registrada con éxito');
+    this.arrowBack();
   }
 
   reiniciarVenta() {
@@ -170,6 +169,15 @@ export class VentasComponent implements OnInit {
     } else {
       event.target.value = '$';
     }
+  }
+
+  moneyFormat(money: number) {
+    return money.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
   }
 
   arrowBack() {

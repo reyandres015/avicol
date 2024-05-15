@@ -57,7 +57,7 @@ export class UserAuthService {
 
   observeUserState() {
     this.firebaseAuthenticationService.authState.subscribe((userState) => {
-     userState && this.ngZone.run(() => this.router.navigate(['menu-granjas']));
+      userState && this.ngZone.run(() => this.router.navigate(['menu-granjas']));
     })
   }
 
@@ -92,18 +92,18 @@ export class UserAuthService {
     return this.user;
   }
 
-  addGranjaToUser(granjaRef: DocumentReference) {
+  async addGranjaToUser(granjaRef: DocumentReference) {
     this.user.granjas.push(granjaRef);
-    this.getDataFirebase.updateDoc(`usuarios/${this.user.uid}`, { granjas: this.user.granjas });
+    await this.getDataFirebase.updateDoc(`usuarios/${this.user.uid}`, { granjas: this.user.granjas });
   }
 
-  deleteGranja(granjaRef: DocumentReference) {
+  async deleteGranja(granjaRef: DocumentReference) {
     this.user.granjas.splice(this.user.granjas.indexOf(granjaRef), 1);
-    this.getDataFirebase.updateDoc(`usuarios/${this.user.uid}`, { granjas: this.user.granjas });
+    await this.getDataFirebase.updateDoc(`usuarios/${this.user.uid}`, { granjas: this.user.granjas });
     return true;
   }
 
-async register(email: string, password: string,nameUser:string, granjasUser: DocumentReference[] = []) {
+  async register(email: string, password: string, nameUser: string, granjasUser: DocumentReference[] = []) {
     return this.firebaseAuthenticationService.createUserWithEmailAndPassword(email, password)
       .then((userCredentials) => {
         this.userCredentials = userCredentials.user;

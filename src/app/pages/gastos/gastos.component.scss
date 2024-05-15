@@ -2,6 +2,7 @@ $LOGO: #F4A86C;
 $COLOR-BRAND: #002D4E;
 $COLOR-BRAND2: #626F78;
 $FOCO: #3A3A3A;
+$INPUT-BLOCK: #f5cfb2;
 
 main {
   min-height: 100vh;
@@ -56,6 +57,13 @@ main {
 
         section {
           gap: 5px;
+
+          //PINTAR LOS DOS PRIMEROS INPUTS DE SECTION
+          &:nth-child(1) input,
+          &:nth-child(2) input,
+          &:last-child input {
+            background-color: $INPUT-BLOCK;
+          }
 
           label {
             font-size: 23px;

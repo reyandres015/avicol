@@ -82,13 +82,14 @@ export class GranjaDataService {
   // Funcion que elimina una granja
   async eliminarGranja(index: number) {
     const granja = this.granjasUser[index];
-    await this.getDataFirebase.deleteDoc(granja.path).then((docRef: any) => {
+    await this.getDataFirebase.deleteDoc(granja.path).then(async (docRef: any) => {
       if (docRef) {
-        if (this.userAuth.deleteGranja(docRef)) {
+        await this.userAuth.deleteGranja(docRef).then(() => {
           this.setBasicGranjas();
-        }
-      } else {
-        alert('Error al eliminar la granja');
+        }).catch(() => {
+          alert
+            ('Error al eliminar la granja');
+        });
       }
     });
   }
@@ -122,5 +123,5 @@ export class GranjaDataService {
   getGranjas() {
     return this.getDataFirebase.getCollectionDocs('granjas');
   }
-  
+
 }

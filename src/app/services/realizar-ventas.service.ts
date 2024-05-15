@@ -16,6 +16,8 @@ export class RealizarVentasService {
   // Método para registrar una venta
   async registrarVenta(venta: Ventas) {
     let ventas = this.galponDataService.getGalpon().ventas;
+    console.log(this.galponDataService.getGalpon());
+
     if (ventas) {
       ventas.push(venta);
     } else {

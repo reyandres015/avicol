@@ -18,25 +18,38 @@
       <div [@fadeInOut] id="formGranjas" class="box">
         <h1 class="label">SELECCIONE UNA GRANJA</h1>
         <div [@fadeInOutFastWidth] id="ulGranjas" class="box">
+
+          <!-- Lista de granjas disponibles del usuario -->
           <div [@fadeInOutFastWidth] id="box-granja" *ngFor="let granja of this.granjas; index as i">
             <button [@fadeInOutFastWidth] (click)="option(i)" class="subcontent">{{granja.name}}</button>
             <i [@fadeInOut] (click)="this.eliminarGranja(i)" *ngIf="editMode" class="fa-solid fa-trash"></i>
           </div>
-          <!-- Buton para crear una nueva granja -->
+
+          <!-- Crear una nueva granja -->
           <hr style="width: 100%; border:none; border-top: 0.1px dotted;">
           <div [@fadeInOutFastHeight] id="box-crearGranja" *ngIf="formGranja">
-            <input (input)="this.messageAlert=false" class="inputForm" type="text" placeholder="Nombre de la granja"
-              #nombreGranja>
-            <span [@fadeInOutFastHeight] *ngIf="this.messageAlert" class="messageError" id="formError">Esta granja ya
-              esta
-              registrada</span>
+
+            <!-- NOMBRE DE LA GRANJA -->
+            <input (input)="this.messageAlertNombre=false; this.messageAlertVacio=false;" class="inputForm" type="text"
+              placeholder="Nombre de la granja" #nombreGranja>
+
+            <!-- ALERTA: Nombre de granja ya existe -->
+            <span [@fadeInOutFastHeight] *ngIf="this.messageAlertNombre" class="messageError" id="formError">Esta granja
+              ya esta registrada</span>
+            <!-- ALERTA: Input de nombre vacio -->
+            <span [@fadeInOutFastHeight] *ngIf="this.messageAlertVacio" class="messageError" id="formError">Nombre de
+              granja vacio</span>
+
             <button class="subcontent" (click)="crearGranja(nombreGranja.value)">Crear</button>
             <button class="subcontent" id="btnCancelar" (click)="formGranja = false;">Cancelar</button>
           </div>
+
+          <!-- Iconos agregar y modificar (tools) -->
           <section id="tools">
             <i *ngIf="!formGranja" (click)="formGranja = true;" class="fa-solid fa-circle-plus"></i>
-            <i (click)="editMode = true" class="fa-solid fa-screwdriver-wrench"></i>
+            <i (click)="editMode = !editMode" class="fa-solid fa-screwdriver-wrench"></i>
           </section>
+
         </div>
       </div>
     </div>

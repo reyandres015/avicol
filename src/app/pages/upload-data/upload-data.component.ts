@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore';
-import { linkHorizontal } from 'd3-shape';
 import Galpon from 'src/app/interfaces/galpon.interface';
 import Granja from 'src/app/interfaces/granja.interface';
 import Ventas from 'src/app/interfaces/ventas.interface';
@@ -117,19 +116,18 @@ export class UploadDataComponent implements OnInit {
 
   async recorridoFilas(fecha: string) {
     let detalle = this.filasTables;
-    console.log(detalle);
-
     let fechaParts = fecha.split('/');
     let fechaVenta = new Date(Number(fechaParts[2]), Number(fechaParts[1]) - 1, Number(fechaParts[0]));
 
     let venta: Ventas = {
-      id: 0,
+      id: this.galponSeleccionado.consecutivoVentas,
       fecha: Timestamp.fromDate(fechaVenta),
       cliente: 'None',
       detalle: detalle,
       totalVenta: this.totalVenta
     }
 
+    this.galponSeleccionado.consecutivoVentas += 1;
     this.totalVentas += this.totalVenta;
 
     this.uploadService.createVenta(`${this.galponSeleccionado.ref}/ventas`, venta);

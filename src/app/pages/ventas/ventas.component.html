@@ -41,23 +41,27 @@
                 <th>Total</th>
               </tr>
               <tr *ngFor="let key of getKeysObject(this.filas)">
+                <!-- Tipo -->
                 <td>{{ key }}</td>
+                <!-- Cantidad -->
                 <td><input class="inputForm" type="number" min="0" value="0" (input)="changeCantidad(key,$event)"></td>
+                <!-- Valor Unitario -->
                 <td><input class="inputForm" type="text" value="$0"
                     (input)="formatCurrency($event); changeValorUnitario(key,$event)"></td>
-                <td><input class="inputForm" type="text" value="{{filas[key].total() | currency:'symbol': '$':'1.0'}}"
-                    readonly>
+                <!-- Total -->
+                <td><input class="inputForm" type="text" value="{{moneyFormat(filas[key].total())}}" readonly>
                 </td>
               </tr>
               <tr *ngFor="let item of items; let i = index">
                 <td>
-                  <input type="text" class="inputForm" placeholder="Ingrese el tipo" #key (change)="this.selectTipo($event)">
+                  <input type="text" class="inputForm" placeholder="Ingrese el tipo" #key
+                    (change)="this.selectTipo($event)">
                 </td>
                 <td><input class="inputForm" type="number" min="0" (input)="changeCantidad(key.value,$event)"></td>
                 <td><input class="inputForm" type="text"
                     (input)="formatCurrency($event); changeValorUnitario(key.value,$event)"></td>
-                <td><input class="inputForm" type="text"
-                    value="{{filas[key.value].total() | currency:'symbol': '$':'1.0'}}" readonly></td>
+                <td><input class="inputForm" type="text" value="{{moneyFormat(filas[key.value].total())}}" readonly>
+                </td>
               </tr>
               <tr>
                 <td colspan="4">
@@ -66,7 +70,7 @@
               </tr>
             </table>
           </div>
-          <h2>Total Venta: {{venta.totalVenta | currency:'symbol': '$':'1.0'}}</h2>
+          <h2>Total Venta: {{moneyFormat(venta.totalVenta)}}</h2>
         </div>
         <button class="content-desktop" (click)="crearVenta()">Registrar</button>
       </div>

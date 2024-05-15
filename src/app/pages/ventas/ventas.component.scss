@@ -55,7 +55,6 @@ main {
         padding: 30px;
 
         section {
-
           //PINTAR LOS DOS PRIMEROS INPUTS DE SECTION
           &:nth-child(1) input,
           &:nth-child(2) input {
@@ -141,8 +140,18 @@ main {
     background-color: transparent;
     cursor: pointer;
   }
-  
+
   .round-button img {
     width: 20px; // Ajusta según necesites
+  }
+}
+
+i {
+  transition: all 0.3s;
+  cursor: pointer;
+  font-size: 35px;
+
+  &:hover {
+    color: $LOGO;
   }
 }
