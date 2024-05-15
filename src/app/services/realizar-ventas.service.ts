@@ -16,7 +16,6 @@ export class RealizarVentasService {
   // Método para registrar una venta
   async registrarVenta(venta: Ventas) {
     let ventas = this.galponDataService.getGalpon().ventas;
-    console.log(this.galponDataService.getGalpon());
 
     if (ventas) {
       ventas.push(venta);
@@ -31,7 +30,7 @@ export class RealizarVentasService {
     const galpon = this.galponDataService.getGalpon();
     galpon.consecutivoVentas++;
     const refColeccionGalpon = galpon.ref + '/ventas';
-    await this.getDataFirebase.createDoc(refColeccionGalpon, venta);
+    await this.getDataFirebase.createDoc(refColeccionGalpon, venta, venta.id.toString());
     if (galpon.ventasTotales) {
       galpon.ventasTotales += venta.totalVenta;
     } else {

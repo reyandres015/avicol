@@ -45,7 +45,6 @@ export class GetDataFirebaseService {
     try {
       const collectionRef = await collection(this.firestore, ref);
       let docRef
-      console.log(data);
 
       if (id) {
         docRef = doc(collectionRef, id);

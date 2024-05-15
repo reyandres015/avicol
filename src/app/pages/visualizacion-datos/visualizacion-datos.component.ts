@@ -64,14 +64,7 @@ export class VisualizacionDatosComponent implements OnInit {
         // Ventas
         this.ventasGalpon = this.galpon?.ventas || [];
         // organizar ventasGalpon por fecha
-        this.ventasGalpon.sort((a, b) => {
-          const fechaA = a.fecha.toDate();
-          const fechaB = b.fecha.toDate();
-          if (fechaA.getTime() === fechaB.getTime()) {
-            return fechaA.getHours() - fechaB.getHours();
-          }
-          return fechaA.getTime() - fechaB.getTime();
-        });
+        this.ventasGalpon.sort((a, b) => a.id - b.id);
 
         // Dividir en grupos de 5
 
@@ -82,14 +75,7 @@ export class VisualizacionDatosComponent implements OnInit {
 
         this.gastosGalpon = this.galpon?.gastos || [];
         // organizar gastosGalpon por fecha
-        this.gastosGalpon.sort((a, b) => {
-          const fechaA = a.fecha.toDate();
-          const fechaB = b.fecha.toDate();
-          if (fechaA.getTime() === fechaB.getTime()) {
-            return fechaA.getHours() - fechaB.getHours();
-          }
-          return fechaA.getTime() - fechaB.getTime();
-        });
+        this.gastosGalpon.sort((a, b) => a.id - b.id);
 
         //dividir en grupos de 5
         for (let i = 0; i < this.gastosGalpon.length; i += 5) {

@@ -28,7 +28,7 @@ export class RealizarGastoService {
     const galpon = this.galponDataService.getGalpon();
     galpon.consecutivoGastos++;
     const refColeccionGalpon = galpon.ref + '/gastos';
-    await this.getDataFirebase.createDoc(refColeccionGalpon, gasto);
+    await this.getDataFirebase.createDoc(refColeccionGalpon, gasto, gasto.id.toString());
     if (galpon.gastosTotales) {
       galpon.gastosTotales += gasto.total;
     } else {
