@@ -1,4 +1,3 @@
-import { DocumentReference } from "@angular/fire/firestore"
 import Gastos from "./gastos.interface"
 import Ventas from "./ventas.interface"
 import inventario from "./inventario.interface"

@@ -88,9 +88,10 @@ export class MenuGranjasComponent implements OnInit {
 
     // Crear la granja
     await this.granjaService.crearGranja(nombre).then(() => {
-      alert('Granja creada con éxito');
       this.granjas = this.granjaService.getGranjasUser();
       this.formGranja = false;
+    }).catch(() => {
+      alert('Error al crear la granja');
     });
   }
 

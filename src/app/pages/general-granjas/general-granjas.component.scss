@@ -66,6 +66,7 @@ main {
           gap: 20px;
 
           .messageError {
+            animation: vibrate 0.2s linear 3;
             color: red;
             text-align: center;
             text-wrap: nowrap;

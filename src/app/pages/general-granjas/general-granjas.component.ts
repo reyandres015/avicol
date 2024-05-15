@@ -48,7 +48,8 @@ export class GeneralGranjasComponent {
 
   // diseño
   formGranja: boolean = false; // Formulario para crear una granja
-  messageAlert: boolean = false; // Alerta de que ya existe una granja con ese nombre
+  messageAlertNombre: boolean = false; // Alerta de que ya existe una granja con ese nombre
+  messageAlertVacio: boolean = false; // Alerta que el input name esta vacio
   editMode: boolean = false; // Modo de edición de las granjas
 
   constructor(
@@ -91,12 +92,19 @@ export class GeneralGranjasComponent {
   async crearGalpon(name: string) {
     // verificar si ya existe un galpon con ese nombre
     if (this.granja.galpones?.find(galpon => galpon.name.toLowerCase() === name.toLowerCase())) {
-      this.messageAlert = true;
+      this.messageAlertNombre = true;
+      return;
+    }
+
+    // Validar si el input esta vacio
+    if (name === '') {
+      this.messageAlertVacio = true;
       return;
     }
 
     await this.granjaService.crearGalpon(name).then(() => {
       this.granja = this.granjaService.getGranjaSeleccionada();
+      this.formGranja = false;
     });
   }
 

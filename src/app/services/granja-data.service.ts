@@ -3,6 +3,7 @@ import { UserAuthService } from './user-auth.service';
 import { DocumentReference } from '@angular/fire/firestore';
 import { GetDataFirebaseService } from './get-data-firebase.service';
 import Granja from '../interfaces/granja.interface';
+import Galpon from '../interfaces/galpon.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -72,10 +73,12 @@ export class GranjaDataService {
   async crearGranja(nombre: string) {
     // transformar nombre para asignarle un id
     const id = nombre.toLowerCase().replace(/ /g, '-');
-    return await this.getDataFirebase.createDoc('granjas/', { name: nombre }, id).then((docRef: any) => {
-      this.userAuth.addGranjaToUser(docRef); // Agrega la granja al usuario
+    return await this.getDataFirebase.createDoc('granjas/', { name: nombre }, id).then(async (docRef: any) => {
+      await this.userAuth.addGranjaToUser(docRef); // Agrega la granja al usuario
       this.setBasicGranjas(); // Vuelve a descargar la información de las granjas
       return true;
+    }).catch(() => {
+      return false;
     });
   }
 
@@ -97,8 +100,14 @@ export class GranjaDataService {
   // Función que crea un galpón
   async crearGalpon(nombre: string) {
     const id = nombre.toLowerCase().replace(/ /g, '-');
+    const galpon = {
+      name: nombre,
+      consecutivoVentas: 0,
+      consecutivoGastos: 0,
+    }
+
     const granjaPath = this.granjaSeleccionada.path;
-    return await this.getDataFirebase.createDoc(`${granjaPath}/galpones`, { name: nombre }, id).then(async () => {
+    return await this.getDataFirebase.createDoc(`${granjaPath}/galpones`, galpon, id).then(async () => {
       await this.setTotalInfoGranja(granjaPath);
       return true;
     });

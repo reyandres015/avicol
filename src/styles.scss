@@ -11,6 +11,28 @@ $FOCO: #3A3A3A;
   /* Ruta a tu archivo .ttf */
 }
 
+@keyframes vibrate {
+  0% {
+    transform: translate(0);
+  }
+
+  25% {
+    transform: translate(2px, 2px);
+  }
+
+  50% {
+    transform: translate(0);
+  }
+
+  75% {
+    transform: translate(-2px, -2px);
+  }
+
+  100% {
+    transform: translate(0);
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
