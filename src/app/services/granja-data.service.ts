@@ -20,10 +20,10 @@ export class GranjaDataService {
   ) { }
 
   // Menu de granjas disponibles por usuario
-  setBasicGranjas() {
+  async setBasicGranjas() {
     const arrayGranjasRef: DocumentReference[] = this.userAuth.getUser().granjas;
     this.granjasUser = []; //Siempre que se vaya a llenar el arreglo, debe estar vacio.
-    arrayGranjasRef.forEach(async (granjaRef) => {
+    await arrayGranjasRef.forEach(async (granjaRef) => {
       await this.getDataFirebase.getDocByReference(granjaRef).then((granja) => {
         const newGranja: Granja = {
           name: granja.data().name,

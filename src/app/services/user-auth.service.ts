@@ -40,18 +40,13 @@ export class UserAuthService {
 
   //generar el inicio de sesion
   async login(email: string, password: string) {
-    return this.firebaseAuthenticationService.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-      .then(() => {
-        return this.firebaseAuthenticationService.signInWithEmailAndPassword(email, password)
-          .then(async (userCredentials) => {
-            this.userCredentials = userCredentials.user;
-            await this.getUserData(this.userCredentials);
-            this.observeUserState();
-          }).catch((error) => {
-            console.error(error.message + ' Por favor, intenta de nuevo');
-          });
+    return await this.firebaseAuthenticationService.signInWithEmailAndPassword(email, password)
+      .then(async (userCredentials) => {
+        this.userCredentials = userCredentials.user;
+        await this.getUserData(this.userCredentials);
+        this.observeUserState();
       }).catch((error) => {
-        console.error('Error al establecer la persistencia de la sesión: ', error);
+        return error;
       });
   }
 

@@ -34,6 +34,9 @@ export class InicioSesionComponent {
 
   messageError: boolean = false;
   messageErrorForm: boolean = false;
+  messageErrorNetwork: boolean = false;
+
+  chargeIcon: boolean = false;
 
   login(email: string
     , password: string) {
@@ -44,8 +47,15 @@ export class InicioSesionComponent {
       this.messageError = true;
       return;
     }
-    this.userAuthService.login(email, password).then(() => {
-      this.messageErrorForm = this.userAuthService.isLoggedIn;
+
+    this.chargeIcon = true;
+    this.userAuthService.login(email, password).then((error?: any) => {
+      this.chargeIcon = false;
+      if (error.code == "auth/network-request-failed") {
+        this.messageErrorNetwork = true;
+      } else {
+        this.messageErrorForm = this.userAuthService.isLoggedIn;
+      }
     })
   }
 

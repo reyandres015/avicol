@@ -22,6 +22,7 @@ import { FormsModule } from '@angular/forms';
 import { environment } from '../environments/environment';
 import { UploadDataComponent } from './pages/upload-data/upload-data.component';
 import { AgregarUsuarioComponent } from './pages/agregar-usuario/agregar-usuario.component';
+import { PopupModalComponent } from './components/popup-modal/popup-modal.component';
 
 
 registerLocaleData(localeEs, 'es');
@@ -39,6 +40,7 @@ registerLocaleData(localeEs, 'es');
     GastosComponent,
     UploadDataComponent,
     AgregarUsuarioComponent,
+    PopupModalComponent
   ],
   imports: [
     BrowserModule,

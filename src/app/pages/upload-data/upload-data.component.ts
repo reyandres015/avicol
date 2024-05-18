@@ -17,6 +17,8 @@ export class UploadDataComponent implements OnInit {
   galpones: Galpon[] = [];
   galponSeleccionado: Galpon = { name: '', consecutivoVentas: 0, consecutivoGastos: 0, ref: '' }
 
+  chargeIcon: boolean = false;
+
   constructor(
     private uploadService: UploadService,
   ) { }
@@ -112,7 +114,7 @@ export class UploadDataComponent implements OnInit {
     }
   }
 
-  totalVentas: number = 0;
+  sumaVentas: number = 0;
 
   async recorridoFilas(fecha: string) {
     let detalle = this.filasTables;
@@ -127,8 +129,8 @@ export class UploadDataComponent implements OnInit {
       totalVenta: this.totalVenta
     }
 
-    this.galponSeleccionado.consecutivoVentas += 1;
-    this.totalVentas += this.totalVenta;
+    this.galponSeleccionado.consecutivoVentas++;
+    this.sumaVentas += this.totalVenta;
 
     this.uploadService.createVenta(`${this.galponSeleccionado.ref}/ventas`, venta);
   }
@@ -146,7 +148,9 @@ export class UploadDataComponent implements OnInit {
         'ventas'//key
       );
     }
-    await this.uploadService.updateVenta(this.galponSeleccionado.ref, this.galponSeleccionado.consecutivoVentas, this.totalVentas);
+    this.chargeIcon = true;
+    await this.uploadService.updateVenta(this.galponSeleccionado.ref, this.galponSeleccionado.consecutivoVentas, this.sumaVentas);
+    this.chargeIcon = false;
     alert('Ventas subidas correctamente');
   }
 
