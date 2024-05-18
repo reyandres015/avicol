@@ -21,13 +21,16 @@ export class VisualizacionDatosComponent implements OnInit {
   ventasGalpon: Ventas[] = [];
   gastosGalpon: Gastos[] = [];
 
+  mostrarVentas: boolean = true;
+  mostrarGastos: boolean = false;
+  mostrarGraficas: boolean = false;
+
   isChartVisible: boolean = false;
   isChartsVisible2: boolean = false;
   isGastosChartVisible: boolean = false;
   intervaloSeleccionado: string = 'por_cliente';
 
   ventasChart: Chart | null = null;
-  gastosChart: Chart | null = null;
   lineChart: Chart | null = null;
 
   constructor(

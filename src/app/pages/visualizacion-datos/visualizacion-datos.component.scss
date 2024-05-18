@@ -15,7 +15,7 @@ main {
   justify-content: center;
 
   #mainBox {
-    // max-width: 380px;
+    max-width: 380px;
     gap: 20px;
     padding: 40px 40px 100px 40px;
     border-radius: 30px;
@@ -93,15 +93,6 @@ table {
       }
     }
 
-    // .table-content {
-    //   // :first-child {
-    //   //   text-align: start;
-    //   //   border-bottom: 0;
-    //   //   max-width: 120px;
-    //   // }
-
-    // }
-
     td {
       min-width: 120px;
       text-align: center;
@@ -121,11 +112,9 @@ table {
   background-color: transparent;
   text-align: center;
   position: relative;
-  border-top: 2px solid #ffffff;
-  /* Cambia esto al color deseado */
+  border-top: 2px solid #ffffff; /* Cambia esto al color deseado */
   margin-top: 10px;
-  margin-bottom: -2px;
-  /* Elimina el espacio adicional debajo de la barra */
+  margin-bottom: -2px; /* Elimina el espacio adicional debajo de la barra */
 }
 
 #toggle-chart-arrow {
@@ -133,14 +122,12 @@ table {
   height: 0;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-top: 5px solid #ffffff;
-  /* Cambia esto al color deseado para la flecha */
+  border-top: 5px solid #ffffff; /* Cambia esto al color deseado para la flecha */
   display: inline-block;
   margin: 0 auto;
 }
 
 .arrow-up {
   border-top: none;
-  border-bottom: 5px solid #ffffff;
-  /* Cambia esto al color deseado para la flecha */
+  border-bottom: 5px solid #ffffff; /* Cambia esto al color deseado para la flecha */
 }
