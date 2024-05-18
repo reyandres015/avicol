@@ -25,7 +25,10 @@ export class VisualizacionDatosComponent implements OnInit {
   isChartsVisible2: boolean = false;
   isGastosChartVisible: boolean = false;
   intervaloSeleccionado: string = 'por_cliente';
-  currentChart: Chart | null = null;
+
+  ventasChart: Chart | null = null;
+  gastosChart: Chart | null = null;
+  lineChart: Chart | null = null;
 
   constructor(
     private authService: UserAuthService,
@@ -118,8 +121,8 @@ export class VisualizacionDatosComponent implements OnInit {
   loadDataAndRenderChart() {
     if (!this.galpon || !this.galpon.ventas) return;
 
-    if (this.currentChart) {
-      this.currentChart.destroy();
+    if (this.ventasChart) {
+      this.ventasChart.destroy();
     }
 
     let agrupado = this.agruparDatos(this.galpon.ventas, this.intervaloSeleccionado);
@@ -180,7 +183,7 @@ export class VisualizacionDatosComponent implements OnInit {
     if (canvas && this.isChartVisible) {
       const context = canvas.getContext('2d');
       if (context) {
-        this.currentChart = new Chart(context, config);
+        this.ventasChart = new Chart(context, config);
       }
     }
   }
@@ -340,10 +343,10 @@ export class VisualizacionDatosComponent implements OnInit {
     if (canvas && this.isChartsVisible2) {
       const context = canvas.getContext('2d');
       if (context) {
-        if (this.currentChart) {
-          this.currentChart.destroy();
+        if (this.lineChart) {
+          this.lineChart.destroy();
         }
-        this.currentChart = new Chart(context, config);
+        this.lineChart = new Chart(context, config);
       } else {
         console.error("No se pudo obtener el contexto del canvas para el gráfico de líneas.");
       }
