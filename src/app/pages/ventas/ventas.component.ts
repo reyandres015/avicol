@@ -8,10 +8,9 @@ import Ventas from 'src/app/interfaces/ventas.interface';
 import { RealizarVentasService } from 'src/app/services/realizar-ventas.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 import { GalponDataService } from 'src/app/services/galpon-data.service';
+import { GranjaDataService } from 'src/app/services/granja-data.service';
 @Component({
   selector: 'app-ventas',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './ventas.component.html',
   styleUrls: ['./ventas.component.scss']
 })
@@ -19,11 +18,14 @@ export class VentasComponent implements OnInit {
   items: any[] = [];
   consecutivoVentas: number = 0;
 
+  path: { name: string, path: string }[] = [];
+
   constructor(
     private authService: UserAuthService,
     private router: Router,
     private ventasService: RealizarVentasService,
-    private galponService: GalponDataService
+    private galponService: GalponDataService,
+    private granjaService: GranjaDataService,
   ) { }
 
   async ngOnInit() {
@@ -32,6 +34,18 @@ export class VentasComponent implements OnInit {
         this.router.navigate(['/']);
       }
     })
+
+    const refGranja = this.granjaService.getGranjaSeleccionada().path.split('/').pop();
+    const refGalpon = this.galponService.getGalpon().ref.split('/').pop();
+    if (refGranja && refGalpon) {
+      this.path = [
+        { name: 'granjas', path: 'menu-granjas' },
+        { name: refGranja, path: 'vista-general-granjas' },
+        { name: 'galpones', path: 'vista-general-granjas' },
+        { name: refGalpon, path: 'vista-general-granjas' },
+        { name: 'ventas', path: 'ventas' }
+      ];
+    }
 
     this.consecutivoVentas = this.galponService.getGalpon().consecutivoVentas;
   }

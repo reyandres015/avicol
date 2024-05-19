@@ -4,6 +4,7 @@ import { Timestamp } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import Gastos from 'src/app/interfaces/gastos.interface';
 import { GalponDataService } from 'src/app/services/galpon-data.service';
+import { GranjaDataService } from 'src/app/services/granja-data.service';
 import { RealizarGastoService } from 'src/app/services/realizar-gasto.service';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 
@@ -17,10 +18,13 @@ export class GastosComponent implements OnInit {
     private authService: UserAuthService,
     private router: Router,
     private gastoService: RealizarGastoService,
+    private granjaService: GranjaDataService,
     private galponService: GalponDataService,
   ) { }
 
   consecutivoGastos: number = 0;
+
+  path: { name: string, path: string }[] = [];
 
   async ngOnInit() {
     await this.authService.verifyUser().then((isLogged) => {
@@ -28,6 +32,18 @@ export class GastosComponent implements OnInit {
         this.router.navigate(['/']);
       }
     })
+
+    const refGranja = this.granjaService.getGranjaSeleccionada().path.split('/').pop();
+    const refGalpon = this.galponService.getGalpon().ref.split('/').pop();
+    if (refGranja && refGalpon) {
+      this.path = [
+        { name: 'granjas', path: 'menu-granjas' },
+        { name: refGranja, path: 'vista-general-granjas' },
+        { name: 'galpones', path: 'vista-general-granjas' },
+        { name: refGalpon, path: 'vista-general-granjas' },
+        { name: 'gastos', path: 'gastos' }
+      ];
+    }
 
     this.consecutivoGastos = this.galponService.getGalpon().consecutivoGastos;
   }

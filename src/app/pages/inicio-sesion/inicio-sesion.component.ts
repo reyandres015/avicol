@@ -51,10 +51,12 @@ export class InicioSesionComponent {
     this.chargeIcon = true;
     this.userAuthService.login(email, password).then((error?: any) => {
       this.chargeIcon = false;
-      if (error.code == "auth/network-request-failed") {
-        this.messageErrorNetwork = true;
-      } else {
-        this.messageErrorForm = this.userAuthService.isLoggedIn;
+      if (error) {
+        if (error.code == "auth/network-request-failed") {
+          this.messageErrorNetwork = true;
+        } else {
+          this.messageErrorForm = this.userAuthService.isLoggedIn;
+        }
       }
     })
   }

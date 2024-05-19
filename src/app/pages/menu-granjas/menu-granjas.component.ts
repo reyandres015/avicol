@@ -42,6 +42,10 @@ import Granja from 'src/app/interfaces/granja.interface';
 export class MenuGranjasComponent implements OnInit {
   granjas: Granja[] = [];
 
+  path: { name: string, path: string }[] = [
+    { name: 'granjas', path: 'menu-granjas' },
+  ];
+
   // diseño
   formGranja: boolean = false; // Formulario para crear una granja
   messageAlertNombre: boolean = false; // Alerta de que ya existe una granja con ese nombre

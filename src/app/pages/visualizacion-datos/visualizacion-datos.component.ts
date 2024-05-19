@@ -21,6 +21,8 @@ export class VisualizacionDatosComponent implements OnInit {
   ventasGalpon: Ventas[] = [];
   gastosGalpon: Gastos[] = [];
 
+  path: { name: string, path: string }[] = [];
+
   isChartVisible: boolean = false;
   isChartsVisible2: boolean = false;
   isGastosChartVisible: boolean = false;
@@ -29,6 +31,8 @@ export class VisualizacionDatosComponent implements OnInit {
   ventasChart: Chart | null = null;
   gastosChart: Chart | null = null;
   lineChart: Chart | null = null;
+
+  chargeIco: boolean = false;
 
   constructor(
     private authService: UserAuthService,
@@ -59,7 +63,21 @@ export class VisualizacionDatosComponent implements OnInit {
       if (!isLogged) {
         this.router.navigate(['/']);
       } else {
+        const refGranja = this.granjaService.getGranjaSeleccionada().path.split('/').pop();
+        const refGalpon = this.galponService.getGalpon().ref.split('/').pop();
+        if (refGranja && refGalpon) {
+          this.path = [
+            { name: 'granjas', path: 'menu-granjas' },
+            { name: refGranja, path: 'vista-general-granjas' },
+            { name: 'galpones', path: 'vista-general-granjas' },
+            { name: refGalpon, path: 'vista-general-granjas' },
+            { name: 'visualización-datos', path: 'visualizacion-datos' }
+          ];
+        }
+
         this.granjaSeleccionada = this.granjaService.getGranjaSeleccionada();
+
+        this.chargeIco = true;
         // Descargar los datos del galpón seleccionado
         await this.galponService.datosGalponSeleccionado();
         this.galpon = this.galponService.getGalpon();
@@ -85,6 +103,8 @@ export class VisualizacionDatosComponent implements OnInit {
           let grupo = this.gastosGalpon.slice(i, i + 5);
           this.gastosGalponGrupo.push(grupo);
         }
+
+        this.chargeIco = false;
 
         // Llama inicialmente a cargar y renderizar el gráfico
         this.loadDataAndRenderChart();

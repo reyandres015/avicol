@@ -23,6 +23,8 @@ import { environment } from '../environments/environment';
 import { UploadDataComponent } from './pages/upload-data/upload-data.component';
 import { AgregarUsuarioComponent } from './pages/agregar-usuario/agregar-usuario.component';
 import { PopupModalComponent } from './components/popup-modal/popup-modal.component';
+import { LinkNavegacionComponent } from './components/link-navegacion/link-navegacion.component';
+import { VentasComponent } from './pages/ventas/ventas.component';
 
 
 registerLocaleData(localeEs, 'es');
@@ -37,10 +39,12 @@ registerLocaleData(localeEs, 'es');
     GeneralGranjasComponent,
     MenuSeleccionGalponComponent,
     VisualizacionDatosComponent,
+    VentasComponent,
     GastosComponent,
     UploadDataComponent,
     AgregarUsuarioComponent,
-    PopupModalComponent
+    PopupModalComponent,
+    LinkNavegacionComponent,
   ],
   imports: [
     BrowserModule,

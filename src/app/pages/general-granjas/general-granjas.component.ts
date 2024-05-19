@@ -6,6 +6,7 @@ import Granja from 'src/app/interfaces/granja.interface';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 
 import { trigger, transition, style, animate } from '@angular/animations';
+import { throwIfEmpty } from 'rxjs';
 
 @Component({
   selector: 'app-general-granjas',
@@ -46,11 +47,15 @@ export class GeneralGranjasComponent {
 
   nombreSugeridoGalpon: string = ''; // Nombre sugerido para el galpon
 
+  path: { name: string, path: string }[] = [];
+
   // diseño
   formGranja: boolean = false; // Formulario para crear una granja
   messageAlertNombre: boolean = false; // Alerta de que ya existe una granja con ese nombre
   messageAlertVacio: boolean = false; // Alerta que el input name esta vacio
   editMode: boolean = false; // Modo de edición de las granjas
+
+  chargeIcon: boolean = false;
 
   constructor(
     private router: Router,
@@ -68,7 +73,16 @@ export class GeneralGranjasComponent {
     const granja = this.granjaService.getGranjaSeleccionada();
     if (granja.galpones) {
       this.granja = granja;
+      const ref = this.granja.path.split('/').pop();
+      if (ref) {
+        this.path = [
+          { name: 'granjas', path: 'menu-granjas' },
+          { name: ref, path: 'vista-general-granjas' },
+          { name: 'galpones', path: 'vista-general-granjas' },
+        ];
+      }
     }
+
   }
 
   async option(indexSelection: number) {
@@ -102,16 +116,18 @@ export class GeneralGranjasComponent {
       return;
     }
 
+    this.chargeIcon = true;
     await this.granjaService.crearGalpon(name).then(() => {
       this.granja = this.granjaService.getGranjaSeleccionada();
-      this.formGranja = false;
+      this.chargeIcon, this.formGranja = false;
     });
   }
 
   async eliminarGalpon(index: number) {
+    this.chargeIcon = true;
     await this.granjaService.eliminarGalpon(index).then(() => {
       this.granja = this.granjaService.getGranjaSeleccionada();
-      this.editMode = false;
+      this.chargeIcon, this.editMode = false;
     });
   }
 }

@@ -5,6 +5,7 @@
   <!-- Inicio contenido -->
   <section>
     <div id="mainBox" class="box">
+      <app-link-navegacion [paths]="this.path"></app-link-navegacion>
       <div id="first-container" class="box">
         <a style="width: 30%;" (click)="arrowBack()" id="arrowBack">
           <img src="../../../assets/ico/arrow-left.png" alt="">
@@ -18,10 +19,8 @@
           <button (click)="option('visualizacion-datos')" class="subcontent">Visualización de datos</button>
           <button (click)="option('ventas')" class="subcontent">Ventas</button>
           <button (click)="option('gastos')" class="subcontent">Gastos</button>
-          <button (click)="option('inventario')" class="subcontent">Inventario</button>
         </div>
       </div>
     </div>
   </section>
-
 </main>

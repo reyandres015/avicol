@@ -4,6 +4,7 @@
 
   <!-- Inicio contenido -->
   <div id="mainBox" class="box">
+    <app-link-navegacion [paths]="this.path"></app-link-navegacion>
     <div id="first-container" class="box">
       <a (click)="arrowBack()" id="arrowBack">
         <img src="../../../assets/ico/arrow-left.png" alt="">
@@ -122,5 +123,6 @@
         </div>
       </div>
     </div>
+    <app-popup-modal *ngIf="chargeIco"></app-popup-modal>
   </div>
 </main>
