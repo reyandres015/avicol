@@ -23,13 +23,13 @@ export class VisualizacionDatosComponent implements OnInit {
 
   path: { name: string, path: string }[] = [];
 
-  isChartVisible: boolean = false;
-  isChartsVisible2: boolean = false;
-  isGastosChartVisible: boolean = false;
+  mostrarVentas: boolean = true;
+  mostrarGastos: boolean = false;
+  mostrarGraficas: boolean = false;
+
   intervaloSeleccionado: string = 'por_cliente';
 
   ventasChart: Chart | null = null;
-  gastosChart: Chart | null = null;
   lineChart: Chart | null = null;
 
   chargeIco: boolean = false;
@@ -200,7 +200,7 @@ export class VisualizacionDatosComponent implements OnInit {
     };
 
     const canvas = <HTMLCanvasElement>document.getElementById('ventasChart');
-    if (canvas && this.isChartVisible) {
+    if (canvas) {
       const context = canvas.getContext('2d');
       if (context) {
         this.ventasChart = new Chart(context, config);
@@ -360,7 +360,7 @@ export class VisualizacionDatosComponent implements OnInit {
     };
 
     const canvas = document.getElementById('lineChart') as HTMLCanvasElement;
-    if (canvas && this.isChartsVisible2) {
+    if (canvas) {
       const context = canvas.getContext('2d');
       if (context) {
         if (this.lineChart) {
@@ -477,20 +477,19 @@ export class VisualizacionDatosComponent implements OnInit {
     }
   }
 
-  toggleChartVisibility() {
-    this.isChartVisible = !this.isChartVisible;
-    if (this.isChartVisible) {
-      setTimeout(() => this.loadDataAndRenderChart(), 0);
+  mostrarSeccion(seccion: string) {
+    this.mostrarVentas = seccion === 'ventas';
+    this.mostrarGastos = seccion === 'gastos';
+    this.mostrarGraficas = seccion === 'graficas';
+
+    // Si se selecciona "graficas", cargar los gráficos con un pequeño retraso para asegurar que el DOM esté listo
+    if (this.mostrarGraficas) {
+      setTimeout(() => {
+        this.loadDataAndRenderChart();
+        this.loadGastoDataAndRenderChart();
+        this.loadLineChartDataAndRenderChart();
+      }, 100);
     }
   }
 
-  toggleChartsVisibility2() {
-    this.isChartsVisible2 = !this.isChartsVisible2;
-    if (this.isChartsVisible2) {
-      setTimeout(() => {
-        this.loadGastoDataAndRenderChart();
-        this.loadLineChartDataAndRenderChart();
-      }, 0);
-    }
-  }
 }

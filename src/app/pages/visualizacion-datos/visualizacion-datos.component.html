@@ -5,6 +5,13 @@
   <!-- Inicio contenido -->
   <div id="mainBox" class="box">
     <app-link-navegacion [paths]="this.path"></app-link-navegacion>
+
+    <nav>
+      <button (click)="mostrarSeccion('ventas')">Ventas</button>
+      <button (click)="mostrarSeccion('gastos')">Gastos</button>
+      <button (click)="mostrarSeccion('graficas')">Gráficas</button>
+    </nav>
+
     <div id="first-container" class="box">
       <a (click)="arrowBack()" id="arrowBack">
         <img src="../../../assets/ico/arrow-left.png" alt="">
@@ -13,14 +20,14 @@
       <div style="width: 30px;"></div>
     </div>
     <h2 class="label">{{galpon.name}}</h2>
-    <div id="formGalpones" class="box">
+
+    <!-- Tabla de Ventas -->
+    <div id="ventas" class="box" *ngIf="mostrarVentas">
       <div id="ulGranjas" class="box">
         <h3 class="label">Ventas</h3>
         <div class="box" id="arrows">
-          <i (click)="this.currentPageVentas = this.changePage(this.currentPageVentas,-1,this.ventasGalponGrupo.length)"
-            class="fa-solid fa-arrow-left"></i>
-          <i (click)="this.currentPageVentas = changePage(this.currentPageVentas,1,this.ventasGalponGrupo.length)"
-            class="fa-solid fa-arrow-right"></i>
+          <i (click)="this.currentPageVentas = this.changePage(this.currentPageVentas,-1,this.ventasGalponGrupo.length)" class="fa-solid fa-arrow-left"></i>
+          <i (click)="this.currentPageVentas = changePage(this.currentPageVentas,1,this.ventasGalponGrupo.length)" class="fa-solid fa-arrow-right"></i>
         </div>
         <div id="table">
           <table>
@@ -41,10 +48,8 @@
                   <!-- id -->
                   <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.id }}</td>
                   <!-- Muestra la fecha, hora y cliente solo en la primera línea de detalles -->
-                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate()
-                    |date:'dd/MMMM/yyyy':'es' }}</td>
-                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'hh:mma':'es'
-                    }}</td>
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'dd/MMMM/yyyy':'es' }}</td>
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'hh:mma':'es' }}</td>
                   <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.cliente }}</td>
                   <!-- Muestra el tipo y la cantidad -->
                   <td>{{ detalle.tipo }}</td>
@@ -56,32 +61,16 @@
             </tbody>
           </table>
         </div>
-
         <p class="label"><strong>Total: {{moneyFormat(galpon.ventasTotales ?? 0)}}</strong></p>
-        <select id="intervalo" (change)="cambiarIntervalo($event)">
-          <option value="por_cliente">Por Cliente</option>
-          <option value="diario">Día</option>
-          <option value="semanal">Semana</option>
-          <option value="mensual">Mes</option>
-          <option value="anual">Año</option>
-          <option value="por_tipo">Por Tipo Huevo</option>
-        </select>
-        <div id="toggle-chart-bar" (click)="toggleChartVisibility()">
-          <span id="toggle-chart-arrow" [class]="isChartVisible ? 'arrow-up' : 'arrow-down'"></span>
-        </div>
-        <div id="chart-container" *ngIf="isChartVisible"
-          style="width: 100%; height: 400px; display: flex; justify-content: center; align-items: center;">
-          <canvas id="ventasChart"></canvas>
-        </div>
       </div>
     </div>
-    <div id="formGalpones" class="box">
+
+    <!-- Tabla de Gastos -->
+    <div id="gastos" class="box" *ngIf="mostrarGastos">
       <div id="ulGranjas" class="box">
         <div class="box" id="arrows">
-          <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,-1,this.gastosGalponGrupo.length)"
-            class="fa-solid fa-arrow-left"></i>
-          <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,1,this.gastosGalponGrupo.length)"
-            class="fa-solid fa-arrow-right"></i>
+          <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,-1,this.gastosGalponGrupo.length)" class="fa-solid fa-arrow-left"></i>
+          <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,1,this.gastosGalponGrupo.length)" class="fa-solid fa-arrow-right"></i>
         </div>
         <h3 class="label">Gastos</h3>
         <p class="label">1/abr - 7/abr</p>
@@ -106,20 +95,33 @@
           </table>
         </div>
         <p class="label"><strong>Total: {{moneyFormat(galpon.gastosTotales ?? 0)}}</strong></p>
-        <div id="toggle-gastos-chart-bar" (click)="toggleChartsVisibility2()">
-          <span id="toggle-chart-arrow" [class.arrow-up]="isChartVisible" [class.arrow-down]="!isChartVisible"></span>
+      </div>
+    </div>
+
+    <!-- Gráficas -->
+    <div id="graficas" class="box" *ngIf="mostrarGraficas">
+      <div id="charts-container" style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 20px;">
+        <!-- Contenedor del gráfico de Ventas -->
+        <div class="chart-box">
+          <div class="select-container">
+            <select id="intervalo" (change)="cambiarIntervalo($event)">
+              <option value="por_cliente">Por Cliente</option>
+              <option value="diario">Día</option>
+              <option value="semanal">Semana</option>
+              <option value="mensual">Mes</option>
+              <option value="anual">Año</option>
+              <option value="por_tipo">Por Tipo Huevo</option>
+            </select>
+          </div>
+          <canvas id="ventasChart"></canvas>
         </div>
-        <!-- Contenedor para los gráficos de Gastos y Líneas -->
-        <div id="charts-container" *ngIf="isChartsVisible2" style="width: 100%;">
-          <!-- Contenedor del gráfico de Torta para Gastos -->
-          <div style="width: 100%; height: 400px; display: flex; justify-content: center; align-items: center;">
-            <canvas id="gastosChart"></canvas>
-          </div>
-          <div style="width: 100%; height: 2px; background-color: white; margin-top: 20px; margin-bottom: 20px;">
-          </div> <!-- Contenedor del gráfico de Líneas para Gastos y Ventas -->
-          <div style="width: 100%; height: 400px;">
-            <canvas id="lineChart"></canvas>
-          </div>
+        <!-- Contenedor del gráfico de Gastos -->
+        <div class="chart-box">
+          <canvas id="gastosChart"></canvas>
+        </div>
+        <!-- Contenedor del gráfico de Líneas -->
+        <div class="chart-box" style="grid-column: span 2;">
+          <canvas id="lineChart"></canvas>
         </div>
       </div>
     </div>

@@ -15,7 +15,7 @@ main {
   justify-content: center;
 
   #mainBox {
-    // max-width: 380px;
+    //max-width: 1000px;
     gap: 20px;
     padding: 40px 40px 100px 40px;
     border-radius: 30px;
@@ -36,20 +36,29 @@ main {
       letter-spacing: 10px;
       text-wrap: wrap;
       text-align: center;
+      margin: 10px 0;
     }
 
-    #formGalpones {
-      width: 100%;
-      padding: 10px 20px;
-      color: white;
-      border-radius: 30px;
-      background-color: $FOCO;
-      gap: 10px;
-
+    #ventas {
       #ulGranjas {
-        width: 100%;
         gap: 15px;
-        padding: 30px;
+        padding: 20px;
+        background-color: $FOCO;
+        border-radius: 15px;
+
+        #arrows {
+          flex-direction: row;
+          gap: 30px;
+          display: flex;
+          justify-content: center;
+          margin: 10px 0;
+
+          i {
+            cursor: pointer;
+            color: white;
+            font-size: 24px;
+          }
+        }
 
         #table {
           width: 100%;
@@ -57,90 +66,161 @@ main {
           overflow-x: scroll;
           border: 2px white solid;
           box-shadow: inset 0 0 20px 0 white;
+          border-radius: 10px;
+
+          table {
+            width: 100%;
+            border-spacing: 10px;
+            font-size: 22px;
+            letter-spacing: 3px;
+            color: white;
+
+            tbody {
+              .encabezado {
+                th {
+                  text-align: center;
+                }
+              }
+
+              .table-content {
+                td {
+                  min-width: 120px;
+                  text-align: center;
+                  padding: 3px 8px;
+                }
+
+                th,
+                td {
+                  border: 2px white solid;
+                }
+              }
+            }
+          }
         }
+      }
+    }
+
+    #gastos {
+      #ulGranjas {
+        gap: 15px;
+        padding: 20px;
+        background-color: $FOCO;
+        border-radius: 15px;
 
         #arrows {
           flex-direction: row;
           gap: 30px;
+          display: flex;
+          justify-content: center;
+          margin: 10px 0;
 
           i {
             cursor: pointer;
+            color: white;
+            font-size: 24px;
           }
         }
 
-        p {
-          text-wrap: nowrap;
+        #table {
+          width: 100%;
+          padding: 10px;
+          overflow-x: scroll;
+          border: 2px white solid;
+          box-shadow: inset 0 0 20px 0 white;
+          border-radius: 10px;
+
+          table {
+            width: 100%;
+            border-spacing: 10px;
+            font-size: 22px;
+            letter-spacing: 3px;
+            color: white;
+
+            tbody {
+              .encabezado {
+                th {
+                  text-align: center;
+                }
+              }
+
+              .table-content {
+                td {
+                  min-width: 120px;
+                  text-align: center;
+                  padding: 3px 8px;
+                }
+
+                th,
+                td {
+                  border: 2px white solid;
+                }
+              }
+            }
+          }
         }
       }
     }
-  }
-}
 
-table {
-  width: 100%;
-  border-spacing: 10px;
-  font-size: 22px;
-  letter-spacing: 3px;
-
-  tbody {
-    .bold-row {
-      font-weight: bold;
+    #toggle-chart-bar {
+      cursor: pointer;
+      padding: 10px;
+      background-color: transparent;
+      text-align: center;
+      position: relative;
+      border-top: 2px solid #ffffff;
+      margin-top: 10px;
+      margin-bottom: -2px;
     }
 
-    .encabezado {
-      th {
-        text-align: center;
+    #toggle-chart-arrow {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid #ffffff;
+      display: inline-block;
+      margin: 0 auto;
+    }
+
+    .arrow-up {
+      border-top: none;
+      border-bottom: 5px solid #ffffff;
+    }
+
+    #graficas {
+      #charts-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 20px;
+        width: 100%;
+      }
+    
+      .chart-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #444444; /* Fondo gris */
+        border: 2px solid black;
+        padding: 20px; /* Espaciado interno */
+        position: relative; /* Para posicionar el select */
+      }
+    
+      .select-container {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 10;
+      }
+    
+      #ventasChart, #gastosChart, #lineChart {
+        width: 100% !important;
+        height: 100% !important;
       }
     }
-
-    // .table-content {
-    //   // :first-child {
-    //   //   text-align: start;
-    //   //   border-bottom: 0;
-    //   //   max-width: 120px;
-    //   // }
-
-    // }
-
-    td {
-      min-width: 120px;
-      text-align: center;
-      padding: 3px 8px;
-    }
-
-    th,
-    td {
-      border: 2px white solid;
-    }
+    
   }
 }
 
-#toggle-chart-bar {
-  cursor: pointer;
-  padding: 10px;
-  background-color: transparent;
-  text-align: center;
-  position: relative;
-  border-top: 2px solid #ffffff;
-  /* Cambia esto al color deseado */
-  margin-top: 10px;
-  margin-bottom: -2px;
-  /* Elimina el espacio adicional debajo de la barra */
-}
-
-#toggle-chart-arrow {
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid #ffffff;
-  /* Cambia esto al color deseado para la flecha */
-  display: inline-block;
-  margin: 0 auto;
-}
-
-.arrow-up {
-  border-top: none;
-  border-bottom: 5px solid #ffffff;
-  /* Cambia esto al color deseado para la flecha */
+.label {
+  color: white;
 }
