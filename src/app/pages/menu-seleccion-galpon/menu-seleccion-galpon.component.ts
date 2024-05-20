@@ -32,9 +32,8 @@ export class MenuSeleccionGalponComponent implements OnInit {
     if (refGranja && refGalpon) {
       this.path = [
         { name: 'granjas', path: 'menu-granjas' },
-        { name: refGranja, path: 'vista-general-granjas' },
-        { name: 'galpones', path: 'vista-general-granjas' },
-        { name: refGalpon, path: 'vista-general-granjas' },
+        { name: refGranja, path: 'vista-general-granja' },
+        { name: refGalpon, path: 'menu-seleccion-galpon' },
       ];
     }
   }
