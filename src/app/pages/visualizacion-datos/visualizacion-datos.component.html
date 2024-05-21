@@ -107,6 +107,13 @@
                 <option value="mensual">Mensual</option>
                 <option value="anual">Anual</option>
               </select>
+              <!--<div class="date-filter-container" *ngIf="currentChartIndex !== 1">
+                <label for="startDate">Desde: </label>
+                <input type="date" id="startDate" [(ngModel)]="startDate" (change)="filterByDateRange()">
+                <label for="endDate">Hasta: </label>
+                <input type="date" id="endDate" [(ngModel)]="endDate" (change)="filterByDateRange()">
+                <button (click)="filterLast7Days()">Últimos 7 días</button>
+              </div>-->
             </div>
             <canvas id="chartCanvas"></canvas>
           </div>

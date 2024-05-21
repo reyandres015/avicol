@@ -44,6 +44,9 @@ export class VisualizacionDatosComponent implements OnInit {
 
   chartTitles: string[] = ['Ventas', 'Gastos', 'Ventas vs Gastos', 'Utilidad'];
 
+  startDate: string = '';
+  endDate: string = '';
+
   constructor(
     private authService: UserAuthService,
     private granjaService: GranjaDataService,
@@ -147,43 +150,43 @@ export class VisualizacionDatosComponent implements OnInit {
   }
 
   renderChart() {
-    const canvas = document.getElementById('chartCanvas') as HTMLCanvasElement;
-    if (canvas) {
-      const context = canvas.getContext('2d');
-      if (context) {
-        // Destruir gráficas previas si existen
-        if (this.ventasChart) {
-          this.ventasChart.destroy();
-          this.ventasChart = null;
-        }
-        if (this.gastosChart) {
-          this.gastosChart.destroy();
-          this.gastosChart = null;
-        }
-        if (this.lineChart) {
-          this.lineChart.destroy();
-          this.lineChart = null;
-        }
-        if (this.utilidadChart) {
-          this.utilidadChart.destroy();
-          this.utilidadChart = null;
-        }
-  
-        // Renderizar la gráfica correspondiente utilizando if-else
-        if (this.currentChartIndex === 0) {
-          this.loadVentasChart(context);
-        } else if (this.currentChartIndex === 1) {
-          this.loadGastosChart(context);
-        } else if (this.currentChartIndex === 2) {
-          this.loadLineChart(context);
-        } else if (this.currentChartIndex === 3) {
-          this.loadUtilidadChart(context);
-        } else {
-          console.error("Índice de gráfica desconocido");
-        }
+  const canvas = document.getElementById('chartCanvas') as HTMLCanvasElement;
+  if (canvas) {
+    const context = canvas.getContext('2d');
+    if (context) {
+      // Destruir gráficas previas si existen
+      if (this.ventasChart) {
+        this.ventasChart.destroy();
+        this.ventasChart = null;
+      }
+      if (this.gastosChart) {
+        this.gastosChart.destroy();
+        this.gastosChart = null;
+      }
+      if (this.lineChart) {
+        this.lineChart.destroy();
+        this.lineChart = null;
+      }
+      if (this.utilidadChart) {
+        this.utilidadChart.destroy();
+        this.utilidadChart = null;
+      }
+
+      // Renderizar la gráfica correspondiente utilizando if-else
+      if (this.currentChartIndex === 0) {
+        this.loadVentasChart(context);
+      } else if (this.currentChartIndex === 1) {
+        this.loadGastosChart(context);
+      } else if (this.currentChartIndex === 2) {
+        this.loadLineChart(context);
+      } else if (this.currentChartIndex === 3) {
+        this.loadUtilidadChart(context);
+      } else {
+        console.error("Índice de gráfica desconocido");
       }
     }
   }
+}
   
 
   prevChart() {
@@ -603,5 +606,32 @@ export class VisualizacionDatosComponent implements OnInit {
       )
     ).filter(grupo => grupo.length > 0);
     this.currentPageGastos = 0; // Reiniciar la paginación
+  }
+
+  filterByDateRange() {
+    const start = new Date(this.startDate);
+    const end = new Date(this.endDate);
+    if (!this.startDate || !this.endDate) {
+      this.ventasFiltradas = [...this.ventasGalponGrupo];
+    } else {
+      this.ventasFiltradas = this.ventasGalponGrupo.map(grupo =>
+        grupo.filter((venta: Ventas) => {
+          const ventaFecha = new Date(venta.fecha.toDate());
+          return ventaFecha >= start && ventaFecha <= end;
+        })
+      ).filter(grupo => grupo.length > 0);
+    }
+    
+    // Actualizar la gráfica con los nuevos datos filtrados
+    this.renderChart();
+  }
+
+  filterLast7Days() {
+    const today = new Date();
+    const lastWeek = new Date(today);
+    lastWeek.setDate(today.getDate() - 7);
+    this.startDate = lastWeek.toISOString().split('T')[0];
+    this.endDate = today.toISOString().split('T')[0];
+    this.filterByDateRange();
   }
 }
