@@ -98,14 +98,16 @@
         <div class="chart-display">
           <h3 class="label">{{chartTitles[currentChartIndex]}}</h3>
           <div class="chart-box">
-            <select *ngIf="currentChartIndex === 0" class="select-container" (change)="cambiarIntervalo($event)">
-              <option value="por_cliente">Por Cliente</option>
-              <option value="por_tipo">Por Tipo</option>
-              <option value="diario">Diario</option>
-              <option value="semanal">Semanal</option>
-              <option value="mensual">Mensual</option>
-              <option value="anual">Anual</option>
-            </select>
+            <div class="select-container">
+              <select *ngIf="currentChartIndex === 0" (change)="cambiarIntervalo($event)">
+                <option value="por_cliente">Por Cliente</option>
+                <option value="por_tipo">Por Tipo</option>
+                <option value="diario">Diario</option>
+                <option value="semanal">Semanal</option>
+                <option value="mensual">Mensual</option>
+                <option value="anual">Anual</option>
+              </select>
+            </div>
             <canvas id="chartCanvas"></canvas>
           </div>
         </div>
