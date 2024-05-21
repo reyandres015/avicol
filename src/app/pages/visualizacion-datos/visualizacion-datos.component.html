@@ -4,8 +4,6 @@
 
   <!-- Inicio contenido -->
   <div id="mainBox" class="box">
-    <app-link-navegacion [paths]="this.path"></app-link-navegacion>
-
     <nav>
       <button (click)="mostrarSeccion('ventas')">Ventas</button>
       <button (click)="mostrarSeccion('gastos')">Gastos</button>
@@ -25,9 +23,10 @@
     <div id="ventas" class="box" *ngIf="mostrarVentas">
       <div id="ulGranjas" class="box">
         <h3 class="label">Ventas</h3>
+        <input type="text" placeholder="Buscar en ventas..." (input)="filtrarVentas($event)">
         <div class="box" id="arrows">
-          <i (click)="this.currentPageVentas = this.changePage(this.currentPageVentas,-1,this.ventasGalponGrupo.length)" class="fa-solid fa-arrow-left"></i>
-          <i (click)="this.currentPageVentas = changePage(this.currentPageVentas,1,this.ventasGalponGrupo.length)" class="fa-solid fa-arrow-right"></i>
+          <i (click)="this.currentPageVentas = this.changePage(this.currentPageVentas,-1,this.ventasFiltradas.length)" class="fa-solid fa-arrow-left"></i>
+          <i (click)="this.currentPageVentas = changePage(this.currentPageVentas,1,this.ventasFiltradas.length)" class="fa-solid fa-arrow-right"></i>
         </div>
         <div id="table">
           <table>
@@ -41,20 +40,14 @@
                 <th>Cantidad</th>
                 <th>Valor</th>
               </tr>
-              <!-- Itera sobre las ventas -->
-              <ng-container *ngFor="let venta of this.ventasGalponGrupo[this.currentPageVentas]">
-                <!-- Itera sobre los detalles de cada venta -->
+              <ng-container *ngFor="let venta of this.ventasFiltradas[this.currentPageVentas]">
                 <tr *ngFor="let detalle of venta.detalle; let i = index" class="table-content">
-                  <!-- id -->
                   <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.id }}</td>
-                  <!-- Muestra la fecha, hora y cliente solo en la primera línea de detalles -->
                   <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'dd/MMMM/yyyy':'es' }}</td>
                   <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'hh:mma':'es' }}</td>
                   <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.cliente }}</td>
-                  <!-- Muestra el tipo y la cantidad -->
                   <td>{{ detalle.tipo }}</td>
                   <td>{{ detalle.cantidad | number }}</td>
-                  <!-- Muestra el valor solo en la primera línea de detalles -->
                   <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ moneyFormat(venta.totalVenta) }}</td>
                 </tr>
               </ng-container>
@@ -68,12 +61,12 @@
     <!-- Tabla de Gastos -->
     <div id="gastos" class="box" *ngIf="mostrarGastos">
       <div id="ulGranjas" class="box">
-        <div class="box" id="arrows">
-          <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,-1,this.gastosGalponGrupo.length)" class="fa-solid fa-arrow-left"></i>
-          <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,1,this.gastosGalponGrupo.length)" class="fa-solid fa-arrow-right"></i>
-        </div>
         <h3 class="label">Gastos</h3>
-        <p class="label">1/abr - 7/abr</p>
+        <input type="text" placeholder="Buscar en gastos..." (input)="filtrarGastos($event)">
+        <div class="box" id="arrows">
+          <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,-1,this.gastosFiltrados.length)" class="fa-solid fa-arrow-left"></i>
+          <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,1,this.gastosFiltrados.length)" class="fa-solid fa-arrow-right"></i>
+        </div>
         <div id="table">
           <table>
             <tbody>
@@ -84,7 +77,7 @@
                 <th>Valor</th>
                 <th>Concepto</th>
               </tr>
-              <tr *ngFor="let gasto of this.gastosGalponGrupo[this.currentPageGastos]" class="table-content">
+              <tr *ngFor="let gasto of this.gastosFiltrados[this.currentPageGastos]" class="table-content">
                 <td>{{ gasto.id }}</td>
                 <td>{{gasto.fecha.toDate() | date:'dd/MMMM/yyyy':'es'}}</td>
                 <td>{{gasto.fecha.toDate() | date:'hh:mm a':'es'}}</td>
@@ -100,29 +93,23 @@
 
     <!-- Gráficas -->
     <div id="graficas" class="box" *ngIf="mostrarGraficas">
-      <div id="charts-container" style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 20px;">
-        <!-- Contenedor del gráfico de Ventas -->
-        <div class="chart-box">
-          <div class="select-container">
-            <select id="intervalo" (change)="cambiarIntervalo($event)">
+      <div id="chart-navigation">
+        <i class="fa-solid fa-arrow-left" (click)="prevChart()"></i>
+        <div class="chart-display">
+          <h3 class="label">{{chartTitles[currentChartIndex]}}</h3>
+          <div class="chart-box">
+            <select *ngIf="currentChartIndex === 0" class="select-container" (change)="cambiarIntervalo($event)">
               <option value="por_cliente">Por Cliente</option>
-              <option value="diario">Día</option>
-              <option value="semanal">Semana</option>
-              <option value="mensual">Mes</option>
-              <option value="anual">Año</option>
-              <option value="por_tipo">Por Tipo Huevo</option>
+              <option value="por_tipo">Por Tipo</option>
+              <option value="diario">Diario</option>
+              <option value="semanal">Semanal</option>
+              <option value="mensual">Mensual</option>
+              <option value="anual">Anual</option>
             </select>
+            <canvas id="chartCanvas"></canvas>
           </div>
-          <canvas id="ventasChart"></canvas>
         </div>
-        <!-- Contenedor del gráfico de Gastos -->
-        <div class="chart-box">
-          <canvas id="gastosChart"></canvas>
-        </div>
-        <!-- Contenedor del gráfico de Líneas -->
-        <div class="chart-box" style="grid-column: span 2;">
-          <canvas id="lineChart"></canvas>
-        </div>
+        <i class="fa-solid fa-arrow-right" (click)="nextChart()"></i>
       </div>
     </div>
     <app-popup-modal *ngIf="chargeIco"></app-popup-modal>

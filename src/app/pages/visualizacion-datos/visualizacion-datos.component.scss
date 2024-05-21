@@ -188,21 +188,19 @@ main {
     }
 
     #graficas {
-      #charts-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-gap: 20px;
-        width: 100%;
+      #chart-navigation {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        border-radius: 10px;
       }
     
-      .chart-box {
+      .chart-display {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
         align-items: center;
-        background-color: #444444; /* Fondo gris */
-        border: 2px solid black;
-        padding: 20px; /* Espaciado interno */
-        position: relative; /* Para posicionar el select */
       }
     
       .select-container {
@@ -211,12 +209,38 @@ main {
         left: 10px;
         z-index: 10;
       }
-    
-      #ventasChart, #gastosChart, #lineChart {
+      
+      .fa-arrow-left, .fa-arrow-right {
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        margin: 0 20px;
+      }
+
+      .chart-box {
+        position: relative;
+        width: 100%;
+        max-width: 1200px; /* Ajuste del ancho máximo */
+        height: 700px; /* Ajuste de la altura */
+        background-color: #3a3a3a;
+        border: 2px solid black;
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .chart-box canvas {
+        width: 100%;
+        height: 100%;
+      }
+
+      /*#ventasChart, #gastosChart, #lineChart, #utilidadChart {
         width: 100% !important;
         height: 100% !important;
-      }
-    }
+      }*/
+    }    
     
   }
 }
