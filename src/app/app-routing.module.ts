@@ -32,7 +32,7 @@ const routes: Routes = [
     component: MenuSeleccionGalponComponent
   },
   {
-    path: 'visualizacion-datos',
+    path: 'visualización-datos',
     component: VisualizacionDatosComponent
   },
   {

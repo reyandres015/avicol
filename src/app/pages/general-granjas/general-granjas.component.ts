@@ -6,7 +6,6 @@ import Granja from 'src/app/interfaces/granja.interface';
 import { UserAuthService } from 'src/app/services/user-auth.service';
 
 import { trigger, transition, style, animate } from '@angular/animations';
-import { throwIfEmpty } from 'rxjs';
 
 @Component({
   selector: 'app-general-granjas',
@@ -77,8 +76,7 @@ export class GeneralGranjasComponent {
       if (ref) {
         this.path = [
           { name: 'granjas', path: 'menu-granjas' },
-          { name: ref, path: 'vista-general-granjas' },
-          { name: 'galpones', path: 'vista-general-granjas' },
+          { name: ref, path: 'vista-general-granja' },
         ];
       }
     }
