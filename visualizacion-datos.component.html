@@ -1,0 +1,199 @@
+<main class="box">
+  <div class="background-image" style="background-image: url(../assets/images/fondo_gallinas.jpg);"></div>
+  <!--Imagen de fondo-->
+
+  <!-- Inicio contenido -->
+  <div id="mainBox" class="box">
+    <app-link-navegacion [paths]="this.path"></app-link-navegacion>
+
+    <nav>
+      <button (click)="mostrarSeccion('ventas')">Ventas</button>
+      <button (click)="mostrarSeccion('gastos')">Gastos</button>
+      <button (click)="mostrarSeccion('graficas')">Gráficas</button>
+    </nav>
+
+    <div id="first-container" class="box">
+      <a (click)="arrowBack()" id="arrowBack">
+        <img src="../../../assets/ico/arrow-left.png" alt="">
+      </a>
+      <h1 class="label">{{granjaSeleccionada.name.toUpperCase()}}</h1>
+      <div style="width: 30px;"></div>
+    </div>
+    <h2 class="label">{{galpon.name}}</h2>
+
+    <!-- Sección de Ventas -->
+    <section id="ventas" class="box" *ngIf="mostrarVentas">
+      <div id="ulGranjas" class="box">
+        <h3 class="label">Ventas</h3>
+        <div class="box" id="arrows">
+          <i (click)="this.currentPageVentas = this.changePage(this.currentPageVentas,-1,this.ventasGalponGrupo.length)" class="fa-solid fa-arrow-left"></i>
+          <i (click)="this.currentPageVentas = changePage(this.currentPageVentas,1,this.ventasGalponGrupo.length)" class="fa-solid fa-arrow-right"></i>
+        </div>
+        <div id="table">
+          <table>
+            <thead>
+              <tr class="encabezado">
+                <th>id</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Cliente</th>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Itera sobre las ventas -->
+              <ng-container *ngFor="let venta of this.ventasGalponGrupo[this.currentPageVentas]">
+                <!-- Itera sobre los detalles de cada venta -->
+                <tr *ngFor="let detalle of venta.detalle; let i = index" class="table-content">
+                  <!-- id -->
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.id }}</td>
+                  <!-- Muestra la fecha, hora y cliente solo en la primera línea de detalles -->
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'dd/MMMM/yyyy':'es' }}</td>
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'hh:mma':'es' }}</td>
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.cliente }}</td>
+                  <!-- Muestra el tipo y la cantidad -->
+                  <td>{{ detalle.tipo }}</td>
+                  <td>{{ detalle.cantidad | number }}</td>
+                  <!-- Muestra el valor solo en la primera línea de detalles -->
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ moneyFormat(venta.totalVenta) }}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <p class="label"><strong>Total: {{moneyFormat(galpon.ventasTotales ?? 0)}}</strong></p>
+      </div>
+    </section>
+
+    <!-- Sección de Gastos -->
+    <section id="gastos" class="box" *ngIf="mostrarGastos">
+      <div id="ulGranjas" class="box">
+        <div class="box" id="arrows">
+          <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,-1,this.gastosGalponGrupo.length)" class="fa-solid fa-arrow-left"></i>
+          <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,1,this.gastosGalponGrupo.length)" class="fa-solid fa-arrow-right"></i>
+        </div>
+        <h3 class="label">Gastos</h3>
+        <p class="label">1/abr - 7/abr</p>
+        <div id="table">
+          <table>
+            <thead>
+              <tr class="encabezado">
+                <th>id</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Valor</th>
+                <th>Concepto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let gasto of this.gastosGalponGrupo[this.currentPageGastos]" class="table-content">
+                <td>{{ gasto.id }}</td>
+                <td>{{gasto.fecha.toDate()| date:'dd/MMMM/yyyy':'es'}}</td>
+                <td>{{gasto.fecha.toDate() | date:'hh:mm a':'es'}}</td>
+                <td>{{moneyFormat(gasto.total)}}</td>
+                <td>{{gasto.concepto}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="label"><strong>Total: {{moneyFormat(galpon.gastosTotales ?? 0)}}</strong></p>
+      </div>
+    </section>
+    
+    <!-- Botones de Filtrado en la Sección de Ventas -->
+    <div *ngIf="mostrarVentas" class="ventas-filter">
+      <h3>Herramientas</h3>
+      <button (click)="toggleFilter('ventas')" class="filter-button">Filtrar Por Fecha</button>
+      <div *ngIf="showVentasFilter">
+        <div class="dropdown">
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li><a class="dropdown-item" href="#" (click)="mostrarInputFecha($event)">Fecha</a></li>
+            <div *ngIf="mostrarInputFechaFlag" class="input-group mb-3">
+              <input type="date" class="form-control" [(ngModel)]="fechaFiltro">
+              <button class="btn btn-outline-secondary" type="button" (click)="filtrarPorFecha()">Buscar</button>
+              <div id="datosFiltrados">
+                <label>ID: {{ datosFiltrados.id }}</label><br>
+                <label>Fecha: {{ datosFiltrados.fecha }}</label><br>
+                <label>Cliente: {{ datosFiltrados.cliente }}</label><br>
+                <label class="datos-filtrados-label">Huevos: {{ datosFiltrados.detalles }}</label><br>
+                <label>Valor: {{ moneyFormat(datosFiltrados.valor) }}</label>
+              </div>
+            </div>
+          </ul>
+        </div>
+      </div>
+      <button class="order-button" type="button" (click)="toggleOrden('ventas')">Ordenar por</button>
+      <div class="order-menu">
+        <div *ngIf="showVentasOrder" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" (click)="ordenarTabla('ventas', 'fecha', 'asc')">Fecha (desc)</a>
+          <a class="dropdown-item" (click)="ordenarTabla('ventas', 'fecha', 'desc')">Fecha (asc)</a>
+          <a class="dropdown-item" (click)="ordenarTabla('ventas', 'totalVenta', 'asc')">Valor (desc)</a>
+          <a class="dropdown-item" (click)="ordenarTabla('ventas', 'totalVenta', 'desc')">Valor (asc)</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Boton de Orden en la Sección de Gastos -->
+    <div *ngIf="mostrarGastos" class="gastos-filter">
+      <h3>Herramientas</h3>
+      <button (click)="toggleFilter('gastos')" class="filter-button">Filtrar Por Fecha</button>
+      <div *ngIf="showGastosFilter">
+        <div class="dropdown">
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li><a class="dropdown-item" href="#" (click)="mostrarInputFecha($event)">Fecha</a></li>
+            <div *ngIf="mostrarInputFechaFlag" class="input-group mb-3">
+              <input type="date" class="form-control" [(ngModel)]="fechaFiltro2">
+              <button class="btn btn-outline-secondary" type="button" (click)="filtrarPorFechaG()">Buscar</button>
+              <div id="datosFiltrados2">
+                <label>ID: {{ datosFiltrados2.id }}</label><br>
+                <label>Fecha: {{ datosFiltrados2.fecha }}</label><br>
+                <label>Desc: {{ datosFiltrados2.motivo }}</label><br>
+                <label>Valor: {{ datosFiltrados2.valor }}</label>
+              </div>
+            </div>
+          </ul>
+        </div>
+      </div>
+      <button class="order-button" type="button" (click)="toggleOrden('gastos')">Ordenar por</button>
+      <div class="order-menu">
+        <div *ngIf="showGastosOrder" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" (click)="ordenarTabla('gastos', 'fecha', 'asc')">Fecha (desc)</a>
+          <a class="dropdown-item" (click)="ordenarTabla('gastos', 'fecha', 'desc')">Fecha (asc)</a>
+          <a class="dropdown-item" (click)="ordenarTabla('gastos', 'total', 'asc')">Valor (desc)</a>
+          <a class="dropdown-item" (click)="ordenarTabla('gastos', 'total', 'desc')">Valor (asc)</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficas -->
+    <div id="graficas" class="box" *ngIf="mostrarGraficas">
+      <div id="charts-container" style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 20px;">
+        <!-- Contenedor del gráfico de Ventas -->
+        <div class="chart-box">
+          <div class="select-container">
+            <select id="intervalo" (change)="cambiarIntervalo($event)">
+              <option value="por_cliente">Por Cliente</option>
+              <option value="diario">Día</option>
+              <option value="semanal">Semana</option>
+              <option value="mensual">Mes</option>
+              <option value="anual">Año</option>
+              <option value="por_tipo">Por Tipo Huevo</option>
+            </select>
+          </div>
+          <canvas id="ventasChart"></canvas>
+        </div>
+        <!-- Contenedor del gráfico de Gastos -->
+        <div class="chart-box">
+          <canvas id="gastosChart"></canvas>
+        </div>
+        <!-- Contenedor del gráfico de Líneas -->
+        <div class="chart-box" style="grid-column: span 2;">
+          <canvas id="lineChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <app-popup-modal *ngIf="chargeIco"></app-popup-modal>
+  </div>
+</main>
