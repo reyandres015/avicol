@@ -380,3 +380,59 @@ input[type="text"]::placeholder {
 //   border-color: $COLOR-BRAND2;
 //   box-shadow: 0 0 10px rgba(0, 45, 78, 0.5);
 // }
+
+#utilidades {
+  #boxUtilidades {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+
+    #utilidades-box {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+  }
+}
+
+#utilidades {
+  background-color: #00101b;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+#utilidades .filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#utilidades .label {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#utilidades-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+#utilidades-ventas,
+#utilidades-gastos,
+#utilidades-total {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+#utilidades-ventas .label,
+#utilidades-gastos .label,
+#utilidades-total .label {
+  color: #333;
+  margin-bottom: 10px;
+}

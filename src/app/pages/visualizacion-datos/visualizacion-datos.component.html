@@ -13,7 +13,7 @@
     </div>
     <h2 class="label">{{galpon.name}}</h2>
 
-    <div class="filters box" *ngIf="!this.mostrarGraficas">
+    <div class="filters box" *ngIf="!this.mostrarGraficas && !this.mostrarUtilidades">
       <section id="formFecha" class="box">
         <p>Búsqueda</p>
         <section id="busquedaFecha">
@@ -38,6 +38,8 @@
       <nav id="navegacion">
         <button [class.selected]="mostrarVentas" class="subcontent" (click)="mostrarSeccion('ventas')">Ventas</button>
         <button [class.selected]="mostrarGastos" class="subcontent" (click)="mostrarSeccion('gastos')">Gastos</button>
+        <button [class.selected]="mostrarUtilidades" class="subcontent"
+          (click)="mostrarSeccion('utilidades')">Utilidades</button>
         <button [class.selected]="mostrarGraficas" class="subcontent"
           (click)="mostrarSeccion('graficas')">Gráficas</button>
       </nav>
@@ -144,6 +146,28 @@
           </table>
         </div>
         <p class="label"><strong>Total: {{moneyFormat(galpon.gastosTotales ?? 0)}}</strong></p>
+      </div>
+
+      <div id="utilidades" *ngIf="mostrarUtilidades">
+        <div class="filters" id="boxUtilidades">
+          <h4 class="label">Utilidades</h4>
+          <div id="utilidades-container" class="box">
+            <div class="box" id="utilidades-box">
+              <div class="box" id="utilidades-ventas">
+                <h5 class="label">Ventas</h5>
+                <p class="label" style="color: rgb(11, 181, 11);">{{moneyFormat(galpon.ventasTotales ?? 0)}}</p>
+              </div>
+              <div class="box" id="utilidades-gastos">
+                <h5 class="label">Gastos</h5>
+                <p class="label" style="color: rgb(134, 0, 0);">{{moneyFormat(galpon.gastosTotales ?? 0)}}</p>
+              </div>
+              <div class="box" id="utilidades-total">
+                <h5 class="label">Total</h5>
+                <p class="label">{{moneyFormat((galpon.ventasTotales ?? 0) - (galpon.gastosTotales ?? 0))}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Gráficas -->

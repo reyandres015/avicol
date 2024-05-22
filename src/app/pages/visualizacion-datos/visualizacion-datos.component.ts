@@ -41,6 +41,7 @@ export class VisualizacionDatosComponent implements OnInit {
   mostrarVentas: boolean = true;
   mostrarGastos: boolean = false;
   mostrarGraficas: boolean = false;
+  mostrarUtilidades: boolean = false;
 
   // Miguel
   showVentasFilter: boolean = false;
@@ -99,7 +100,7 @@ export class VisualizacionDatosComponent implements OnInit {
   async ngOnInit() {
     await this.authService.verifyUser().then(async (isLogged) => {
       if (!isLogged) {
-        this.router.navigate(['/']);
+        // this.router.navigate(['/']);
       } else {
         const refGranja = this.granjaService.getGranjaSeleccionada()?.path.split('/').pop();
         const refGalpon = this.galponService.getGalpon()?.ref.split('/').pop();
@@ -462,55 +463,55 @@ export class VisualizacionDatosComponent implements OnInit {
       }]
     };
 
-const config: ChartConfiguration = {
-  type: 'bar',
-  data: chartData,
-  options: {
-    scales: {
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: 'rgba(255, 255, 255, 0.5)',
+    const config: ChartConfiguration = {
+      type: 'bar',
+      data: chartData,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(255, 255, 255, 0.5)',
+            },
+            ticks: {
+              color: '#ffffff',
+            }
+          },
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.5)',
+            },
+            ticks: {
+              color: '#ffffff',
+            }
+          }
         },
-        ticks: {
-          color: '#ffffff',
-        }
-      },
-      x: {
-        grid: {
-          color: 'rgba(255, 255, 255, 0.5)',
-        },
-        ticks: {
-          color: '#ffffff',
-        }
-      }
-    },
-    plugins: {
-      legend: {
-        labels: {
-          color: '#ffffff',
-        }
-      },
-      tooltip: {
-        callbacks: {
-          label: function(context) {
-            var label = context.dataset.label || '';
+        plugins: {
+          legend: {
+            labels: {
+              color: '#ffffff',
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                var label = context.dataset.label || '';
 
-            if (label) {
-              label += ': ';
+                if (label) {
+                  label += ': ';
+                }
+                if (context.parsed.y !== null) {
+                  label += new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'COP' }).format(context.parsed.y);
+                }
+                return label;
+              }
             }
-            if (context.parsed.y !== null) {
-              label += new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'COP' }).format(context.parsed.y);
-            }
-            return label;
           }
         }
       }
-    }
-  }
-};
+    };
 
-this.utilidadChart = new Chart(context, config);
+    this.utilidadChart = new Chart(context, config);
   }
 
   agruparGastosPorConcepto() {
@@ -614,6 +615,7 @@ this.utilidadChart = new Chart(context, config);
     this.mostrarVentas = seccion === 'ventas';
     this.mostrarGastos = seccion === 'gastos';
     this.mostrarGraficas = seccion === 'graficas';
+    this.mostrarUtilidades = seccion === 'utilidades';
 
     if (this.mostrarGraficas) {
       setTimeout(() => {
