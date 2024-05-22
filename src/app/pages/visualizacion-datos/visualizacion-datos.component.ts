@@ -292,13 +292,13 @@ export class VisualizacionDatosComponent implements OnInit {
 
     const gastosAgrupados = this.agruparGastosPorConcepto();
     const totalGastos = gastosAgrupados.reduce((sum, current) => sum + current.total, 0);
-    const labels = gastosAgrupados.map(g => `${g.concepto} (${((g.total / totalGastos) * 100).toFixed(0)}%)`);
+    const labels = gastosAgrupados.map(g => `${g.categoria} (${((g.total / totalGastos) * 100).toFixed(0)}%)`);
     const data = gastosAgrupados.map(g => g.total);
 
     const chartData = {
       labels: labels,
       datasets: [{
-        label: 'Gastos por Concepto',
+        label: 'Gastos por Categoria',
         data: data,
         backgroundColor: [
           '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#FF9F40'
@@ -517,7 +517,7 @@ this.utilidadChart = new Chart(context, config);
     if (!this.galpon?.gastos) return [];
 
     return this.galpon.gastos.reduce((acum, gasto: Gastos) => {
-      const existente = acum.find(item => item.concepto === gasto.concepto);
+      const existente = acum.find(item => item.categoria === gasto.categoria);
       if (existente) {
         existente.total += gasto.total;
       } else {
@@ -649,7 +649,7 @@ this.utilidadChart = new Chart(context, config);
     this.gastosFiltrados = this.gastosGalponGrupo.map(grupo =>
       grupo.filter((gasto: Gastos) =>
         gasto.id.toString().includes(query) ||
-        gasto.concepto.toLowerCase().includes(query)
+        gasto.categoria.toLowerCase().includes(query)
       )
     ).filter(grupo => grupo.length > 0);
     this.currentPageGastos = 0; // Reiniciar la paginación

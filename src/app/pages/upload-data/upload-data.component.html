@@ -18,6 +18,12 @@
           (change)="importDataFromCSV($event,';','ventas')">
         <button (click)="uploadVentas()" [disabled]="this.isDisabledVentas">Actualizar</button>
       </div>
+      <div id="gastos" class="box">
+        <h1>Gastos</h1>
+        <input #fileUploadBasics [accept]="'.csv'" type="file" class="file-input"
+          (change)="importDataFromCSV($event,';','gastos')">
+        <button (click)="uploadGastos()" [disabled]="this.isDisabledGastos">Actualizar</button>
+      </div>
     </section>
   </section>
   <app-popup-modal *ngIf="this.chargeIcon"></app-popup-modal>

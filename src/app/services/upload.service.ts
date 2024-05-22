@@ -49,12 +49,15 @@ export class UploadService {
     return response;
   }
 
-  async createVenta(ref: string, data: any) {
-    const response = await this.getDataFirebase.createDoc(ref, data);
+  async create(ref: string, data: any) {
+    const response = await this.getDataFirebase.createDoc(ref, data, data.id);
     return response;
   }
 
   async updateVenta(refGalpon: string, consecutivoVentas: number, totalVentas: number) {
     await this.getDataFirebase.updateDoc(refGalpon, { ventasTotales: totalVentas, consecutivoVentas: consecutivoVentas });
+  }
+  async updateGasto(refGalpon: string, consecutivoGastos: number, totalGastos: number) {
+    await this.getDataFirebase.updateDoc(refGalpon, { gastosTotales: totalGastos, consecutivoGastos: consecutivoGastos });
   }
 }

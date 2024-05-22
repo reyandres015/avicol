@@ -47,7 +47,7 @@ export class GetDataFirebaseService {
       let docRef
 
       if (id) {
-        docRef = doc(collectionRef, id);
+        docRef = doc(collectionRef, id.toString());
         await setDoc(docRef, data);
       } else {
         docRef = doc(collectionRef);
@@ -96,7 +96,7 @@ export class GetDataFirebaseService {
   }
 
   // Función para eliminar un documento
-  async deleteDoc(refPath: string): Promise<DocumentReference | null>{
+  async deleteDoc(refPath: string): Promise<DocumentReference | null> {
     //eliminar las colecciones del documento.
 
     const ref = doc(this.firestore, refPath);

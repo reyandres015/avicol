@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore';
+import { LogarithmicScale } from 'chart.js';
 import Galpon from 'src/app/interfaces/galpon.interface';
+import Gastos from 'src/app/interfaces/gastos.interface';
 import Granja from 'src/app/interfaces/granja.interface';
 import Ventas from 'src/app/interfaces/ventas.interface';
 import { UploadService } from 'src/app/services/upload.service';
@@ -27,17 +29,16 @@ export class UploadDataComponent implements OnInit {
     await this.uploadService.obtenerGranjas().then((response) => {
       this.granjas = response;
       this.granjaSeleccionada = this.granjas[0];
-      if (this.granjas) {
-        if (this.granjas[0].galpones) {
-          this.galpones = this.granjas[0].galpones;
-          this.galponSeleccionado = this.granjas[0].galpones[0];
-        }
+      if (this.granjaSeleccionada.galpones) {
+        this.galpones = this.granjaSeleccionada.galpones;
+        this.galponSeleccionado = this.granjaSeleccionada.galpones[0];
       }
     });
   }
 
   changeGranja(event: Event) {
     this.galpones = [];
+    this.galponSeleccionado = { name: '', consecutivoVentas: 0, consecutivoGastos: 0, ref: '' };
     const htmlElement = (event.target as HTMLInputElement);
     this.granjaSeleccionada = this.granjas[Number(htmlElement.value)];
 
@@ -45,11 +46,9 @@ export class UploadDataComponent implements OnInit {
       galpones.forEach((galpon) => {
         this.galpones.push(galpon.data())
       })
-      if (this.granjas) {
-        if (this.granjas[0].galpones) {
-          this.galpones = this.granjas[0].galpones;
-          this.galponSeleccionado = this.granjas[0].galpones[0];
-        }
+      if (this.granjaSeleccionada.galpones) {
+        this.galpones = this.granjaSeleccionada.galpones;
+        this.galponSeleccionado = this.granjaSeleccionada.galpones[0];
       }
     })
   }
@@ -119,20 +118,20 @@ export class UploadDataComponent implements OnInit {
   async recorridoFilas(fecha: string) {
     let detalle = this.filasTables;
     let fechaParts = fecha.split('/');
-    let fechaVenta = new Date(Number(fechaParts[2]), Number(fechaParts[1]) - 1, Number(fechaParts[0]));
+    let fechaGasto = new Date(Number(fechaParts[2]), Number(fechaParts[1]) - 1, Number(fechaParts[0]));
 
     let venta: Ventas = {
-      id: this.galponSeleccionado.consecutivoVentas,
-      fecha: Timestamp.fromDate(fechaVenta),
+      id: this.galponSeleccionado.consecutivoVentas + 1,
+      fecha: Timestamp.fromDate(fechaGasto),
       cliente: 'None',
       detalle: detalle,
       totalVenta: this.totalVenta
     }
 
     this.galponSeleccionado.consecutivoVentas++;
-    this.sumaVentas += this.totalVenta;
+    this.sumaVentas += venta.totalVenta;
 
-    this.uploadService.createVenta(`${this.galponSeleccionado.ref}/ventas`, venta);
+    await this.uploadService.create(`${this.galponSeleccionado.ref}/ventas`, venta);
   }
 
   async uploadVentas() {
@@ -149,7 +148,31 @@ export class UploadDataComponent implements OnInit {
       );
     }
     this.chargeIcon = true;
+
     await this.uploadService.updateVenta(this.galponSeleccionado.ref, this.galponSeleccionado.consecutivoVentas, this.sumaVentas);
+    this.chargeIcon = false;
+    alert('Ventas subidas correctamente');
+  }
+  async uploadGastos() {
+    this.chargeIcon = true;
+    let sumaGastos = 0;
+    for (const gasto of this.importedData) {
+      let fechaParts = gasto['FECHA'].split('/');
+      let fechaGasto = new Date(Number(fechaParts[2]), Number(fechaParts[1]) - 1, Number(fechaParts[0]));
+      let newGasto: Gastos = {
+        id: this.galponSeleccionado.consecutivoGastos + 1,
+        fecha: Timestamp.fromDate(fechaGasto),
+        concepto: gasto['CONCEPTO'],
+        categoria: gasto['CATEGORIA'],
+        cantidad: Number(gasto['CANTIDAD']),
+        valorUnitario: Number(gasto['VALOR UNITARIO']),
+        total: Number(gasto['VALOR TOTAL']),
+      }
+      this.galponSeleccionado.consecutivoGastos++;
+      sumaGastos += newGasto.total;
+      await this.uploadService.create(`${this.galponSeleccionado.ref}/gastos`, newGasto);
+    }
+    await this.uploadService.updateGasto(this.galponSeleccionado.ref, this.galponSeleccionado.consecutivoGastos, sumaGastos);
     this.chargeIcon = false;
     alert('Ventas subidas correctamente');
   }
@@ -210,7 +233,6 @@ export class UploadDataComponent implements OnInit {
       }
       dataArray.push(obj);
     })
-    dataArray.pop();
 
     return dataArray;
   }
