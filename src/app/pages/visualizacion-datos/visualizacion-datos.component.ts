@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import Gastos from 'src/app/interfaces/gastos.interface';
 import Ventas from 'src/app/interfaces/ventas.interface';
+import { valueOrDefault } from 'chart.js/dist/helpers/helpers.core';
 Chart.register(...registerables);
 
 @Component({
@@ -36,7 +37,6 @@ export class VisualizacionDatosComponent implements OnInit {
   ordenGastos: string = 'normal';
   mostrarInputFechaFlag: boolean = false;
   fechaFiltro: string = '';
-  fechaFiltro2: string = '';
   datosFiltrados: any = {};
   datosFiltrados2: any = {};
 
@@ -74,7 +74,7 @@ export class VisualizacionDatosComponent implements OnInit {
   async ngOnInit() {
     await this.authService.verifyUser().then(async (isLogged) => {
       if (!isLogged) {
-        this.router.navigate(['/']);
+        // this.router.navigate(['/']);
       } else {
         const refGranja = this.granjaService.getGranjaSeleccionada().path.split('/').pop();
         const refGalpon = this.galponService.getGalpon().ref.split('/').pop();
@@ -518,16 +518,20 @@ export class VisualizacionDatosComponent implements OnInit {
     this.mostrarInputFechaFlag = true;
   }
 
-  filtrarPorFecha() {
+  filtrarPorFecha(inputFecha: string) {
+    let fechaParts = inputFecha.split('-');
+    let fechaInput = new Date(Number(fechaParts[0]), Number(fechaParts[1]) - 1, Number(fechaParts[2]));
+
     if (this.ventasGalponGrupo && this.ventasGalponGrupo.length > 0) {
       let idEncontrada: string | null = null;
       // Recorremos cada grupo de ventas
       this.ventasGalponGrupo.forEach((grupo: any[]) => {
         grupo.forEach((venta: any) => {
           if (venta.fecha && typeof venta.fecha.toDate === 'function') {
-            const fechaFormateada = new Date(venta.fecha.toDate()).toISOString().split('T')[0];
+            let fecha = venta.fecha.toDate();
+            const fechaFormateada = new Date(Number(fecha.getFullYear()), Number(fecha.getMonth()), Number(fecha.getDate()));
             // Comparamos la fechaFormateada con fechaFiltro
-            if (fechaFormateada === this.fechaFiltro) {
+            if (fechaFormateada.getTime() == fechaInput.getTime()) {
               idEncontrada = venta.id;
               const detallesString = this.detallesToString(venta.detalle); // Aquí utilizamos la función
               this.datosFiltrados = {
@@ -544,16 +548,21 @@ export class VisualizacionDatosComponent implements OnInit {
     }
   }
 
-  filtrarPorFechaG() {
+  filtrarPorFechaG(inputFecha: string) {
+    let fechaParts = inputFecha.split('-');
+    let fechaInput = new Date(Number(fechaParts[0]), Number(fechaParts[1]) - 1, Number(fechaParts[2]));
+
     if (this.gastosGalponGrupo && this.gastosGalponGrupo.length > 0) {
       let idEncontrada: string | null = null;
       // Recorremos cada grupo de gastos
       this.gastosGalponGrupo.forEach((grupo: any[]) => {
         grupo.forEach((gasto: any) => {
           if (gasto.fecha && typeof gasto.fecha.toDate === 'function') {
-            const fechaFormateada = new Date(gasto.fecha.toDate()).toISOString().split('T')[0];
+            let fecha = gasto.fecha.toDate();
+            const fechaFormateada = new Date(Number(fecha.getFullYear()), Number(fecha.getMonth()), Number(fecha.getDate()));
+
             // Comparamos la fechaFormateada con fechaFiltro
-            if (fechaFormateada === this.fechaFiltro2) {
+            if (fechaFormateada.getTime() == fechaInput.getTime()) {
               idEncontrada = gasto.id;
               this.datosFiltrados2 = {
                 id: gasto.id,
@@ -580,7 +589,16 @@ export class VisualizacionDatosComponent implements OnInit {
     }
   }
 
-  ordenarTabla(section: string, columna: string, orden: 'asc' | 'desc') {
+  ordenSeleccionado: string = ''
+
+  ordenarTabla(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const valor = target.value;
+    let temp = valor.split('-')
+
+    const section = temp[0];
+    const columna = temp[1];
+    const orden = temp[2];
     if (section === 'ventas') {
       // Lógica de ordenamiento para la sección de ventas
       if (columna === 'fecha') {

@@ -24,7 +24,40 @@
     <!-- Sección de Ventas -->
     <section id="ventas" class="box" *ngIf="mostrarVentas">
       <div id="ulGranjas" class="box">
-        <h3 class="label">Ventas</h3>
+        <!-- Botones de Filtrado en la Sección de Ventas -->
+        <div class="filters">
+          <button (click)="toggleFilter('ventas')" class="filter-button">Filtrar Por Fecha</button>
+          <div *ngIf="showVentasFilter">
+            <div class="dropdown">
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="#" (click)="mostrarInputFecha($event)">Fecha</a></li>
+                <div *ngIf="mostrarInputFechaFlag" class="input-group mb-3">
+                  <input type="date" class="form-control" #fechaFiltro>
+                  <button class="btn btn-outline-secondary" type="button"
+                    (click)="filtrarPorFecha(fechaFiltro.value)">Buscar</button>
+                  <div id="datosFiltrados">
+                    <label>ID: {{ datosFiltrados.id }}</label><br>
+                    <label>Fecha: {{ datosFiltrados.fecha }}</label><br>
+                    <label>Cliente: {{ datosFiltrados.cliente }}</label><br>
+                    <label class="datos-filtrados-label">Huevos: {{ datosFiltrados.detalles }}</label><br>
+                    <label>Valor: {{ moneyFormat(datosFiltrados.valor) }}</label>
+                  </div>
+                </div>
+              </ul>
+            </div>
+          </div>
+
+          <h3 class="label">Ventas</h3>
+          <!-- Botón de Orden en la Sección de Ventas -->
+          <div class="select-container">
+            <select (change)="ordenarTabla($event)">
+              <option value="ventas-fecha-asc">Fecha (asc)</option>
+              <option value="ventas-fecha-desc">Fecha (desc)</option>
+              <option value="ventas-totalVenta-desc">Valor (desc)</option>
+              <option value="ventas-totalVenta-asc">Valor (asc)</option>
+            </select>
+          </div>
+        </div>
         <div class="box" id="arrows">
           <i (click)="this.currentPageVentas = this.changePage(this.currentPageVentas,-1,this.ventasGalponGrupo.length)"
             class="fa-solid fa-arrow-left"></i>
@@ -80,7 +113,39 @@
           <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,1,this.gastosGalponGrupo.length)"
             class="fa-solid fa-arrow-right"></i>
         </div>
-        <h3 class="label">Gastos</h3>
+        <!-- Boton de Orden en la Sección de Gastos -->
+        <div class="filters">
+          <button (click)="toggleFilter('gastos')" class="filter-button">Filtrar Por Fecha</button>
+          <div *ngIf="showGastosFilter">
+            <div class="dropdown">
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="#" (click)="mostrarInputFecha($event)">Fecha</a></li>
+                <div *ngIf="mostrarInputFechaFlag" class="input-group mb-3">
+                  <input type="date" class="form-control" #fecha>
+                  <button class="btn btn-outline-secondary" type="button"
+                    (click)="filtrarPorFechaG(fecha.value)">Buscar</button>
+                  <div id="datosFiltrados2">
+                    <label>ID: {{ datosFiltrados2.id }}</label><br>
+                    <label>Fecha: {{ datosFiltrados2.fecha }}</label><br>
+                    <label>Desc: {{ datosFiltrados2.motivo }}</label><br>
+                    <label>Valor: {{ datosFiltrados2.valor }}</label>
+                  </div>
+                </div>
+              </ul>
+            </div>
+          </div>
+
+          <h3 class="label">Gastos</h3>
+
+          <div class="select-container">
+            <select (change)="ordenarTabla($event)">
+              <option value="gastos-fecha-asc">Fecha (asc)</option>
+              <option value="gastos-fecha-desc">Fecha (desc)</option>
+              <option value="gastos-total-desc">Valor (desc)</option>
+              <option value="gastos-total-asc">Valor (asc)</option>
+            </select>
+          </div>
+        </div>
         <p class="label">1/abr - 7/abr</p>
         <div id="table">
           <table>
@@ -107,71 +172,6 @@
         <p class="label"><strong>Total: {{moneyFormat(galpon.gastosTotales ?? 0)}}</strong></p>
       </div>
     </section>
-
-    <!-- Botones de Filtrado en la Sección de Ventas -->
-    <div *ngIf="mostrarVentas" class="ventas-filter">
-      <h3>Herramientas</h3>
-      <button (click)="toggleFilter('ventas')" class="filter-button">Filtrar Por Fecha</button>
-      <div *ngIf="showVentasFilter">
-        <div class="dropdown">
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <li><a class="dropdown-item" href="#" (click)="mostrarInputFecha($event)">Fecha</a></li>
-            <div *ngIf="mostrarInputFechaFlag" class="input-group mb-3">
-              <input type="date" class="form-control" [(ngModel)]="fechaFiltro">
-              <button class="btn btn-outline-secondary" type="button" (click)="filtrarPorFecha()">Buscar</button>
-              <div id="datosFiltrados">
-                <label>ID: {{ datosFiltrados.id }}</label><br>
-                <label>Fecha: {{ datosFiltrados.fecha }}</label><br>
-                <label>Cliente: {{ datosFiltrados.cliente }}</label><br>
-                <label class="datos-filtrados-label">Huevos: {{ datosFiltrados.detalles }}</label><br>
-                <label>Valor: {{ moneyFormat(datosFiltrados.valor) }}</label>
-              </div>
-            </div>
-          </ul>
-        </div>
-      </div>
-      <button class="order-button" type="button" (click)="toggleOrden('ventas')">Ordenar por</button>
-      <div class="order-menu">
-        <div *ngIf="showVentasOrder" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" (click)="ordenarTabla('ventas', 'fecha', 'asc')">Fecha (desc)</a>
-          <a class="dropdown-item" (click)="ordenarTabla('ventas', 'fecha', 'desc')">Fecha (asc)</a>
-          <a class="dropdown-item" (click)="ordenarTabla('ventas', 'totalVenta', 'asc')">Valor (desc)</a>
-          <a class="dropdown-item" (click)="ordenarTabla('ventas', 'totalVenta', 'desc')">Valor (asc)</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Boton de Orden en la Sección de Gastos -->
-    <div *ngIf="mostrarGastos" class="gastos-filter">
-      <h3>Herramientas</h3>
-      <button (click)="toggleFilter('gastos')" class="filter-button">Filtrar Por Fecha</button>
-      <div *ngIf="showGastosFilter">
-        <div class="dropdown">
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <li><a class="dropdown-item" href="#" (click)="mostrarInputFecha($event)">Fecha</a></li>
-            <div *ngIf="mostrarInputFechaFlag" class="input-group mb-3">
-              <input type="date" class="form-control" [(ngModel)]="fechaFiltro2">
-              <button class="btn btn-outline-secondary" type="button" (click)="filtrarPorFechaG()">Buscar</button>
-              <div id="datosFiltrados2">
-                <label>ID: {{ datosFiltrados2.id }}</label><br>
-                <label>Fecha: {{ datosFiltrados2.fecha }}</label><br>
-                <label>Desc: {{ datosFiltrados2.motivo }}</label><br>
-                <label>Valor: {{ datosFiltrados2.valor }}</label>
-              </div>
-            </div>
-          </ul>
-        </div>
-      </div>
-      <button class="order-button" type="button" (click)="toggleOrden('gastos')">Ordenar por</button>
-      <div class="order-menu">
-        <div *ngIf="showGastosOrder" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" (click)="ordenarTabla('gastos', 'fecha', 'asc')">Fecha (desc)</a>
-          <a class="dropdown-item" (click)="ordenarTabla('gastos', 'fecha', 'desc')">Fecha (asc)</a>
-          <a class="dropdown-item" (click)="ordenarTabla('gastos', 'total', 'asc')">Valor (desc)</a>
-          <a class="dropdown-item" (click)="ordenarTabla('gastos', 'total', 'desc')">Valor (asc)</a>
-        </div>
-      </div>
-    </div>
 
     <!-- Gráficas -->
     <div id="graficas" class="box" *ngIf="mostrarGraficas">

@@ -231,9 +231,9 @@ main {
   color: white;
 }
 
-.filter-button {
-  position: absolute;
-  left: 10%;
+.filters {
+  display: flex;
+  justify-content: space-between;
 }
 
 .dropdown {
@@ -296,9 +296,4 @@ main {
 .order-menu {
   position: absolute;
   right: 32%;
-}
-
-.order-button {
-  position: absolute;
-  right: 10%;
 }
