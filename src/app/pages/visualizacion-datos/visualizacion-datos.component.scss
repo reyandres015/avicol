@@ -310,11 +310,29 @@ main {
   #formFecha {
     gap: 30px;
 
-    div {
+    #busquedaFecha {
       display: flex;
-      flex-direction: row;
-      gap: 10px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+
+      div {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        i {
+          cursor: pointer;
+          color: $COLOR-BRAND;
+        }
+      }
+
+      button {
+        width: 120px;
+      }
     }
+
 
     p {
       color: white;

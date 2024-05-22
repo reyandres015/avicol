@@ -16,10 +16,18 @@
     <div class="filters box" *ngIf="!this.mostrarGraficas">
       <section id="formFecha" class="box">
         <p>Búsqueda</p>
-        <div>
-          <input type="date" class="inputForm form-control" #fechaFiltro>
-          <button class="button" type="button" (click)="filtrarPorFecha(fechaFiltro.value)">Buscar</button>
-        </div>
+        <section id="busquedaFecha">
+          <div>
+            <input (change)="changeFecha = true; this.alertFechaMessage = false;" type="date"
+              class="inputForm form-control" #fechaFiltro>
+            <i [@fadeInOutFastWidth] *ngIf="changeFecha"
+              (click)="this.changeFecha = false; fechaFiltro.value = ''; this.filtrarPorFecha('',true);"
+              class="fa-solid fa-xmark"></i>
+          </div>
+          <button style="font-size: 20px;" type="button"
+            (click)="filtrarPorFecha(fechaFiltro.value,false)">Buscar</button>
+          <span class="messageError" *ngIf="alertFechaMessage">Seleccione una fecha</span>
+        </section>
       </section>
       <section id="formBusqueda">
         <input id="buscarVentaInput" type="text" placeholder="Buscar en ventas..." (input)="busqueda($event)">
