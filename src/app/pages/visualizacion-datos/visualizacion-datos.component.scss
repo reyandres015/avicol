@@ -46,42 +46,50 @@ main {
         background-color: $FOCO;
         border-radius: 15px;
 
-        input[type="text"] {
-          padding: 10px 20px;
-          font-size: 16px;
-          color: black;
-          background-color: $COLOR-BRAND2;
-          /* Color de fondo constante */
-          border: 2px solid $COLOR-BRAND;
-          border-radius: 5px;
-          outline: none;
-          transition: all 0.3s ease;
-          margin-bottom: 20px;
-        }
-
-        input[type="text"]::placeholder {
-          color: $COLOR-BRAND;
-        }
-
-        input[type="text"]:hover,
-        input[type="text"]:focus {
-          background-color: $COLOR-BRAND2;
-          /* Color de fondo constante */
-          border-color: $COLOR-BRAND2;
-          box-shadow: 0 0 10px rgba(0, 45, 78, 0.5);
-        }
-
-        #arrows {
-          flex-direction: row;
-          gap: 30px;
+        #navegacion {
           display: flex;
-          justify-content: center;
-          margin: 10px 0;
+          flex-direction: row;
+          gap: 50px;
 
-          i {
-            cursor: pointer;
-            color: white;
-            font-size: 24px;
+          button {
+            background-color: $COLOR-BRAND2;
+
+            &:hover {
+              background-color: $COLOR-BRAND;
+              color: white;
+            }
+          }
+        }
+
+        .selected {
+          background-color: $COLOR-BRAND !important;
+        }
+
+        #top-table {
+          flex-direction: row;
+          width: 100%;
+
+          #arrows {
+            flex-direction: row;
+            gap: 30px;
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+
+            i {
+              cursor: pointer;
+              color: white;
+              font-size: 24px;
+            }
+          }
+
+          .select-container {
+            display: flex;
+            justify-content: flex-end;
+
+            select {
+              font-size: 18px;
+            }
           }
         }
 
@@ -294,68 +302,65 @@ main {
 }
 
 .filters {
-  display: flex;
-  justify-content: space-between;
+  gap: 30px;
+  padding: 20px 30px;
+  background-color: $COLOR-BRAND2;
+  /* Color de fondo constante */
+  border: 2px solid $COLOR-BRAND;
+  border-radius: 5px;
+
+  #formFecha {
+    gap: 30px;
+
+    div {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+    }
+
+    p {
+      color: white;
+      font-family: 'Forum', serif;
+      font-size: 26px;
+    }
+  }
+
+  #formBusqueda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    i {
+      cursor: pointer;
+      color: $COLOR-BRAND;
+
+      &:hover {
+        color: white;
+      }
+    }
+  }
 }
 
-.dropdown {
-  position: absolute;
-  display: inline-block;
-  left: 20%;
-}
-
-/* Ajuste para menú desplegable */
-.dropdown-menu {
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 150px;
-  list-style-type: none;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  bottom: -75px;
-  /* Ajuste la distancia desde el borde inferior según sea necesario */
-}
-
-.dropdown-menu a {
-  color: rgb(0, 0, 0);
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-menu a:hover {
-  background-color: #f1f1f1;
-}
-
-.datos-filtrados-container {
-  background-color: #f4f4f4;
-  /* Fondo ligero */
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  /* Sombra ligera */
-  max-width: 500px;
-  left: 30%;
-}
-
-.datos-filtrados-label {
-  display: block;
-  /* Hacer que cada label ocupe toda la línea */
+input[type="text"] {
+  padding: 10px 20px;
   font-size: 16px;
-  font-weight: bold;
-  color: #333;
-  /* Color de texto */
-  margin-bottom: 10px;
-  /* Espacio entre labels */
+  color: black;
+  background-color: $COLOR-BRAND2;
+  /* Color de fondo constante */
+  border: 2px solid $COLOR-BRAND;
+  border-radius: 5px;
+  outline: none;
+  transition: all 0.3s ease;
 }
 
-.datos-filtrados-label span {
-  font-weight: normal;
-  color: #555;
-  /* Color más claro para los valores */
+input[type="text"]::placeholder {
+  color: $COLOR-BRAND;
 }
 
-.order-menu {
-  position: absolute;
-  right: 32%;
-}
+// input[type="text"]:hover,
+// input[type="text"]:focus {
+//   background-color: $COLOR-BRAND2;
+//   /* Color de fondo constante */
+//   border-color: $COLOR-BRAND2;
+//   box-shadow: 0 0 10px rgba(0, 45, 78, 0.5);
+// }

@@ -99,7 +99,7 @@ export class VisualizacionDatosComponent implements OnInit {
   async ngOnInit() {
     await this.authService.verifyUser().then(async (isLogged) => {
       if (!isLogged) {
-        this.router.navigate(['/']);
+        // this.router.navigate(['/']);
       } else {
         const refGranja = this.granjaService.getGranjaSeleccionada()?.path.split('/').pop();
         const refGalpon = this.galponService.getGalpon()?.ref.split('/').pop();

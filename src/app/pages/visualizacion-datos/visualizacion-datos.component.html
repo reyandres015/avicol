@@ -4,12 +4,6 @@
 
   <!-- Inicio contenido -->
   <div id="mainBox" class="box">
-    <nav>
-      <button (click)="mostrarSeccion('ventas')">Ventas</button>
-      <button (click)="mostrarSeccion('gastos')">Gastos</button>
-      <button (click)="mostrarSeccion('graficas')">Gráficas</button>
-    </nav>
-
     <div id="first-container" class="box">
       <a (click)="arrowBack()" id="arrowBack">
         <img src="../../../assets/ico/arrow-left.png" alt="">
@@ -19,36 +13,42 @@
     </div>
     <h2 class="label">{{galpon.name}}</h2>
 
+    <div class="filters box">
+      <section id="formFecha" class="box">
+        <p>Búsqueda</p>
+        <div>
+          <input type="date" class="inputForm form-control" #fechaFiltro>
+          <button class="button" type="button" (click)="filtrarPorFecha(fechaFiltro.value)">Buscar</button>
+        </div>
+      </section>
+      <section id="formBusqueda">
+        <input id="buscarVentaInput" type="text" placeholder="Buscar en ventas..." (input)="filtrarVentas($event)">
+        <i class="fa-solid fa-magnifying-glass fa-rotate-90 fa-lg"></i>
+      </section>
+    </div>
+
     <!-- Tabla de Ventas -->
     <div id="ventas" class="box" *ngIf="mostrarVentas">
       <div id="ulGranjas" class="box">
-        <!-- Botones de Filtrado en la Sección de Ventas -->
-        <div class="filters">
-          <button (click)="this.showVentasFilter = !this.showVentasFilter;" class="filter-button">Filtrar Por
-            Fecha</button>
-          <div *ngIf="showVentasFilter">
-            <div class="dropdown">
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li><a class="dropdown-item" href="#" (click)="mostrarInputFecha($event)">Fecha</a></li>
-                <div *ngIf="mostrarInputFechaFlag" class="input-group mb-3">
-                  <input type="date" class="form-control" #fechaFiltro>
-                  <button class="btn btn-outline-secondary" type="button"
-                    (click)="filtrarPorFecha(fechaFiltro.value)">Buscar</button>
-                  <div id="datosFiltrados">
-                    <label>ID: {{ datosFiltrados.id }}</label><br>
-                    <label>Fecha: {{ datosFiltrados.fecha }}</label><br>
-                    <label>Cliente: {{ datosFiltrados.cliente }}</label><br>
-                    <label class="datos-filtrados-label">Huevos: {{ datosFiltrados.detalles }}</label><br>
-                    <label>Valor: {{ moneyFormat(datosFiltrados.valor) }}</label>
-                  </div>
-                </div>
-              </ul>
-            </div>
-          </div>
+        <nav id="navegacion">
+          <button [class.selected]="mostrarVentas" class="subcontent" (click)="mostrarSeccion('ventas')">Ventas</button>
+          <button [class.selected]="mostrarGastos" class="subcontent" (click)="mostrarSeccion('gastos')">Gastos</button>
+          <button [class.selected]="mostrarGraficas" class="subcontent"
+            (click)="mostrarSeccion('graficas')">Gráficas</button>
+        </nav>
 
-          <h3 class="label">Ventas</h3>
-          <!-- Botón de Orden en la Sección de Ventas -->
-          <div class="select-container">
+        <h4 class="label">{{this.currentPageVentas + 1}}/{{this.ventasGalponGrupo.length}}</h4>
+        <section id="top-table" class="box">
+          <div style="width: 30%;"></div>
+          <div style="width: 40%;" [@fadeInOutFastWidth] class="box" id="arrows">
+            <i [@fadeInOutFastWidth] *ngIf="this.currentPageVentas != 0"
+              (click)="this.currentPageVentas = this.changePage(this.currentPageVentas,-1,this.ventasFiltradas.length)"
+              class="fa-solid fa-arrow-left"></i>
+            <i [@fadeInOutFastWidth] *ngIf="this.currentPageVentas != this.ventasGalponGrupo.length - 1"
+              (click)="this.currentPageVentas = changePage(this.currentPageVentas,1,this.ventasFiltradas.length)"
+              class="fa-solid fa-arrow-right"></i>
+          </div>
+          <div style="width: 30%;" class="select-container">
             <select (change)="ordenarTabla($event)">
               <option value="ventas-fecha-asc">Fecha (asc)</option>
               <option value="ventas-fecha-desc">Fecha (desc)</option>
@@ -56,17 +56,8 @@
               <option value="ventas-totalVenta-asc">Valor (asc)</option>
             </select>
           </div>
-        </div>
-        <input type="text" placeholder="Buscar en ventas..." (input)="filtrarVentas($event)">
-        <h4 class="label">{{this.currentPageVentas + 1}}/{{this.ventasGalponGrupo.length}}</h4>
-        <div [@fadeInOutFastWidth] class="box" id="arrows">
-          <i [@fadeInOutFastWidth] *ngIf="this.currentPageVentas != 0"
-            (click)="this.currentPageVentas = this.changePage(this.currentPageVentas,-1,this.ventasFiltradas.length)"
-            class="fa-solid fa-arrow-left"></i>
-          <i [@fadeInOutFastWidth] *ngIf="this.currentPageVentas != this.ventasGalponGrupo.length - 1"
-            (click)="this.currentPageVentas = changePage(this.currentPageVentas,1,this.ventasFiltradas.length)"
-            class="fa-solid fa-arrow-right"></i>
-        </div>
+        </section>
+
         <div id="table">
           <table>
             <tbody>
