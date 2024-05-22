@@ -607,6 +607,14 @@ export class VisualizacionDatosComponent implements OnInit {
     }
   }
 
+  busqueda(event: Event) {
+    if (this.mostrarVentas) {
+      this.filtrarVentas(event);
+    } else if (this.mostrarGastos) {
+      this.filtrarGastos(event);
+    }
+  }
+
   filtrarVentas(event: Event) {
     const input = event.target as HTMLInputElement;
     const query = input.value.toLowerCase();
@@ -672,7 +680,15 @@ export class VisualizacionDatosComponent implements OnInit {
     this.mostrarInputFechaFlag = true;
   }
 
-  filtrarPorFecha(inputFecha: string) {
+  filtrarPorFecha(fecha: string) {
+    if (this.mostrarVentas) {
+      this.fechaVentas(fecha);
+    } else if (this.mostrarGastos) {
+      this.fechaGastos(fecha);
+    }
+  }
+
+  fechaVentas(inputFecha: string) {
     let fechaParts = inputFecha.split('-');
     let fechaInput = new Date(Number(fechaParts[0]), Number(fechaParts[1]) - 1, Number(fechaParts[2]));
 
@@ -702,7 +718,7 @@ export class VisualizacionDatosComponent implements OnInit {
     }
   }
 
-  filtrarPorFechaG(inputFecha: string) {
+  fechaGastos(inputFecha: string) {
     let fechaParts = inputFecha.split('-');
     let fechaInput = new Date(Number(fechaParts[0]), Number(fechaParts[1]) - 1, Number(fechaParts[2]));
 
@@ -740,10 +756,9 @@ export class VisualizacionDatosComponent implements OnInit {
     const valor = target.value;
     let temp = valor.split('-')
 
-    const section = temp[0];
-    const columna = temp[1];
-    const orden = temp[2];
-    if (section === 'ventas') {
+    const columna = temp[0];
+    const orden = temp[1];
+    if (this.mostrarVentas) {
       // Lógica de ordenamiento para la sección de ventas
       if (columna === 'fecha') {
         this.ventasGalpon.sort((a, b) => {
@@ -753,7 +768,7 @@ export class VisualizacionDatosComponent implements OnInit {
             return b.fecha.toDate().getTime() - a.fecha.toDate().getTime();
           }
         });
-      } else if (columna === 'totalVenta') {
+      } else if (columna === 'total') {
         this.ventasGalpon.sort((a, b) => {
           if (orden === 'asc') {
             return a.totalVenta - b.totalVenta;
@@ -768,7 +783,7 @@ export class VisualizacionDatosComponent implements OnInit {
         let grupo = this.ventasGalpon.slice(i, i + 5);
         this.ventasFiltradas.push(grupo);
       }
-    } else if (section === 'gastos') {
+    } else if (this.mostrarGastos) {
       // Lógica de ordenamiento para la sección de gastos
       if (columna === 'fecha') {
         this.gastosGalpon.sort((a, b) => {
