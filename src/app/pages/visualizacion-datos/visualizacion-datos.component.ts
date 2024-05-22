@@ -42,6 +42,19 @@ export class VisualizacionDatosComponent implements OnInit {
   mostrarGastos: boolean = false;
   mostrarGraficas: boolean = false;
 
+  // Miguel
+  showVentasFilter: boolean = false;
+  showVentasOrder: boolean = false;
+  showGastosFilter: boolean = false;
+  showGastosOrder: boolean = false;
+  filtroVentas: string = '';
+  ordenVentas: string = 'normal';
+  filtroGastos: string = '';
+  ordenGastos: string = 'normal';
+  mostrarInputFechaFlag: boolean = false;
+  datosFiltrados: any = {};
+  datosFiltrados2: any = {};
+
   intervaloSeleccionado: string = 'por_cliente';
 
   ventasChart: Chart | null = null;
@@ -644,5 +657,142 @@ export class VisualizacionDatosComponent implements OnInit {
     this.startDate = lastWeek.toISOString().split('T')[0];
     this.endDate = today.toISOString().split('T')[0];
     this.filterByDateRange();
+  }
+
+  toggleFilter(section: string) {
+    if (section === 'ventas') {
+      this.showVentasFilter = !this.showVentasFilter;
+    } else if (section === 'gastos') {
+      this.showGastosFilter = !this.showGastosFilter;
+    }
+  }
+
+  mostrarInputFecha(event: Event) {
+    event.preventDefault();
+    this.mostrarInputFechaFlag = true;
+  }
+
+  filtrarPorFecha(inputFecha: string) {
+    let fechaParts = inputFecha.split('-');
+    let fechaInput = new Date(Number(fechaParts[0]), Number(fechaParts[1]) - 1, Number(fechaParts[2]));
+
+    if (this.ventasGalponGrupo && this.ventasGalponGrupo.length > 0) {
+      let idEncontrada: string | null = null;
+      // Recorremos cada grupo de ventas
+      this.ventasGalponGrupo.forEach((grupo: any[]) => {
+        grupo.forEach((venta: any) => {
+          if (venta.fecha && typeof venta.fecha.toDate === 'function') {
+            let fecha = venta.fecha.toDate();
+            const fechaFormateada = new Date(Number(fecha.getFullYear()), Number(fecha.getMonth()), Number(fecha.getDate()));
+            // Comparamos la fechaFormateada con fechaFiltro
+            if (fechaFormateada.getTime() == fechaInput.getTime()) {
+              idEncontrada = venta.id;
+              const detallesString = this.detallesToString(venta.detalle); // Aquí utilizamos la función
+              this.datosFiltrados = {
+                id: venta.id,
+                fecha: fechaFormateada,
+                cliente: venta.cliente,
+                detalles: detallesString,
+                valor: venta.totalVenta
+              };
+            }
+          }
+        });
+      });
+    }
+  }
+
+  filtrarPorFechaG(inputFecha: string) {
+    let fechaParts = inputFecha.split('-');
+    let fechaInput = new Date(Number(fechaParts[0]), Number(fechaParts[1]) - 1, Number(fechaParts[2]));
+
+    if (this.gastosGalponGrupo && this.gastosGalponGrupo.length > 0) {
+      let idEncontrada: string | null = null;
+      // Recorremos cada grupo de gastos
+      this.gastosGalponGrupo.forEach((grupo: any[]) => {
+        grupo.forEach((gasto: any) => {
+          if (gasto.fecha && typeof gasto.fecha.toDate === 'function') {
+            let fecha = gasto.fecha.toDate();
+            const fechaFormateada = new Date(Number(fecha.getFullYear()), Number(fecha.getMonth()), Number(fecha.getDate()));
+
+            // Comparamos la fechaFormateada con fechaFiltro
+            if (fechaFormateada.getTime() == fechaInput.getTime()) {
+              idEncontrada = gasto.id;
+              this.datosFiltrados2 = {
+                id: gasto.id,
+                fecha: fechaFormateada,
+                motivo: gasto.concepto,
+                valor: gasto.total
+              };
+            }
+          }
+        });
+      });
+    }
+  }
+
+  detallesToString(detalles: { cantidad: number, tipo: string }[]): string {
+    return detalles.map(detalle => `${detalle.tipo}:${detalle.cantidad}`).join(',\n');
+  }
+
+  ordenarTabla(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const valor = target.value;
+    let temp = valor.split('-')
+
+    const section = temp[0];
+    const columna = temp[1];
+    const orden = temp[2];
+    if (section === 'ventas') {
+      // Lógica de ordenamiento para la sección de ventas
+      if (columna === 'fecha') {
+        this.ventasGalpon.sort((a, b) => {
+          if (orden === 'asc') {
+            return a.fecha.toDate().getTime() - b.fecha.toDate().getTime();
+          } else {
+            return b.fecha.toDate().getTime() - a.fecha.toDate().getTime();
+          }
+        });
+      } else if (columna === 'totalVenta') {
+        this.ventasGalpon.sort((a, b) => {
+          if (orden === 'asc') {
+            return a.totalVenta - b.totalVenta;
+          } else {
+            return b.totalVenta - a.totalVenta;
+          }
+        });
+      }
+      // Reagrupar los datos en grupos de 5 nuevamente después del ordenamiento
+      this.ventasFiltradas = [];
+      for (let i = 0; i < this.ventasGalpon.length; i += 5) {
+        let grupo = this.ventasGalpon.slice(i, i + 5);
+        this.ventasFiltradas.push(grupo);
+      }
+    } else if (section === 'gastos') {
+      // Lógica de ordenamiento para la sección de gastos
+      if (columna === 'fecha') {
+        this.gastosGalpon.sort((a, b) => {
+          if (orden === 'asc') {
+            return a.fecha.toDate().getTime() - b.fecha.toDate().getTime();
+          } else {
+            return b.fecha.toDate().getTime() - a.fecha.toDate().getTime();
+          }
+        });
+      } else if (columna === 'total') {
+        this.gastosGalpon.sort((a, b) => {
+          if (orden === 'asc') {
+            return a.total - b.total;
+          } else {
+            return b.total - a.total;
+          }
+        });
+      }
+      // Reagrupar los datos en grupos de 5 nuevamente después del ordenamiento
+      this.gastosFiltrados = [];
+      for (let i = 0; i < this.gastosGalpon.length; i += 5) {
+        let grupo = this.gastosGalpon.slice(i, i + 5);
+        this.gastosFiltrados.push(grupo);
+      }
+    }
   }
 }
