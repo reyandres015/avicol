@@ -9,11 +9,23 @@ import Gastos from 'src/app/interfaces/gastos.interface';
 import Ventas from 'src/app/interfaces/ventas.interface';
 Chart.register(...registerables);
 
+import { trigger, transition, style, animate } from '@angular/animations';
 @Component({
   selector: 'app-visualizacion-datos',
   templateUrl: './visualizacion-datos.component.html',
   styleUrls: ['./visualizacion-datos.component.scss'],
-  providers: [{ provide: LOCALE_ID, useValue: 'es' }]
+  providers: [{ provide: LOCALE_ID, useValue: 'es' }],
+  animations: [
+    trigger('fadeInOutFastWidth', [
+      transition(':enter', [
+        style({ opacity: 0, width: 0 }),
+        animate('0.5s linear', style({ opacity: 1, width: '*' })) // '*' indica que se usará la altura actual
+      ]),
+      transition(':leave', [
+        animate('0.5s linear', style({ opacity: 0, width: 0 }))
+      ])
+    ]),
+  ],
 })
 export class VisualizacionDatosComponent implements OnInit {
   granjaSeleccionada: any = { name: '', path: '' };
@@ -149,50 +161,50 @@ export class VisualizacionDatosComponent implements OnInit {
   }
 
   renderChart() {
-  const canvas = document.getElementById('chartCanvas') as HTMLCanvasElement;
-  if (canvas) {
-    const context = canvas.getContext('2d');
-    if (context) {
-      // Destruir gráficas previas si existen
-      if (this.ventasChart) {
-        this.ventasChart.destroy();
-        this.ventasChart = null;
-      }
-      if (this.gastosChart) {
-        this.gastosChart.destroy();
-        this.gastosChart = null;
-      }
-      if (this.lineChart) {
-        this.lineChart.destroy();
-        this.lineChart = null;
-      }
-      if (this.utilidadChart) {
-        this.utilidadChart.destroy();
-        this.utilidadChart = null;
-      }
+    const canvas = document.getElementById('chartCanvas') as HTMLCanvasElement;
+    if (canvas) {
+      const context = canvas.getContext('2d');
+      if (context) {
+        // Destruir gráficas previas si existen
+        if (this.ventasChart) {
+          this.ventasChart.destroy();
+          this.ventasChart = null;
+        }
+        if (this.gastosChart) {
+          this.gastosChart.destroy();
+          this.gastosChart = null;
+        }
+        if (this.lineChart) {
+          this.lineChart.destroy();
+          this.lineChart = null;
+        }
+        if (this.utilidadChart) {
+          this.utilidadChart.destroy();
+          this.utilidadChart = null;
+        }
 
-      // Renderizar la gráfica correspondiente utilizando if-else
-      if (this.currentChartIndex === 0) {
-        this.loadVentasChart(context);
-      } else if (this.currentChartIndex === 1) {
-        this.loadGastosChart(context);
-      } else if (this.currentChartIndex === 2) {
-        this.loadLineChart(context);
-      } else if (this.currentChartIndex === 3) {
-        this.loadUtilidadChart(context);
-      } else {
-        console.error("Índice de gráfica desconocido");
+        // Renderizar la gráfica correspondiente utilizando if-else
+        if (this.currentChartIndex === 0) {
+          this.loadVentasChart(context);
+        } else if (this.currentChartIndex === 1) {
+          this.loadGastosChart(context);
+        } else if (this.currentChartIndex === 2) {
+          this.loadLineChart(context);
+        } else if (this.currentChartIndex === 3) {
+          this.loadUtilidadChart(context);
+        } else {
+          console.error("Índice de gráfica desconocido");
+        }
       }
     }
   }
-}
-  
+
 
   prevChart() {
     this.currentChartIndex = (this.currentChartIndex - 1 + this.chartTitles.length) % this.chartTitles.length;
     this.renderChart();
   }
-  
+
   nextChart() {
     this.currentChartIndex = (this.currentChartIndex + 1) % this.chartTitles.length;
     this.renderChart();
@@ -264,12 +276,12 @@ export class VisualizacionDatosComponent implements OnInit {
     if (this.gastosChart) {
       this.gastosChart.destroy();
     }
-  
+
     const gastosAgrupados = this.agruparGastosPorConcepto();
     const totalGastos = gastosAgrupados.reduce((sum, current) => sum + current.total, 0);
     const labels = gastosAgrupados.map(g => `${g.concepto} (${((g.total / totalGastos) * 100).toFixed(0)}%)`);
     const data = gastosAgrupados.map(g => g.total);
-  
+
     const chartData = {
       labels: labels,
       datasets: [{
@@ -283,7 +295,7 @@ export class VisualizacionDatosComponent implements OnInit {
         ]
       }]
     };
-  
+
     const config: ChartConfiguration<'pie', number[], string> = {
       type: 'pie',
       data: chartData,
@@ -303,7 +315,7 @@ export class VisualizacionDatosComponent implements OnInit {
         }
       }
     };
-  
+
     this.gastosChart = new Chart<'pie', number[], string>(context, config);
   }
 
@@ -585,9 +597,9 @@ export class VisualizacionDatosComponent implements OnInit {
   filtrarVentas(event: Event) {
     const input = event.target as HTMLInputElement;
     const query = input.value.toLowerCase();
-    this.ventasFiltradas = this.ventasGalponGrupo.map(grupo => 
-      grupo.filter((venta: Ventas) => 
-        venta.id.toString().includes(query) || 
+    this.ventasFiltradas = this.ventasGalponGrupo.map(grupo =>
+      grupo.filter((venta: Ventas) =>
+        venta.id.toString().includes(query) ||
         venta.cliente.toLowerCase().includes(query) ||
         venta.detalle.some((detalle: any) => detalle.tipo.toLowerCase().includes(query))
       )
@@ -620,7 +632,7 @@ export class VisualizacionDatosComponent implements OnInit {
         })
       ).filter(grupo => grupo.length > 0);
     }
-    
+
     // Actualizar la gráfica con los nuevos datos filtrados
     this.renderChart();
   }

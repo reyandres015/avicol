@@ -24,9 +24,14 @@
       <div id="ulGranjas" class="box">
         <h3 class="label">Ventas</h3>
         <input type="text" placeholder="Buscar en ventas..." (input)="filtrarVentas($event)">
-        <div class="box" id="arrows">
-          <i (click)="this.currentPageVentas = this.changePage(this.currentPageVentas,-1,this.ventasFiltradas.length)" class="fa-solid fa-arrow-left"></i>
-          <i (click)="this.currentPageVentas = changePage(this.currentPageVentas,1,this.ventasFiltradas.length)" class="fa-solid fa-arrow-right"></i>
+        <h4 class="label">{{this.currentPageVentas + 1}}/{{this.ventasGalponGrupo.length}}</h4>
+        <div [@fadeInOutFastWidth] class="box" id="arrows">
+          <i [@fadeInOutFastWidth] *ngIf="this.currentPageVentas != 0"
+            (click)="this.currentPageVentas = this.changePage(this.currentPageVentas,-1,this.ventasFiltradas.length)"
+            class="fa-solid fa-arrow-left"></i>
+          <i [@fadeInOutFastWidth] *ngIf="this.currentPageVentas != this.ventasGalponGrupo.length - 1"
+            (click)="this.currentPageVentas = changePage(this.currentPageVentas,1,this.ventasFiltradas.length)"
+            class="fa-solid fa-arrow-right"></i>
         </div>
         <div id="table">
           <table>
@@ -43,8 +48,10 @@
               <ng-container *ngFor="let venta of this.ventasFiltradas[this.currentPageVentas]">
                 <tr *ngFor="let detalle of venta.detalle; let i = index" class="table-content">
                   <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.id }}</td>
-                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'dd/MMMM/yyyy':'es' }}</td>
-                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'hh:mma':'es' }}</td>
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() |
+                    date:'dd/MMMM/yyyy':'es' }}</td>
+                  <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.fecha.toDate() | date:'hh:mma':'es'
+                    }}</td>
                   <td *ngIf="i === 0" [attr.rowspan]="venta.detalle.length">{{ venta.cliente }}</td>
                   <td>{{ detalle.tipo }}</td>
                   <td>{{ detalle.cantidad | number }}</td>
@@ -64,8 +71,12 @@
         <h3 class="label">Gastos</h3>
         <input type="text" placeholder="Buscar en gastos..." (input)="filtrarGastos($event)">
         <div class="box" id="arrows">
-          <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,-1,this.gastosFiltrados.length)" class="fa-solid fa-arrow-left"></i>
-          <i (click)="this.currentPageGastos = changePage(this.currentPageGastos,1,this.gastosFiltrados.length)" class="fa-solid fa-arrow-right"></i>
+          <i [@fadeInOutFastWidth] *ngIf="this.currentPageGastos != 0"
+            (click)="this.currentPageGastos = changePage(this.currentPageGastos,-1,this.gastosFiltrados.length)"
+            class="fa-solid fa-arrow-left"></i>
+          <i [@fadeInOutFastWidth] *ngIf="this.currentPageGastos != this.gastosGalponGrupo.length - 1"
+            (click)="this.currentPageGastos = changePage(this.currentPageGastos,1,this.gastosFiltrados.length)"
+            class="fa-solid fa-arrow-right"></i>
         </div>
         <div id="table">
           <table>
