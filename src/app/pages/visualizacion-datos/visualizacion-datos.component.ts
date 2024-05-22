@@ -462,40 +462,55 @@ export class VisualizacionDatosComponent implements OnInit {
       }]
     };
 
-    const config: ChartConfiguration = {
-      type: 'bar',
-      data: chartData,
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-            grid: {
-              color: 'rgba(255, 255, 255, 0.5)',
-            },
-            ticks: {
-              color: '#ffffff',
-            }
-          },
-          x: {
-            grid: {
-              color: 'rgba(255, 255, 255, 0.5)',
-            },
-            ticks: {
-              color: '#ffffff',
-            }
-          }
+const config: ChartConfiguration = {
+  type: 'bar',
+  data: chartData,
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: 'rgba(255, 255, 255, 0.5)',
         },
-        plugins: {
-          legend: {
-            labels: {
-              color: '#ffffff',
+        ticks: {
+          color: '#ffffff',
+        }
+      },
+      x: {
+        grid: {
+          color: 'rgba(255, 255, 255, 0.5)',
+        },
+        ticks: {
+          color: '#ffffff',
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        labels: {
+          color: '#ffffff',
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            var label = context.dataset.label || '';
+
+            if (label) {
+              label += ': ';
             }
+            if (context.parsed.y !== null) {
+              label += new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'COP' }).format(context.parsed.y);
+            }
+            return label;
           }
         }
       }
-    };
+    }
+  }
+};
 
-    this.utilidadChart = new Chart(context, config);
+this.utilidadChart = new Chart(context, config);
   }
 
   agruparGastosPorConcepto() {
